@@ -1,85 +1,94 @@
 import React from 'react';
-import { Hammer, MapPin, Mail, Phone, Shield } from 'lucide-react';
+import { HardHat, MapPin, Phone, Mail, ShieldCheck } from 'lucide-react';
 
 export const Footer: React.FC = () => {
   return (
     <footer className="bg-[#0b0f19] text-gray-400 text-sm border-t border-white/10">
       <div className="max-w-7xl mx-auto px-6 lg:px-8 py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
-          {/* Brand Info */}
+          {/* Brand Info BMG Srl */}
           <div>
-            <div className="flex items-center gap-2 mb-4">
-              <div className="w-8 h-8 rounded-lg bg-brand-terracotta flex items-center justify-center text-white">
-                <Hammer className="w-4 h-4" />
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-9 h-9 rounded-xl bg-brand-terracotta flex items-center justify-center text-white shadow-glow-terracotta">
+                <HardHat className="w-5 h-5" />
               </div>
-              <span className="text-xl font-bold tracking-tight text-white font-display">
-                Edil<span className="text-brand-terracotta">Pregio</span>
+              <span className="text-xl font-bold tracking-tight text-white font-display uppercase">
+                BMG <span className="text-brand-terracotta">Srl</span>
               </span>
             </div>
             <p className="text-xs text-gray-400 leading-relaxed mb-4">
-              Progettazione, ristrutturazioni di prestigio e costruzioni civili e commerciali con standard qualitativi d'eccellenza e rispetto rigoroso dei cronoprogrammi.
+              Impresa edile specializzata in costruzioni civili ed industriali, ristrutturazioni chiavi in mano, manutenzioni condominiali ed efficientamento energetico a Monza Brianza, Milano e in tutta la Lombardia.
             </p>
             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded bg-white/5 border border-white/10 text-xs text-brand-terracotta">
-              <Shield className="w-3.5 h-3.5" />
-              <span>Certificazione SOA & ISO 9001</span>
+              <ShieldCheck className="w-3.5 h-3.5" />
+              <span>Maestranze Qualificate & Lavori Certificati</span>
             </div>
           </div>
 
-          {/* Servizi Chiave */}
+          {/* Servizi Principali */}
           <div>
             <h4 className="text-white font-bold text-sm uppercase tracking-wider mb-4 font-display">
-              Ambiti di Intervento
+              I Nostri Servizi
             </h4>
             <ul className="space-y-2 text-xs">
+              <li><a href="#servizi" className="hover:text-white transition-colors">Costruzioni Civili ed Industriali</a></li>
               <li><a href="#servizi" className="hover:text-white transition-colors">Ristrutturazioni Chiavi in Mano</a></li>
-              <li><a href="#servizi" className="hover:text-white transition-colors">Costruzioni Residenziali Passive</a></li>
-              <li><a href="#servizi" className="hover:text-white transition-colors">Restauro Conservativo Monumentale</a></li>
-              <li><a href="#servizi" className="hover:text-white transition-colors">Riqualificazione Energetica & Facciate</a></li>
-              <li><a href="#servizi" className="hover:text-white transition-colors">Interior Architecture & Direzione Lavori</a></li>
+              <li><a href="#servizi" className="hover:text-white transition-colors">Manutenzione Condomini & Facciate</a></li>
+              <li><a href="#servizi" className="hover:text-white transition-colors">Cappotto Termico & Strutture</a></li>
+              <li><a href="#servizi" className="hover:text-white transition-colors">Impianti Elettrici & Idraulici</a></li>
+              <li><a href="#servizi" className="hover:text-white transition-colors">Cartongesso, Serramenti & Parquet</a></li>
             </ul>
           </div>
 
-          {/* Sede e Contatti */}
+          {/* Sede Legale e Recapiti Reali */}
           <div>
             <h4 className="text-white font-bold text-sm uppercase tracking-wider mb-4 font-display">
-              Sede & Recapiti
+              Sede & Contatti
             </h4>
-            <ul className="space-y-3 text-xs">
+            <ul className="space-y-3.5 text-xs">
               <li className="flex items-start gap-2.5">
                 <MapPin className="w-4 h-4 text-brand-terracotta shrink-0 mt-0.5" />
-                <span>Via Monte Napoleone 18, 20121 Milano (MI)</span>
+                <span className="leading-snug">
+                  <strong>BMG S.r.l.</strong><br />
+                  Via De Gasperi 19<br />
+                  20867 Caponago (MB)
+                </span>
               </li>
               <li className="flex items-center gap-2.5">
                 <Phone className="w-4 h-4 text-brand-terracotta shrink-0" />
-                <span>+39 02 8900 1234</span>
+                <a href="tel:+393485696125" className="hover:text-white transition-colors font-semibold">
+                  +39 348 569 6125
+                </a>
               </li>
               <li className="flex items-center gap-2.5">
                 <Mail className="w-4 h-4 text-brand-terracotta shrink-0" />
-                <span>info@edilpregio.it</span>
+                <a href="mailto:info@bmg-costruzioni.it" className="hover:text-white transition-colors">
+                  info@bmg-costruzioni.it
+                </a>
               </li>
             </ul>
           </div>
 
-          {/* Certificazioni e Garanzie */}
+          {/* Ambiti Operativi */}
           <div>
             <h4 className="text-white font-bold text-sm uppercase tracking-wider mb-4 font-display">
-              Garanzie Tecniche
+              Area Operativa
             </h4>
             <p className="text-xs text-gray-400 mb-3 leading-relaxed">
-              Tutti i nostri cantieri sono coperti da polizza assicurativa CAR (Contractor's All Risks) e garanzia postuma decennale a tutela totale del committente.
+              Operiamo attivamente a Caponago, Monza e Brianza, Milano e su tutto il territorio lombardo, con sopralluoghi rapidi e computi metrici precisi.
             </p>
-            <div className="text-[11px] text-gray-500">
-              P.IVA & C.F. 09876543210 • REA MI-2039481 • Capitale Sociale € 250.000 i.v.
+            <div className="text-[11px] text-gray-500 pt-2 border-t border-white/5">
+              Demolizioni • Recinzioni • Finiture d'interni • Interventi Strutturali
             </div>
           </div>
         </div>
 
         <div className="pt-8 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between text-xs text-gray-500 gap-4">
-          <p>© {new Date().getFullYear()} EdilPregio Costruzioni s.r.l. - Tutti i diritti riservati.</p>
+          <p>© {new Date().getFullYear()} BMG S.r.l. - Sede Legale: Via De Gasperi 19, Caponago (MB) - Tutti i diritti riservati.</p>
           <div className="flex gap-6">
             <a href="/privacy" className="hover:text-gray-300">Privacy Policy</a>
             <a href="/cookie" className="hover:text-gray-300">Cookie Policy</a>
-            <a href="/admin" className="hover:text-brand-terracotta font-medium">Area Riservata CMS</a>
+            <a href="#preventivo" className="text-brand-terracotta font-medium hover:underline">Richiedi Preventivo</a>
           </div>
         </div>
       </div>

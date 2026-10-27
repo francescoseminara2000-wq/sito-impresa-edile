@@ -9,19 +9,18 @@ export const App: React.FC = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Caricamento sezioni della homepage da API
+    // Caricamento sezioni dal backend o fallback predefinito
     fetch('/api/pages/home')
       .then((res) => (res.ok ? res.json() : null))
       .then((data) => {
         if (data && data.sections && data.sections.length > 0) {
           setSections(data.sections);
         } else {
-          // Dataset di default di altissimo impatto estetico per la prima installazione
-          setSections(getDefaultSections());
+          setSections(getBmgDefaultSections());
         }
       })
       .catch(() => {
-        setSections(getDefaultSections());
+        setSections(getBmgDefaultSections());
       })
       .finally(() => setLoading(false));
   }, []);
@@ -43,8 +42,8 @@ export const App: React.FC = () => {
   );
 };
 
-// Sezioni predefinite di altissimo livello
-function getDefaultSections(): PageSectionData[] {
+// Sezioni su misura per BMG Srl
+function getBmgDefaultSections(): PageSectionData[] {
   return [
     {
       id: 'sec-hero',
@@ -53,22 +52,22 @@ function getDefaultSections(): PageSectionData[] {
       order: 0,
       isVisible: true,
       content: {
-        badge: 'Costruzioni di Pregio & Restauro Architettonico',
-        title: 'Architettura d\'Autore e',
-        highlightedWord: 'Precisione Costruttiva',
+        badge: 'BMG Srl • Impresa Edile Caponago (MB)',
+        title: 'Costruzioni e Ristrutturazioni',
+        highlightedWord: 'Civili ed Industriali',
         subtitle:
-          'Dalla ristrutturazione conservativa di dimore storiche alla realizzazione di ville moderne a impatto zero: trasformiamo ogni progetto in un\'opera d\'arte duratura.',
-        primaryCtaText: 'Richiedi un Sopralluogo',
+          'Dalla nuova costruzione alle ristrutturazioni complete, manutenzioni condominiali, cappotti termici e impianti certificati a Monza e Brianza, Milano e Lombardia.',
+        primaryCtaText: 'Richiedi Preventivo e Sopralluogo',
         primaryCtaLink: '#preventivo',
-        secondaryCtaText: 'Esplora i Cantieri',
-        secondaryCtaLink: '#cantieri',
+        secondaryCtaText: 'I Nostri Servizi',
+        secondaryCtaLink: '#servizi',
         backgroundImage:
-          'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=2200&q=85',
+          'https://images.unsplash.com/photo-1541888946425-d0fbb186156a?auto=format&fit=crop&w=2200&q=85',
         statsPreview: [
-          { number: '35+', label: 'Anni di Esperienza' },
-          { number: '280+', label: 'Cantieri Portati a Termine' },
-          { number: '100%', label: 'Rispetto Cronoprogramma' },
-          { number: '10 Anni', label: 'Garanzia Postuma Decennale' },
+          { number: '100%', label: 'Lavori Certificati a Norma' },
+          { number: '13+', label: 'Ambiti di Specializzazione' },
+          { number: 'Chiavi in Mano', label: 'Unico Referente per Tutto' },
+          { number: 'Caponago (MB)', label: 'Sede e Ufficio Tecnico' },
         ],
       },
     },
@@ -80,10 +79,10 @@ function getDefaultSections(): PageSectionData[] {
       isVisible: true,
       content: {
         stats: [
-          { value: '45.000', suffix: ' mq', label: 'Superficie Ristrutturata', sublabel: 'Standard energetici classe A4' },
-          { value: '100', suffix: '%', label: 'Consegna nei Tempi', sublabel: 'Penali garantite a contratto' },
-          { value: '42', suffix: ' Professionisti', label: 'Team Tecnico Diretto', sublabel: 'Ingegneri, architetti e maestranze' },
-          { value: '250', suffix: 'k€', label: 'Capitale Sociale i.v.', sublabel: 'Solidità finanziaria certificata' },
+          { value: 'Civile & Industriale', label: 'Settori di Intervento', sublabel: 'Dall\'appartamento al capannone' },
+          { value: 'Sicurezza', suffix: ' 100%', label: 'Conformità Cantieri', sublabel: 'DURC regolare e POS aggiornati' },
+          { value: 'Chiavi in Mano', label: 'Gestione Integrale', sublabel: 'Opere murarie, impianti e finiture' },
+          { value: 'Rapidità', label: 'Sopralluoghi Gratuiti', sublabel: 'Preventivi trasparenti e dettagliati' },
         ],
       },
     },
@@ -94,42 +93,75 @@ function getDefaultSections(): PageSectionData[] {
       order: 2,
       isVisible: true,
       content: {
-        tagline: 'Soluzioni Edili a 360°',
-        title: 'Servizi di Costruzione e Ristrutturazione ad Alto Profilo',
+        tagline: 'Competenza Globale in Cantiere',
+        title: 'Tutti i Servizi Offerti da BMG Srl',
         description:
-          'Seguiamo l\'intero ciclo di vita dell\'opera, dalla progettazione esecutiva e gestione pratiche comunali fino alla finitura chiavi in mano con materiali pregiati.',
+          'Gestiamo internamente ogni fase: opere strutturali, demolizioni, impianti elettrici ed idraulici, finiture di pregio e posa serramenti con un unico interlocutore responsabile.',
         services: [
           {
-            iconName: 'Home',
-            title: 'Ristrutturazioni di Lusso "Chiavi in Mano"',
+            iconName: 'Building2',
+            title: 'Costruzioni Civili ed Industriali',
             description:
-              'Riqualificazione completa di appartamenti, attici e ville con un unico interlocutore dedicato, contabilità trasparente e finiture su misura.',
+              'Realizzazione di nuovi fabbricati, ampliamenti, capannoni industriali e ville con strutture in cemento armato, muratura portante o acciaio.',
             features: [
-              'Impianti domotici e VMC integrata',
-              'Isolamento acustico certificato',
-              'Posa parquet a spina e marmi pregiati',
+              'Nuove costruzioni residenziali e produttive',
+              'Interventi strutturali e consolidamenti',
+              'Scavi, fondazioni e recinzioni perimetrali',
+            ],
+          },
+          {
+            iconName: 'Home',
+            title: 'Ristrutturazioni Complete (Civili & Industriali)',
+            description:
+              'Riqualificazione completa di appartamenti, uffici, negozi e complessi industriali: demolizioni, ridistribuzione spazi interni e rifacimento totale.',
+            features: [
+              'Demolizioni controllate e smaltimento macerie',
+              'Rifacimento bagni, cucine e ambienti di lavoro',
+              'Opere in cartongesso e pareti divisorie isolanti',
             ],
           },
           {
             iconName: 'Building2',
-            title: 'Nuove Costruzioni & Ville Moderne',
+            title: 'Manutenzione Condomini & Facciate',
             description:
-              'Edifici ad altissima efficienza energetica (NZEB / CasaPassiva) in cemento armato o bioedilizia con strutture antisismiche all\'avanguardia.',
+              'Interventi di manutenzione ordinaria e straordinaria per condomini e stabili: ripristino frontalini, balconi, tetti e parti comuni.',
             features: [
-              'Progettazione BIM esecutiva',
-              'Geotermia e fotovoltaico integrato',
-              'Certificazione energetica A4+',
+              'Isolamento a cappotto termico certificato',
+              'Manutenzione programmata per amministratori',
+              'Ripristino intonaci e impermeabilizzazioni',
+            ],
+          },
+          {
+            iconName: 'Hammer',
+            title: 'Impianti Elettrici ed Idraulici',
+            description:
+              'Progettazione, posa e collaudo di impianti tecnologici civili ed industriali con rilascio di dichiarazione di conformità a regola d\'arte.',
+            features: [
+              'Impianti elettrici completi, illuminazione e quadri',
+              'Impianti idrosanitari, riscaldamento e condizionamento',
+              'Adeguamento normativo e certificazioni',
             ],
           },
           {
             iconName: 'Paintbrush',
-            title: 'Restauro Conservativo & Facciate',
+            title: 'Fornitura e Posa Serramenti & Recinzioni',
             description:
-              'Interventi su immobili vincolati e stabili d\'epoca, ripristino stucchi d\'epoca, consolidamento strutturale e cappotto termico con materiali traspiranti.',
+              'Installazione di serramenti ad alto isolamento termoacustico (PVC, alluminio, legno) e realizzazione di recinzioni civili ed industriali.',
             features: [
-              'Interventi approvati Sovrintendenza',
-              'Consolidamenti con fibre di carbonio',
-              'Tinteggiature minerali e intonaci di calce',
+              'Fornitura e posa serramenti certificati',
+              'Recinzioni perimetrali, cancellate e muretti',
+              'Miglioramento classe energetica dell\'immobile',
+            ],
+          },
+          {
+            iconName: 'Paintbrush',
+            title: 'Finiture: Cartongesso, Imbiancature & Parquet',
+            description:
+              'Cura meticolosa delle finiture interne: controsoffitti, velette di design, tinteggiature professionali, posa e levigatura parquet.',
+            features: [
+              'Posa e levigatura parquet tradizionale e prefinito',
+              'Imbiancature civili, industriali e decorativi',
+              'Opere in cartongesso fonoassorbenti e REI',
             ],
           },
         ],
@@ -142,21 +174,21 @@ function getDefaultSections(): PageSectionData[] {
       order: 3,
       isVisible: true,
       content: {
-        title: 'Prima e Dopo: La Rinascita di una Dimora Storica',
+        title: 'Prima e Dopo: Ristrutturazione Completa',
         subtitle:
-          'Guarda il confronto visivo tra lo stato originario e la completa riqualificazione conservativa eseguita nel centro storico di Milano.',
+          'Dallo stato originario e di cantiere grezzo alla finitura chiavi in mano curata in ogni dettaglio.',
         description:
-          'Consolidamento dei solai in legno originari, inserimento di riscaldamento a pavimento a basso spessore, recupero filologico delle modanature e nuova illuminazione architetturale incassata.',
+          'Demolizione pareti esistenti, nuovo impianto elettrico ed idraulico a pavimento, isolamento termoacustico, cartongesso ribassato e posa parquet levigato.',
         beforeImage:
           'https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=1200&q=80',
         afterImage:
           'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80',
-        beforeLabel: 'Prima: Stato di Degrado',
-        afterLabel: 'Dopo: Attico di Pregio Concluso',
+        beforeLabel: 'Prima dell\'Intervento',
+        afterLabel: 'Consegna Lavori Finita',
         details: [
-          { label: 'Tempo di Esecuzione', value: '7 Mesi (anticipo di 2 settimane)' },
-          { label: 'Efficientamento Energetico', value: 'Passaggio da Classe G a Classe A2' },
-          { label: 'Superficie Totale', value: '260 mq interni + 45 mq terrazzo' },
+          { label: 'Ubicazione Lavori', value: 'Monza e Brianza / Milano' },
+          { label: 'Opere Eseguite', value: 'Demolizione, Impianti, Cartongesso e Parquet' },
+          { label: 'Tempi di Consegna', value: 'Rispettati rigorosamente a contratto' },
         ],
       },
     },
@@ -167,8 +199,8 @@ function getDefaultSections(): PageSectionData[] {
       order: 4,
       isVisible: true,
       content: {
-        tagline: 'Portfolio Realizzazioni',
-        title: 'Opere Recenti e Cantieri Selezionati',
+        tagline: 'I Nostri Cantieri',
+        title: 'Realizzazioni e Opere Eseguite da BMG Srl',
       },
     },
     {
@@ -178,11 +210,30 @@ function getDefaultSections(): PageSectionData[] {
       order: 5,
       isVisible: true,
       content: {
-        title: 'Richiedi una Consulenza e Sopralluogo Gratuito',
+        title: 'Richiedi un Preventivo Gratuito a BMG Srl',
         subtitle:
-          'Compila il modulo specificando la tipologia di cantiere. Un nostro ingegnere o project manager ti ricontatterà entro 24 ore con un piano preliminare.',
+          'Compila il modulo o contattaci direttamente al +39 348 569 6125. Effettuiamo sopralluoghi tecnici gratuiti e senza impegno a Caponago, Monza Brianza e Milano.',
+        servicesOptions: [
+          'Costruzione Civile / Industriale',
+          'Ristrutturazione Completa',
+          'Manutenzione Condominio',
+          'Cappotto Termico / Facciate',
+          'Impianti Elettrici / Idraulici',
+          'Cartongesso / Imbiancature',
+          'Fornitura e Posa Serramenti',
+          'Posa e Levigatura Parquet',
+          'Demolizioni / Interventi Strutturali',
+          'Recinzioni',
+        ],
+        budgetOptions: [
+          'Meno di 25.000€',
+          '25.000€ - 50.000€',
+          '50.000€ - 100.000€',
+          'Oltre 100.000€',
+        ],
       },
     },
   ];
 }
+
 export default App;
