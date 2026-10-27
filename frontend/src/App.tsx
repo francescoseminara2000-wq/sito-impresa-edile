@@ -62,7 +62,7 @@ function getBmgDefaultSections(): PageSectionData[] {
         secondaryCtaText: 'I Nostri Servizi',
         secondaryCtaLink: '#servizi',
         backgroundImage:
-          'https://images.unsplash.com/photo-1541888946425-d0fbb186156a?auto=format&fit=crop&w=2200&q=85',
+          '/images/cantieri/cantiere-10.jpg',
         statsPreview: [
           { number: '100%', label: 'Lavori Certificati a Norma' },
           { number: '13+', label: 'Ambiti di Specializzazione' },
@@ -180,9 +180,9 @@ function getBmgDefaultSections(): PageSectionData[] {
         description:
           'Demolizione pareti esistenti, nuovo impianto elettrico ed idraulico a pavimento, isolamento termoacustico, cartongesso ribassato e posa parquet levigato.',
         beforeImage:
-          'https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=1200&q=80',
+          '/images/cantieri/cantiere-03.jpg',
         afterImage:
-          'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80',
+          '/images/cantieri/cantiere-04.jpg',
         beforeLabel: 'Prima dell\'Intervento',
         afterLabel: 'Consegna Lavori Finita',
         details: [
