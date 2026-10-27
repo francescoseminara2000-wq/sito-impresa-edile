@@ -9,9 +9,7 @@ export const Footer: React.FC = () => {
           {/* Brand Info BMG Costruzioni / BMG Srl */}
           <div>
             <div className="flex items-center gap-3 mb-4">
-              <div className="bg-white px-3 py-1.5 rounded-xl shadow-md inline-block">
-                <img src="/logo.png" alt="BMG Costruzioni" className="h-9 w-auto object-contain" />
-              </div>
+              <img src="/logo_dark.png" alt="BMG Costruzioni" className="h-12 w-auto object-contain" />
             </div>
             <p className="text-xs text-gray-400 leading-relaxed mb-4">
               <strong>BMG S.r.l.</strong> - Impresa edile specializzata in costruzioni civili ed industriali, ristrutturazioni chiavi in mano, manutenzioni condominiali ed efficientamento energetico a Monza Brianza, Milano e in tutta la Lombardia.
