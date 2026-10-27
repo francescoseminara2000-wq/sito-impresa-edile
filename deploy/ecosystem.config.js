@@ -2,11 +2,11 @@
 module.exports = {
   apps: [
     {
-      name: 'edilpregio-api',
+      name: 'bmg-costruzioni',
       cwd: '/var/www/edilizia/backend',
       script: 'dist/index.js',
-      instances: 'max', // Sfrutta tutti i core della VPS IONOS (o 1/2 in base al piano VPS)
-      exec_mode: 'cluster',
+      instances: 1,
+      exec_mode: 'fork',
       autorestart: true,
       watch: false,
       max_memory_restart: '1G',
@@ -14,8 +14,8 @@ module.exports = {
         NODE_ENV: 'production',
         PORT: 3002,
       },
-      error_file: '/root/.pm2/logs/edilpregio-error.log',
-      out_file: '/root/.pm2/logs/edilpregio-out.log',
+      error_file: '/root/.pm2/logs/bmg-costruzioni-error.log',
+      out_file: '/root/.pm2/logs/bmg-costruzioni-out.log',
       merge_logs: true,
       time: true,
     },
