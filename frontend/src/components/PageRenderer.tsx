@@ -7,6 +7,8 @@ import { ServicesGridBlock } from './blocks/ServicesGridBlock';
 import { ProjectsShowcaseBlock } from './blocks/ProjectsShowcaseBlock';
 import { StatsBlock } from './blocks/StatsBlock';
 import { ContactFormBlock } from './blocks/ContactFormBlock';
+import { TextImageBlock } from './blocks/TextImageBlock';
+import { FaqBlock } from './blocks/FaqBlock';
 
 interface PageRendererProps {
   sections: PageSectionData[];
@@ -33,6 +35,10 @@ export const PageRenderer: React.FC<PageRendererProps> = ({ sections, previewMod
         return <StatsBlock content={section.content} />;
       case 'CTA_FORM':
         return <ContactFormBlock content={section.content} />;
+      case 'TEXT_IMAGE':
+        return <TextImageBlock content={section.content} />;
+      case 'FAQ':
+        return <FaqBlock content={section.content} />;
       default:
         return (
           <div className="py-12 text-center text-gray-400 bg-gray-50 border border-dashed border-gray-200">

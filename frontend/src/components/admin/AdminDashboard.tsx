@@ -2,8 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { 
   Lock, Mail, Phone, Calendar, CheckCircle2, Clock, 
-  Archive, LogOut, ArrowLeft, RefreshCw, HardHat, ExternalLink 
+  Archive, LogOut, ArrowLeft, RefreshCw, HardHat, ExternalLink,
+  Layers, Images, Settings, Copy
 } from 'lucide-react';
+import { PageBuilderCMS } from './PageBuilderCMS';
+import { allBmgPhotos } from '../ui/FullPhotoGalleryModal';
 
 interface QuoteLead {
   id: string;
@@ -28,9 +31,10 @@ export const AdminDashboard: React.FC<{ onBackToSite: () => void }> = ({ onBackT
   const [loggingIn, setLoggingIn] = useState(false);
 
   // Stati Dashboard
-  const [activeTab, setActiveTab] = useState<'quotes' | 'info'>('quotes');
+  const [activeTab, setActiveTab] = useState<'pagebuilder' | 'quotes' | 'media' | 'info'>('pagebuilder');
   const [quotes, setQuotes] = useState<QuoteLead[]>([]);
   const [loadingQuotes, setLoadingQuotes] = useState(false);
+  const [copiedUrl, setCopiedUrl] = useState<string | null>(null);
 
   useEffect(() => {
     if (token) {
@@ -78,22 +82,6 @@ export const AdminDashboard: React.FC<{ onBackToSite: () => void }> = ({ onBackT
       if (res.ok) {
         const data = await res.json();
         setQuotes(data);
-      } else {
-        // Se non ci sono lead ancora, creiamo dati demo per visualizzare il pannello
-        setQuotes([
-          {
-            id: 'demo-1',
-            fullName: 'Ing. Roberto Villa',
-            email: 'roberto.villa@gmail.com',
-            phone: '+39 335 1234567',
-            serviceType: 'Ristrutturazione Completa',
-            budgetRange: '50.000€ - 100.000€',
-            location: 'Caponago (MB)',
-            message: 'Buongiorno, vorrei un preventivo e un sopralluogo tecnico per la ristrutturazione di un appartamento di 110mq compreso rifacimento impianti e parquet.',
-            status: 'NEW',
-            createdAt: new Date().toISOString(),
-          },
-        ]);
       }
     } catch (err) {
       console.error(err);
@@ -121,6 +109,12 @@ export const AdminDashboard: React.FC<{ onBackToSite: () => void }> = ({ onBackT
     }
   };
 
+  const copyPhotoUrl = (url: string) => {
+    navigator.clipboard.writeText(url);
+    setCopiedUrl(url);
+    setTimeout(() => setCopiedUrl(null), 2500);
+  };
+
   // 1. Schermata di Login se non autenticato
   if (!token) {
     return (
@@ -143,10 +137,10 @@ export const AdminDashboard: React.FC<{ onBackToSite: () => void }> = ({ onBackT
               <img src="/logo.png" alt="BMG Costruzioni" className="h-10 w-auto object-contain" />
             </div>
             <h1 className="text-xl font-bold font-display uppercase tracking-tight">
-              Area Riservata Amministrazione
+              Pannello CMS & Amministrazione
             </h1>
             <p className="text-xs text-gray-400 mt-1">
-              BMG Srl • Gestione Richieste e Portale
+              BMG Srl • Gestione Contenuti e Pagine
             </p>
           </div>
 
@@ -194,32 +188,37 @@ export const AdminDashboard: React.FC<{ onBackToSite: () => void }> = ({ onBackT
               disabled={loggingIn}
               className="w-full py-3.5 rounded-xl bg-brand-terracotta hover:bg-[#a85e2b] text-white font-bold text-sm tracking-wide uppercase transition-all shadow-glow-terracotta disabled:opacity-50 mt-2"
             >
-              {loggingIn ? 'Verifica credenziali...' : 'Accedi al Pannello'}
+              {loggingIn ? 'Accesso in corso...' : 'Accedi al CMS'}
             </button>
           </form>
 
           <div className="mt-6 pt-4 border-t border-white/10 text-center text-[11px] text-gray-400">
-            Password iniziale predefinita: <code className="text-amber-200">EdilPregio2026!</code>
+            Credenziali iniziali: <code className="text-amber-200">admin@edilpregio.it</code> / <code className="text-amber-200">EdilPregio2026!</code>
           </div>
         </motion.div>
       </div>
     );
   }
 
-  // 2. Dashboard Amministrativa
+  // 2. Dashboard Amministrativa con CMS Page Builder
   return (
     <div className="min-h-screen bg-brand-dark text-white flex flex-col">
       {/* Topbar Admin */}
-      <header className="border-b border-white/10 bg-brand-dark/90 backdrop-blur-md px-6 py-4 flex items-center justify-between">
+      <header className="border-b border-white/10 bg-brand-dark/95 backdrop-blur-md px-6 py-4 flex items-center justify-between sticky top-0 z-40">
         <div className="flex items-center gap-4">
-          <div className="w-9 h-9 rounded-xl bg-brand-terracotta flex items-center justify-center text-white font-bold">
-            <HardHat className="w-5 h-5" />
+          <div className="bg-white px-2.5 py-1 rounded-xl shadow-sm">
+            <img src="/logo.png" alt="BMG Costruzioni" className="h-7 w-auto object-contain" />
           </div>
           <div>
-            <h2 className="text-base font-bold leading-tight">BMG Srl • Pannello di Controllo</h2>
+            <h2 className="text-sm sm:text-base font-bold leading-tight flex items-center gap-2">
+              <span>BMG Srl • CMS Suite</span>
+              <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-brand-terracotta/20 text-brand-terracotta border border-brand-terracotta/30">
+                PRO v2.0
+              </span>
+            </h2>
             <span className="text-[11px] text-emerald-400 font-semibold flex items-center gap-1.5">
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-              Server Online (Porta 3002)
+              Server Attivo (Porta 3002)
             </span>
           </div>
         </div>
@@ -230,7 +229,7 @@ export const AdminDashboard: React.FC<{ onBackToSite: () => void }> = ({ onBackT
             className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-xs font-semibold transition-colors"
           >
             <ExternalLink className="w-3.5 h-3.5" />
-            <span>Vedi Sito</span>
+            <span className="hidden sm:inline">Visualizza Sito</span>
           </button>
           <button
             onClick={handleLogout}
@@ -242,32 +241,66 @@ export const AdminDashboard: React.FC<{ onBackToSite: () => void }> = ({ onBackT
         </div>
       </header>
 
-      {/* Subnav Tab */}
-      <div className="border-b border-white/10 bg-white/5 px-6 py-2 flex items-center gap-4">
+      {/* Subnav Tab Navigation */}
+      <div className="border-b border-white/10 bg-white/5 px-6 py-2.5 flex items-center gap-2 sm:gap-4 overflow-x-auto">
+        <button
+          onClick={() => setActiveTab('pagebuilder')}
+          className={`px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition-all flex items-center gap-2 shrink-0 ${
+            activeTab === 'pagebuilder'
+              ? 'bg-brand-terracotta text-white shadow-glow-terracotta'
+              : 'text-gray-400 hover:text-white hover:bg-white/5'
+          }`}
+        >
+          <Layers className="w-4 h-4" />
+          <span>Page Builder & Blocchi</span>
+        </button>
+
         <button
           onClick={() => setActiveTab('quotes')}
-          className={`px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-all ${
+          className={`px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition-all flex items-center gap-2 shrink-0 ${
             activeTab === 'quotes'
-              ? 'bg-brand-terracotta text-white'
-              : 'text-gray-400 hover:text-white'
+              ? 'bg-brand-terracotta text-white shadow-glow-terracotta'
+              : 'text-gray-400 hover:text-white hover:bg-white/5'
           }`}
         >
-          Richieste Preventivi ({quotes.length})
+          <Mail className="w-4 h-4" />
+          <span>Richieste Preventivi ({quotes.length})</span>
         </button>
+
+        <button
+          onClick={() => setActiveTab('media')}
+          className={`px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition-all flex items-center gap-2 shrink-0 ${
+            activeTab === 'media'
+              ? 'bg-brand-terracotta text-white shadow-glow-terracotta'
+              : 'text-gray-400 hover:text-white hover:bg-white/5'
+          }`}
+        >
+          <Images className="w-4 h-4" />
+          <span>Media Manager ({allBmgPhotos.length} Foto)</span>
+        </button>
+
         <button
           onClick={() => setActiveTab('info')}
-          className={`px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-all ${
+          className={`px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition-all flex items-center gap-2 shrink-0 ${
             activeTab === 'info'
-              ? 'bg-brand-terracotta text-white'
-              : 'text-gray-400 hover:text-white'
+              ? 'bg-brand-terracotta text-white shadow-glow-terracotta'
+              : 'text-gray-400 hover:text-white hover:bg-white/5'
           }`}
         >
-          Dati Aziendali & Server
+          <Settings className="w-4 h-4" />
+          <span>Configurazione Server</span>
         </button>
       </div>
 
-      {/* Contenuto Principale */}
+      {/* Contenuto Dinamico Tab */}
       <main className="flex-1 max-w-7xl mx-auto w-full p-6">
+        
+        {/* TAB 1: PAGE BUILDER CMS */}
+        {activeTab === 'pagebuilder' && (
+          <PageBuilderCMS token={token} />
+        )}
+
+        {/* TAB 2: RICHIESTE PREVENTIVO */}
         {activeTab === 'quotes' && (
           <div>
             <div className="flex items-center justify-between mb-6">
@@ -291,7 +324,7 @@ export const AdminDashboard: React.FC<{ onBackToSite: () => void }> = ({ onBackT
             ) : quotes.length === 0 ? (
               <div className="py-16 text-center border border-dashed border-white/10 rounded-2xl bg-white/5">
                 <Clock className="w-10 h-10 text-gray-500 mx-auto mb-2" />
-                <h4 className="text-sm font-semibold text-white">Nessuna richiesta ancora pervenuta</h4>
+                <h4 className="text-sm font-semibold text-white">Nessuna richiesta ricevuta finora</h4>
                 <p className="text-xs text-gray-400 mt-1">I messaggi inviati dal sito appariranno qui in tempo reale.</p>
               </div>
             ) : (
@@ -363,19 +396,103 @@ export const AdminDashboard: React.FC<{ onBackToSite: () => void }> = ({ onBackT
           </div>
         )}
 
-        {activeTab === 'info' && (
-          <div className="bg-white/5 border border-white/10 rounded-2xl p-6 max-w-2xl space-y-4">
-            <h3 className="text-lg font-bold">Dati Aziendali Configurati</h3>
-            <div className="space-y-2 text-sm text-gray-300">
-              <p><strong>Azienda:</strong> BMG S.r.l.</p>
-              <p><strong>Sede Legale:</strong> Via De Gasperi 19, Caponago (MB)</p>
-              <p><strong>Telefono Ufficiale:</strong> +39 348 569 6125</p>
-              <p><strong>Porta Servizio Locale:</strong> 3002</p>
-              <p><strong>Processo PM2:</strong> bmg-costruzioni (online)</p>
-              <p><strong>Dominio Certificato:</strong> https://bmg-costruzioni.it</p>
+        {/* TAB 3: MEDIA MANAGER */}
+        {activeTab === 'media' && (
+          <div>
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <h3 className="text-xl font-bold">Libreria Media & Foto Cantieri</h3>
+                <p className="text-xs text-gray-400">
+                  Tutte le 20 fotografie di BMG Srl disponibili da inserire nei blocchi
+                </p>
+              </div>
+              {copiedUrl && (
+                <div className="text-xs font-bold text-emerald-400 bg-emerald-500/20 px-3 py-1.5 rounded-lg border border-emerald-500/30">
+                  URL Copiato negli appunti!
+                </div>
+              )}
+            </div>
+
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+              {allBmgPhotos.map((photo) => (
+                <div
+                  key={photo.id}
+                  className="bg-white/5 border border-white/10 rounded-2xl overflow-hidden group hover:border-brand-terracotta transition-all flex flex-col justify-between"
+                >
+                  <div className="aspect-[4/3] overflow-hidden bg-gray-900 relative">
+                    <img
+                      src={photo.url}
+                      alt={photo.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                    />
+                    <span className="absolute top-2 left-2 text-[10px] font-bold px-2 py-0.5 rounded bg-black/70 text-white">
+                      #{photo.id}
+                    </span>
+                  </div>
+                  <div className="p-3">
+                    <span className="text-[10px] uppercase font-bold text-brand-terracotta block">
+                      {photo.category}
+                    </span>
+                    <h4 className="text-xs font-bold text-white line-clamp-1 mb-2">
+                      {photo.title}
+                    </h4>
+                    <button
+                      onClick={() => copyPhotoUrl(photo.url)}
+                      className="w-full py-1.5 px-2 rounded-lg bg-white/10 hover:bg-brand-terracotta text-white text-[11px] font-bold transition-colors flex items-center justify-center gap-1.5"
+                    >
+                      <Copy className="w-3 h-3" />
+                      <span>Copia Percorso</span>
+                    </button>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         )}
+
+        {/* TAB 4: CONFIGURAZIONE & SERVER */}
+        {activeTab === 'info' && (
+          <div className="bg-white/5 border border-white/10 rounded-2xl p-6 max-w-2xl space-y-4">
+            <h3 className="text-lg font-bold">Stato Infrastruttura IONOS VPS</h3>
+            <div className="space-y-2.5 text-xs text-gray-300">
+              <div className="flex justify-between py-1.5 border-b border-white/5">
+                <span className="text-gray-400">Ragione Sociale:</span>
+                <span className="font-bold text-white">BMG S.r.l.</span>
+              </div>
+              <div className="flex justify-between py-1.5 border-b border-white/5">
+                <span className="text-gray-400">Marchio / Logo:</span>
+                <span className="font-bold text-brand-terracotta">BMG Costruzioni</span>
+              </div>
+              <div className="flex justify-between py-1.5 border-b border-white/5">
+                <span className="text-gray-400">Sede Legale:</span>
+                <span className="font-bold text-white">Via De Gasperi 19, Caponago (MB)</span>
+              </div>
+              <div className="flex justify-between py-1.5 border-b border-white/5">
+                <span className="text-gray-400">Recapito Telefonico:</span>
+                <span className="font-mono text-emerald-400 font-bold">+39 348 569 6125</span>
+              </div>
+              <div className="flex justify-between py-1.5 border-b border-white/5">
+                <span className="text-gray-400">Porta Interna Node.js:</span>
+                <span className="font-mono text-amber-200">3002</span>
+              </div>
+              <div className="flex justify-between py-1.5 border-b border-white/5">
+                <span className="text-gray-400">Demone PM2:</span>
+                <span className="text-emerald-400 font-bold">bmg-costruzioni (online)</span>
+              </div>
+              <div className="flex justify-between py-1.5 border-b border-white/5">
+                <span className="text-gray-400">Web Server & SSL:</span>
+                <span className="font-bold text-white">Nginx + Certbot Let's Encrypt (HTTPS)</span>
+              </div>
+              <div className="flex justify-between py-1.5 border-b border-white/5">
+                <span className="text-gray-400">Dominio Attivo:</span>
+                <a href="https://bmg-costruzioni.it" target="_blank" rel="noreferrer" className="text-brand-terracotta hover:underline">
+                  https://bmg-costruzioni.it
+                </a>
+              </div>
+            </div>
+          </div>
+        )}
+
       </main>
     </div>
   );
