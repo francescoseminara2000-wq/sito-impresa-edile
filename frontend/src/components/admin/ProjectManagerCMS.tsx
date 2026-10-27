@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Plus, Edit3, Trash2, CheckCircle2, Image as ImageIcon, 
-  MapPin, Calendar, Building, Sparkles, X, Save, Eye, Layers 
+  MapPin, Calendar, Building, Sparkles, X, Save, Eye, Layers, UploadCloud 
 } from 'lucide-react';
 import { allBmgPhotos } from '../ui/FullPhotoGalleryModal';
 
@@ -127,6 +127,52 @@ export const ProjectManagerCMS: React.FC<{ token: string }> = ({ token }) => {
       ...prev,
       { url, order: prev.length, isBefore: false, isAfter: false, caption: '' },
     ]);
+  };
+
+  const [uploadingFiles, setUploadingFiles] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleDeviceUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+
+    setUploadingFiles(true);
+    const formData = new FormData();
+    for (let i = 0; i < files.length; i++) {
+      formData.append('images', files[i]);
+    }
+
+    try {
+      const res = await fetch('/api/uploads/multiple', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: formData,
+      });
+
+      if (!res.ok) {
+        throw new Error('Errore durante il caricamento delle fotografie dal dispositivo.');
+      }
+
+      const data = await res.json();
+      if (data.files && Array.isArray(data.files)) {
+        const newImages: ProjectImageItem[] = data.files.map((f: any, idx: number) => ({
+          url: f.url,
+          caption: f.originalName || 'Foto cantiere',
+          order: images.length + idx,
+          isBefore: false,
+          isAfter: false,
+        }));
+        setImages((prev) => [...prev, ...newImages]);
+        showFeedback(`Caricate ${data.files.length} nuove foto ottimizzate WebP!`);
+      }
+    } catch (err: any) {
+      showFeedback(err.message || 'Errore upload foto.', 'error');
+    } finally {
+      setUploadingFiles(false);
+      if (fileInputRef.current) fileInputRef.current.value = '';
+    }
   };
 
   const removePhoto = (index: number) => {
@@ -716,25 +762,45 @@ export const ProjectManagerCMS: React.FC<{ token: string }> = ({ token }) => {
 
                 {/* 3. Gestione Galleria Fotografica del Cantiere */}
                 <div className="space-y-3 pt-4 border-t border-white/10 text-xs">
-                  <div className="flex items-center justify-between">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                     <div>
                       <span className="font-bold uppercase text-brand-terracotta block">
                         Galleria Fotografica del Cantiere ({images.length} Foto)
                       </span>
                       <span className="text-[11px] text-gray-400">
-                        Clicca su una foto della libreria in basso per aggiungerla a questo cantiere
+                        Carica nuove foto dal dispositivo o selezionale dalla libreria in basso
                       </span>
                     </div>
 
-                    <label className="flex items-center gap-2 cursor-pointer text-white">
+                    <div className="flex items-center gap-3">
                       <input
-                        type="checkbox"
-                        checked={isFeatured}
-                        onChange={(e) => setIsFeatured(e.target.checked)}
-                        className="rounded accent-brand-terracotta w-4 h-4"
+                        type="file"
+                        ref={fileInputRef}
+                        onChange={handleDeviceUpload}
+                        multiple
+                        accept="image/*"
+                        className="hidden"
                       />
-                      <span className="font-bold">Metti in Evidenza in Homepage</span>
-                    </label>
+                      <button
+                        type="button"
+                        onClick={() => fileInputRef.current?.click()}
+                        disabled={uploadingFiles}
+                        className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-brand-terracotta hover:bg-[#a85e2b] text-white text-xs font-bold uppercase tracking-wider shadow-md transition-all disabled:opacity-50"
+                      >
+                        <UploadCloud className="w-4 h-4" />
+                        <span>{uploadingFiles ? 'Caricamento WebP...' : 'Carica da Telefono / PC'}</span>
+                      </button>
+
+                      <label className="flex items-center gap-2 cursor-pointer text-white">
+                        <input
+                          type="checkbox"
+                          checked={isFeatured}
+                          onChange={(e) => setIsFeatured(e.target.checked)}
+                          className="rounded accent-brand-terracotta w-4 h-4"
+                        />
+                        <span className="font-bold">In Evidenza</span>
+                      </label>
+                    </div>
                   </div>
 
                   {/* Foto Assegnate a questo Cantiere */}

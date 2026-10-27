@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { 
   Lock, Mail, Phone, Calendar, CheckCircle2, Clock, 
   Archive, LogOut, ArrowLeft, RefreshCw, HardHat, ExternalLink,
-  Layers, Images, Settings, Copy
+  Layers, Images, Settings, Copy, Download
 } from 'lucide-react';
 import { PageBuilderCMS } from './PageBuilderCMS';
 import { ProjectManagerCMS } from './ProjectManagerCMS';
@@ -114,6 +114,46 @@ export const AdminDashboard: React.FC<{ onBackToSite: () => void }> = ({ onBackT
     navigator.clipboard.writeText(url);
     setCopiedUrl(url);
     setTimeout(() => setCopiedUrl(null), 2500);
+  };
+
+  const exportQuotesToCSV = () => {
+    if (quotes.length === 0) return;
+
+    const headers = [
+      'ID',
+      'Data Ricezione',
+      'Stato',
+      'Nome e Cognome',
+      'Email',
+      'Telefono',
+      'Tipo Servizio',
+      'Budget / Superficie',
+      'Localita',
+      'Messaggio Dettagliato',
+    ];
+
+    const rows = quotes.map((q) => [
+      `"${q.id}"`,
+      `"${new Date(q.createdAt).toLocaleString('it-IT')}"`,
+      `"${q.status}"`,
+      `"${(q.fullName || '').replace(/"/g, '""')}"`,
+      `"${(q.email || '').replace(/"/g, '""')}"`,
+      `"${(q.phone || '').replace(/"/g, '""')}"`,
+      `"${(q.serviceType || '').replace(/"/g, '""')}"`,
+      `"${(q.budgetRange || '').replace(/"/g, '""')}"`,
+      `"${(q.location || '').replace(/"/g, '""')}"`,
+      `"${(q.message || '').replace(/"/g, '""').replace(/\r?\n/g, ' ')}"`,
+    ]);
+
+    const csvContent = '\uFEFF' + [headers.join(';'), ...rows.map((r) => r.join(';'))].join('\r\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', `bmg_preventivi_${new Date().toISOString().slice(0, 10)}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   // 1. Schermata di Login se non autenticato
@@ -328,13 +368,24 @@ export const AdminDashboard: React.FC<{ onBackToSite: () => void }> = ({ onBackT
                   Lead e contatti pervenuti direttamente dal modulo online di BMG Srl
                 </p>
               </div>
-              <button
-                onClick={loadQuotes}
-                className="p-2 rounded-lg bg-white/10 hover:bg-white/20 text-xs text-gray-300 flex items-center gap-1.5"
-              >
-                <RefreshCw className="w-3.5 h-3.5" />
-                <span>Aggiorna</span>
-              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={exportQuotesToCSV}
+                  disabled={quotes.length === 0}
+                  className="px-3 py-2 rounded-lg bg-emerald-600/30 hover:bg-emerald-600/50 text-emerald-300 border border-emerald-500/40 text-xs font-semibold flex items-center gap-1.5 transition-all disabled:opacity-40"
+                  title="Esporta tutti i lead in formato Excel/CSV"
+                >
+                  <Download className="w-3.5 h-3.5" />
+                  <span>Esporta CSV / Excel</span>
+                </button>
+                <button
+                  onClick={loadQuotes}
+                  className="p-2 rounded-lg bg-white/10 hover:bg-white/20 text-xs text-gray-300 flex items-center gap-1.5"
+                >
+                  <RefreshCw className="w-3.5 h-3.5" />
+                  <span>Aggiorna</span>
+                </button>
+              </div>
             </div>
 
             {loadingQuotes ? (

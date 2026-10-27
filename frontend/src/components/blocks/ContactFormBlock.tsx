@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Send, CheckCircle2, AlertCircle, PhoneCall, Clock, ShieldCheck } from 'lucide-react';
+import { Send, CheckCircle2, AlertCircle, PhoneCall, Clock, ShieldCheck, Sparkles } from 'lucide-react';
 import { CtaFormContent } from '../../types/blocks';
+import { InteractiveQuoteWizard } from '../ui/InteractiveQuoteWizard';
 
 export const ContactFormBlock: React.FC<{ content: CtaFormContent }> = ({ content }) => {
   const serviceOptions = content.servicesOptions || [
@@ -27,6 +28,7 @@ export const ContactFormBlock: React.FC<{ content: CtaFormContent }> = ({ conten
   const [phone, setPhone] = useState('');
   const [location, setLocation] = useState('');
   const [message, setMessage] = useState('');
+  const [formMode, setFormMode] = useState<'wizard' | 'quick'>('wizard');
 
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle');
@@ -138,8 +140,40 @@ export const ContactFormBlock: React.FC<{ content: CtaFormContent }> = ({ conten
             </div>
           </div>
 
-          {/* Form Interattivo ad Alta Conversione */}
+          {/* Form Interattivo ad Alta Conversione con Switcher */}
           <div className="lg:col-span-7">
+            {/* Selettore Modalità: Step-by-Step vs Rapido */}
+            <div className="flex items-center gap-2 mb-4 bg-white/5 p-1.5 rounded-2xl border border-white/10">
+              <button
+                type="button"
+                onClick={() => setFormMode('wizard')}
+                className={`flex-1 py-2.5 px-3 rounded-xl text-xs font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-2 ${
+                  formMode === 'wizard'
+                    ? 'bg-brand-terracotta text-white shadow-glow-terracotta'
+                    : 'text-gray-400 hover:text-white hover:bg-white/5'
+                }`}
+              >
+                <Sparkles className="w-3.5 h-3.5" />
+                <span>Configuratore Guidato (Step-by-Step)</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setFormMode('quick')}
+                className={`flex-1 py-2.5 px-3 rounded-xl text-xs font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-2 ${
+                  formMode === 'quick'
+                    ? 'bg-brand-terracotta text-white shadow-glow-terracotta'
+                    : 'text-gray-400 hover:text-white hover:bg-white/5'
+                }`}
+              >
+                <Send className="w-3.5 h-3.5" />
+                <span>Modulo Rapido Diretto</span>
+              </button>
+            </div>
+
+            {formMode === 'wizard' ? (
+              <InteractiveQuoteWizard />
+            ) : (
             <div className="bg-white/5 backdrop-blur-xl border border-white/10 p-8 sm:p-10 rounded-3xl shadow-2xl">
               <AnimatePresence mode="wait">
                 {status === 'success' ? (
@@ -317,6 +351,7 @@ export const ContactFormBlock: React.FC<{ content: CtaFormContent }> = ({ conten
                 )}
               </AnimatePresence>
             </div>
+            )}
           </div>
         </div>
       </div>
