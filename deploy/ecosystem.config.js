@@ -12,10 +12,10 @@ module.exports = {
       max_memory_restart: '1G',
       env_production: {
         NODE_ENV: 'production',
-        PORT: 3001,
+        PORT: 3002,
       },
-      error_file: '/var/log/pm2/edilpregio-error.log',
-      out_file: '/var/log/pm2/edilpregio-out.log',
+      error_file: '/root/.pm2/logs/edilpregio-error.log',
+      out_file: '/root/.pm2/logs/edilpregio-out.log',
       merge_logs: true,
       time: true,
     },
