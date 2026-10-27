@@ -1,0 +1,30 @@
+# Dipendenze
+node_modules/
+.pnp
+.pnp.js
+
+# Build output
+dist/
+build/
+
+# Variabili d'ambiente e credenziali segrete
+.env
+.env.local
+.env.*.local
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.log
+
+# File di sistema e IDE
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Uploads locali di sviluppo
+backend/public/uploads/optimized/*
+backend/public/uploads/thumbs/*
+!backend/public/uploads/.gitkeep

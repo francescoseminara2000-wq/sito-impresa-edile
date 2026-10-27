@@ -1,0 +1,150 @@
+// prisma/schema.prisma
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// ---------------------------------------------------------
+// 1. UTENTI E AMMINISTRAZIONE
+// ---------------------------------------------------------
+model AdminUser {
+  id           String    @id @default(uuid())
+  email        String    @unique
+  passwordHash String
+  name         String?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  @@map("admin_users")
+}
+
+// ---------------------------------------------------------
+// 2. PAGINE E SEZIONI DINAMICHE A BLOCCHI
+// ---------------------------------------------------------
+model Page {
+  id          String        @id @default(uuid())
+  slug        String        @unique // es: "home", "chi-siamo", "cantieri", "servizi", "contatti"
+  title       String
+  seoTitle    String?
+  seoDesc     String?       @db.Text
+  isPublished Boolean       @default(true)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  sections    PageSection[]
+
+  @@map("pages")
+}
+
+enum SectionType {
+  HERO
+  STATS
+  SERVICES_GRID
+  PROJECTS_SHOWCASE
+  TEXT_IMAGE
+  BEFORE_AFTER
+  FAQ
+  CTA_FORM
+}
+
+model PageSection {
+  id         String      @id @default(uuid())
+  pageId     String
+  type       SectionType
+  order      Int         @default(0)
+  isVisible  Boolean     @default(true)
+  
+  // Contenuto JSON polimorfo tipizzato per ciascun blocco:
+  // Es: { title, subtitle, ctaText, ctaLink, items: [...], images: [...] }
+  content    Json
+
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+
+  page       Page        @relation(fields: [pageId], references: [id], onDelete: Cascade)
+
+  @@index([pageId, order])
+  @@map("page_sections")
+}
+
+// ---------------------------------------------------------
+// 3. PORTFOLIO, CANTIERI E REALIZZAZIONI
+// ---------------------------------------------------------
+model Project {
+  id          String         @id @default(uuid())
+  slug        String         @unique
+  title       String
+  category    String         // es: "Residenziale di Pregio", "Ristrutturazione Conservativa", "Commerciale"
+  location    String         // es: "Milano Centro", "Lago di Como"
+  year        Int?           // es: 2024
+  client      String?        // Privato / Corporate
+  surface     String?        // es: "450 mq"
+  description String         @db.Text
+  highlights  Json?          // Array di stringhe / punti chiave
+  isFeatured  Boolean        @default(false)
+  order       Int            @default(0)
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  images      ProjectImage[]
+
+  @@index([category, isFeatured])
+  @@map("projects")
+}
+
+model ProjectImage {
+  id          String   @id @default(uuid())
+  projectId   String
+  url         String   // URL immagine ottimizzata (WebP 1920px)
+  thumbUrl    String?  // URL miniatura (WebP 480px)
+  caption     String?
+  order       Int      @default(0)
+  
+  // Supporto interattivo "Prima / Dopo":
+  isBefore    Boolean  @default(false)
+  isAfter     Boolean  @default(false)
+  compareGroup String? // Identificativo coppia per slider (es: "facciata", "living")
+
+  createdAt   DateTime @default(now())
+  project     Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([projectId, order])
+  @@map("project_images")
+}
+
+// ---------------------------------------------------------
+// 4. LEAD GENERATION E RICHIESTE PREVENTIVO
+// ---------------------------------------------------------
+enum QuoteStatus {
+  NEW
+  CONTACTED
+  IN_PROGRESS
+  CLOSED
+  ARCHIVED
+}
+
+model QuoteRequest {
+  id          String      @id @default(uuid())
+  fullName    String
+  email       String
+  phone       String
+  serviceType String      // "Ristrutturazione Completa", "Nuova Costruzione", "Restauro", "Interior & Design"
+  budgetRange String?     // "50k-100k", "100k-250k", "250k+"
+  location    String?     // Comune / Provincia cantiere
+  message     String      @db.Text
+  status      QuoteStatus @default(NEW)
+  internalNotes String?   @db.Text
+  
+  ipAddress   String?
+  userAgent   String?
+  
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  @@index([status, createdAt])
+  @@map("quote_requests")
+}
