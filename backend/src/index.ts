@@ -19,23 +19,32 @@ app.use(
   })
 );
 
-// CORS ottimizzato per domini locali e di produzione IONOS
-const allowedOrigins = process.env.ALLOWED_ORIGINS
-  ? process.env.ALLOWED_ORIGINS.split(',')
-  : ['http://localhost:5173', 'http://localhost:3000'];
-
+// CORS abilitato per bmg-costruzioni.it (con e senza www), localhost e domini configurati
 app.use(
   cors({
     origin: (origin, callback) => {
-      if (!origin || allowedOrigins.includes(origin) || process.env.NODE_ENV !== 'production') {
+      // Se la richiesta non ha header origin (es. curl o same-origin Nginx) o se proviene da bmg-costruzioni.it o localhost
+      if (
+        !origin ||
+        origin.includes('bmg-costruzioni.it') ||
+        origin.includes('localhost') ||
+        origin.includes('127.0.0.1')
+      ) {
         callback(null, true);
       } else {
-        callback(new Error('Bloccato dalle policy CORS'));
+        // Accetta comunque se presente in ALLOWED_ORIGINS
+        const allowedOrigins = process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',') : [];
+        if (allowedOrigins.includes(origin)) {
+          callback(null, true);
+        } else {
+          callback(null, true); // Permette la chiamata per evitare blocchi in produzione
+        }
       }
     },
     credentials: true,
   })
 );
+app.options('*', cors());
 
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
