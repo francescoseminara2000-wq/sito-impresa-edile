@@ -23,11 +23,11 @@ export const Header: React.FC = () => {
       }`}
     >
       <div className="max-w-7xl mx-auto px-6 lg:px-8 flex items-center justify-between">
-        {/* Logo Reale MGM Costruzioni integrato su barra bianca */}
+        {/* Logo Reale BMG Costruzioni integrato su barra bianca */}
         <a href="/" className="flex items-center group">
           <img
             src="/logo.png"
-            alt="MGM Costruzioni"
+            alt="BMG Costruzioni"
             className="h-10 sm:h-12 w-auto object-contain transition-transform group-hover:scale-102"
           />
         </a>

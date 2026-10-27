@@ -140,7 +140,7 @@ export const AdminDashboard: React.FC<{ onBackToSite: () => void }> = ({ onBackT
         >
           <div className="text-center mb-8">
             <div className="bg-white px-4 py-2.5 rounded-2xl shadow-md border border-white/20 inline-block mx-auto mb-4">
-              <img src="/logo.png" alt="MGM Costruzioni" className="h-10 w-auto object-contain" />
+              <img src="/logo.png" alt="BMG Costruzioni" className="h-10 w-auto object-contain" />
             </div>
             <h1 className="text-xl font-bold font-display uppercase tracking-tight">
               Area Riservata Amministrazione

@@ -6,15 +6,15 @@ export const Footer: React.FC = () => {
     <footer className="bg-[#0b0f19] text-gray-400 text-sm border-t border-white/10">
       <div className="max-w-7xl mx-auto px-6 lg:px-8 py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
-          {/* Brand Info MGM Costruzioni / BMG Srl */}
+          {/* Brand Info BMG Costruzioni / BMG Srl */}
           <div>
             <div className="flex items-center gap-3 mb-4">
               <div className="bg-white px-3 py-1.5 rounded-xl shadow-md inline-block">
-                <img src="/logo.png" alt="MGM Costruzioni" className="h-9 w-auto object-contain" />
+                <img src="/logo.png" alt="BMG Costruzioni" className="h-9 w-auto object-contain" />
               </div>
             </div>
             <p className="text-xs text-gray-400 leading-relaxed mb-4">
-              <strong>BMG S.r.l.</strong> - Marchio <strong>MGM Costruzioni</strong>. Impresa edile specializzata in costruzioni civili ed industriali, ristrutturazioni chiavi in mano, manutenzioni condominiali ed efficientamento energetico a Monza Brianza, Milano e in tutta la Lombardia.
+              <strong>BMG S.r.l.</strong> - Impresa edile specializzata in costruzioni civili ed industriali, ristrutturazioni chiavi in mano, manutenzioni condominiali ed efficientamento energetico a Monza Brianza, Milano e in tutta la Lombardia.
             </p>
             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded bg-white/5 border border-white/10 text-xs text-brand-terracotta">
               <ShieldCheck className="w-3.5 h-3.5" />
