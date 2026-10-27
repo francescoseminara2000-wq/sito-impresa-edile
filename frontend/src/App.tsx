@@ -3,6 +3,7 @@ import { Header } from './components/layout/Header';
 import { Footer } from './components/layout/Footer';
 import { PageRenderer } from './components/PageRenderer';
 import { FullPhotoGalleryModal } from './components/ui/FullPhotoGalleryModal';
+import { WhatsAppButton } from './components/ui/WhatsAppButton';
 import { AdminDashboard } from './components/admin/AdminDashboard';
 import { PageSectionData } from './types/blocks';
 import { Images } from 'lucide-react';
@@ -100,8 +101,11 @@ export const App: React.FC = () => {
 
       <Footer />
 
-      {/* Pulsante rapido nel footer per andare su /admin */}
-      <div className="fixed bottom-4 right-4 z-40">
+      {/* Pulsante Chat WhatsApp Moderno in Basso a Destra */}
+      <WhatsAppButton />
+
+      {/* Pulsante rapido Area Riservata in basso a sinistra */}
+      <div className="fixed bottom-4 left-4 z-40">
         <button
           onClick={openAdmin}
           className="px-3 py-1.5 rounded-full bg-brand-dark/90 hover:bg-brand-dark border border-white/20 text-white text-[11px] font-semibold backdrop-blur-md shadow-lg transition-transform hover:scale-105"
