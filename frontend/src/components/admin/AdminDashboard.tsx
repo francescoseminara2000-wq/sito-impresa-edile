@@ -6,6 +6,7 @@ import {
   Layers, Images, Settings, Copy
 } from 'lucide-react';
 import { PageBuilderCMS } from './PageBuilderCMS';
+import { ProjectManagerCMS } from './ProjectManagerCMS';
 import { allBmgPhotos } from '../ui/FullPhotoGalleryModal';
 
 interface QuoteLead {
@@ -31,7 +32,7 @@ export const AdminDashboard: React.FC<{ onBackToSite: () => void }> = ({ onBackT
   const [loggingIn, setLoggingIn] = useState(false);
 
   // Stati Dashboard
-  const [activeTab, setActiveTab] = useState<'pagebuilder' | 'quotes' | 'media' | 'info'>('pagebuilder');
+  const [activeTab, setActiveTab] = useState<'pagebuilder' | 'projects' | 'quotes' | 'media' | 'info'>('projects');
   const [quotes, setQuotes] = useState<QuoteLead[]>([]);
   const [loadingQuotes, setLoadingQuotes] = useState(false);
   const [copiedUrl, setCopiedUrl] = useState<string | null>(null);
@@ -244,6 +245,18 @@ export const AdminDashboard: React.FC<{ onBackToSite: () => void }> = ({ onBackT
       {/* Subnav Tab Navigation */}
       <div className="border-b border-white/10 bg-white/5 px-6 py-2.5 flex items-center gap-2 sm:gap-4 overflow-x-auto">
         <button
+          onClick={() => setActiveTab('projects')}
+          className={`px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition-all flex items-center gap-2 shrink-0 ${
+            activeTab === 'projects'
+              ? 'bg-brand-terracotta text-white shadow-glow-terracotta'
+              : 'text-gray-400 hover:text-white hover:bg-white/5'
+          }`}
+        >
+          <HardHat className="w-4 h-4" />
+          <span>Gestione Cantieri & Lavori</span>
+        </button>
+
+        <button
           onClick={() => setActiveTab('pagebuilder')}
           className={`px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition-all flex items-center gap-2 shrink-0 ${
             activeTab === 'pagebuilder'
@@ -295,6 +308,11 @@ export const AdminDashboard: React.FC<{ onBackToSite: () => void }> = ({ onBackT
       {/* Contenuto Dinamico Tab */}
       <main className="flex-1 max-w-7xl mx-auto w-full p-6">
         
+        {/* TAB 0: GESTIONE CANTIERI & PORTFOLIO */}
+        {activeTab === 'projects' && (
+          <ProjectManagerCMS token={token} />
+        )}
+
         {/* TAB 1: PAGE BUILDER CMS */}
         {activeTab === 'pagebuilder' && (
           <PageBuilderCMS token={token} />
