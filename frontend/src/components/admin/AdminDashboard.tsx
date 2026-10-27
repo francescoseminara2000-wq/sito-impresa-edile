@@ -139,14 +139,14 @@ export const AdminDashboard: React.FC<{ onBackToSite: () => void }> = ({ onBackT
           className="w-full max-w-md bg-white/5 backdrop-blur-xl border border-white/10 p-8 sm:p-10 rounded-3xl shadow-2xl"
         >
           <div className="text-center mb-8">
-            <div className="w-14 h-14 rounded-2xl bg-brand-terracotta text-white flex items-center justify-center mx-auto mb-4 shadow-glow-terracotta">
-              <HardHat className="w-8 h-8" />
+            <div className="bg-white px-4 py-2.5 rounded-2xl shadow-md border border-white/20 inline-block mx-auto mb-4">
+              <img src="/logo.png" alt="MGM Costruzioni" className="h-10 w-auto object-contain" />
             </div>
-            <h1 className="text-2xl font-bold font-display uppercase tracking-tight">
-              BMG Srl <span className="text-brand-terracotta">• CMS</span>
+            <h1 className="text-xl font-bold font-display uppercase tracking-tight">
+              Area Riservata Amministrazione
             </h1>
             <p className="text-xs text-gray-400 mt-1">
-              Accesso Area Riservata Amministrazione
+              BMG Srl • Gestione Richieste e Portale
             </p>
           </div>
 

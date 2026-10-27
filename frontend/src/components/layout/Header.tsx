@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Phone, ArrowUpRight, Menu, X, HardHat } from 'lucide-react';
+import { Phone, ArrowUpRight, Menu, X } from 'lucide-react';
 
 export const Header: React.FC = () => {
   const [scrolled, setScrolled] = useState(false);
@@ -18,23 +18,19 @@ export const Header: React.FC = () => {
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         scrolled
-          ? 'bg-brand-dark/95 backdrop-blur-md shadow-lg py-3.5 border-b border-white/10'
-          : 'bg-transparent py-5'
+          ? 'bg-brand-dark/95 backdrop-blur-md shadow-lg py-3 border-b border-white/10'
+          : 'bg-transparent py-4'
       }`}
     >
       <div className="max-w-7xl mx-auto px-6 lg:px-8 flex items-center justify-between">
-        {/* Logo / Brand Name */}
+        {/* Logo Reale MGM Costruzioni */}
         <a href="/" className="flex items-center gap-3 group">
-          <div className="w-10 h-10 rounded-xl bg-brand-terracotta flex items-center justify-center text-white shadow-glow-terracotta group-hover:scale-105 transition-transform">
-            <HardHat className="w-5 h-5" />
-          </div>
-          <div className="flex flex-col">
-            <span className="text-xl font-extrabold tracking-tight text-white font-display uppercase leading-tight">
-              BMG <span className="text-brand-terracotta">Srl</span>
-            </span>
-            <span className="text-[10px] text-gray-400 uppercase tracking-widest font-semibold">
-              Costruzioni & Ristrutturazioni
-            </span>
+          <div className="bg-white px-3 py-1.5 rounded-xl shadow-md border border-white/20 group-hover:scale-102 transition-transform">
+            <img
+              src="/logo.png"
+              alt="MGM Costruzioni"
+              className="h-8 sm:h-10 w-auto object-contain"
+            />
           </div>
         </a>
 
@@ -58,10 +54,10 @@ export const Header: React.FC = () => {
         <div className="hidden sm:flex items-center gap-4">
           <a
             href="tel:+393485696125"
-            className="flex items-center gap-2 text-xs font-semibold text-gray-200 hover:text-white transition-colors bg-white/5 px-3 py-2 rounded-lg border border-white/10"
+            className="flex items-center gap-2 text-xs font-semibold text-gray-200 hover:text-white transition-colors bg-white/10 px-3.5 py-2 rounded-xl border border-white/10"
           >
             <Phone className="w-3.5 h-3.5 text-brand-terracotta" />
-            <span>+39 348 569 6125</span>
+            <span className="font-mono">+39 348 569 6125</span>
           </a>
 
           <motion.a
@@ -106,7 +102,7 @@ export const Header: React.FC = () => {
                 onClick={() => setMobileMenuOpen(false)}
                 className="hover:text-brand-terracotta py-2 border-b border-white/5"
               >
-                Realizzazioni
+                Realizzazioni & Cantieri
               </a>
               <a
                 href="#preventivo"
