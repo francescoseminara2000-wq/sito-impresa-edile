@@ -2,11 +2,30 @@ import React, { useState, useEffect } from 'react';
 import { Header } from './components/layout/Header';
 import { Footer } from './components/layout/Footer';
 import { PageRenderer } from './components/PageRenderer';
+import { FullPhotoGalleryModal } from './components/ui/FullPhotoGalleryModal';
+import { AdminDashboard } from './components/admin/AdminDashboard';
 import { PageSectionData } from './types/blocks';
+import { Images } from 'lucide-react';
 
 export const App: React.FC = () => {
   const [sections, setSections] = useState<PageSectionData[]>([]);
   const [loading, setLoading] = useState(true);
+  
+  // Modal Galleria completa di tutte le 20 foto
+  const [isGalleryOpen, setIsGalleryOpen] = useState(false);
+
+  // Modalità Admin (attivabile via URL /admin o hash #admin o pulsante)
+  const [isAdminView, setIsAdminView] = useState(
+    window.location.pathname === '/admin' || window.location.hash === '#admin'
+  );
+
+  useEffect(() => {
+    const handlePopState = () => {
+      setIsAdminView(window.location.pathname === '/admin' || window.location.hash === '#admin');
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
 
   useEffect(() => {
     // Caricamento sezioni dal backend o fallback predefinito
@@ -25,19 +44,77 @@ export const App: React.FC = () => {
       .finally(() => setLoading(false));
   }, []);
 
+  const openAdmin = () => {
+    window.location.hash = 'admin';
+    setIsAdminView(true);
+  };
+
+  const closeAdmin = () => {
+    window.location.hash = '';
+    window.history.pushState({}, '', '/');
+    setIsAdminView(false);
+  };
+
+  // Se siamo nell'area admin, mostriamo la dashboard
+  if (isAdminView) {
+    return <AdminDashboard onBackToSite={closeAdmin} />;
+  }
+
   return (
     <div className="min-h-screen flex flex-col bg-brand-light text-brand-dark selection:bg-brand-terracotta selection:text-white">
       <Header />
+      
       <main className="flex-1">
         {loading ? (
           <div className="min-h-[80vh] flex items-center justify-center">
             <div className="w-12 h-12 border-4 border-brand-terracotta border-t-transparent rounded-full animate-spin" />
           </div>
         ) : (
-          <PageRenderer sections={sections} />
+          <>
+            <PageRenderer sections={sections} />
+
+            {/* Banner Rapido Galleria Completa */}
+            <div className="bg-brand-dark py-12 px-6 border-t border-white/10 text-center text-white">
+              <div className="max-w-4xl mx-auto">
+                <span className="text-xs uppercase font-bold text-brand-terracotta tracking-widest block mb-2">
+                  Portfolio Fotografico Completo
+                </span>
+                <h3 className="text-2xl sm:text-3xl font-bold mb-4">
+                  Vuoi vedere tutte le foto dei nostri cantieri?
+                </h3>
+                <p className="text-sm text-gray-400 mb-6 max-w-xl mx-auto">
+                  Sfoglia l'archivio completo con tutte le 20 fotografie ad alta risoluzione dei lavori eseguiti da BMG Srl a Caponago, Monza Brianza e Milano.
+                </p>
+                <button
+                  onClick={() => setIsGalleryOpen(true)}
+                  className="inline-flex items-center gap-2 px-8 py-3.5 rounded-xl bg-brand-terracotta hover:bg-[#a85e2b] text-white font-bold text-sm uppercase tracking-wider shadow-glow-terracotta transition-all"
+                >
+                  <Images className="w-5 h-5" />
+                  <span>Apri Galleria (20 Foto)</span>
+                </button>
+              </div>
+            </div>
+          </>
         )}
       </main>
+
       <Footer />
+
+      {/* Pulsante rapido nel footer per andare su /admin */}
+      <div className="fixed bottom-4 right-4 z-40">
+        <button
+          onClick={openAdmin}
+          className="px-3 py-1.5 rounded-full bg-brand-dark/90 hover:bg-brand-dark border border-white/20 text-white text-[11px] font-semibold backdrop-blur-md shadow-lg transition-transform hover:scale-105"
+        >
+          🔒 Area Riservata
+        </button>
+      </div>
+
+      {/* Modal Galleria a schermo intero */}
+      <FullPhotoGalleryModal
+        isOpen={isGalleryOpen}
+        onClose={() => setIsGalleryOpen(false)}
+      />
     </div>
   );
 };
@@ -61,8 +138,7 @@ function getBmgDefaultSections(): PageSectionData[] {
         primaryCtaLink: '#preventivo',
         secondaryCtaText: 'I Nostri Servizi',
         secondaryCtaLink: '#servizi',
-        backgroundImage:
-          '/images/cantieri/cantiere-10.jpg',
+        backgroundImage: '/images/cantieri/cantiere-10.jpg',
         statsPreview: [
           { number: '100%', label: 'Lavori Certificati a Norma' },
           { number: '13+', label: 'Ambiti di Specializzazione' },
@@ -179,10 +255,8 @@ function getBmgDefaultSections(): PageSectionData[] {
           'Dallo stato originario e di cantiere grezzo alla finitura chiavi in mano curata in ogni dettaglio.',
         description:
           'Demolizione pareti esistenti, nuovo impianto elettrico ed idraulico a pavimento, isolamento termoacustico, cartongesso ribassato e posa parquet levigato.',
-        beforeImage:
-          '/images/cantieri/cantiere-03.jpg',
-        afterImage:
-          '/images/cantieri/cantiere-04.jpg',
+        beforeImage: '/images/cantieri/cantiere-03.jpg',
+        afterImage: '/images/cantieri/cantiere-04.jpg',
         beforeLabel: 'Prima dell\'Intervento',
         afterLabel: 'Consegna Lavori Finita',
         details: [

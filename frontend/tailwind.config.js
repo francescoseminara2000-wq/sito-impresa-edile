@@ -15,7 +15,7 @@ export default {
         },
       },
       fontFamily: {
-        display: ['Syne', 'Cabinet Grotesk', 'sans-serif'],
+        display: ['Plus Jakarta Sans', 'system-ui', 'sans-serif'],
         sans: ['Inter', 'system-ui', 'sans-serif'],
       },
       borderRadius: {
