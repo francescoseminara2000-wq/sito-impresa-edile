@@ -79,7 +79,7 @@ export const Footer: React.FC = () => {
         </div>
 
         <div className="pt-8 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between text-xs text-gray-500 gap-4">
-          <p>© {new Date().getFullYear()} BMG S.r.l. - Sede Legale: Via De Gasperi 19, Caponago (MB) - Tutti i diritti riservati.</p>
+          <p>© {new Date().getFullYear()} BMG S.r.l. • Sede Legale: Via De Gasperi 19, 20867 Caponago (MB) • P.IVA / C.F.: In fase di registrazione • REA: MB • Cap. Soc. € 20.000 i.v. • Tutti i diritti riservati.</p>
           <div className="flex gap-6">
             <a href="/privacy" className="hover:text-gray-300">Privacy Policy</a>
             <a href="/cookie" className="hover:text-gray-300">Cookie Policy</a>

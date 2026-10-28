@@ -5,6 +5,7 @@ export type SectionType =
   | 'PROJECTS_SHOWCASE'
   | 'TEXT_IMAGE'
   | 'BEFORE_AFTER'
+  | 'TAX_SIMULATOR'
   | 'FAQ'
   | 'CTA_FORM';
 

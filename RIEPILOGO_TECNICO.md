@@ -173,12 +173,27 @@ All'interno dell'Area Riservata (sezione Page Builder):
 
 ---
 
-### 4.6 Risoluzione Visibilità Sezioni & Database Seed
-- **Problema rilevato:** Il database MySQL sul server conteneva solo le 4 sezioni generate dallo script seed originario, escludendo i servizi e il portfolio cantieri dall'endpoint `/api/pages/home`.
-- **Risoluzione Implementata:**
-  1. In [App.tsx](file:///c:/Users/franc/Documents/Antigravity/Sito%20impresa%20edile/frontend/src/App.tsx): implementato un meccanismo di *Smart Merge* che verifica se la risposta dell'API include `SERVICES_GRID` e `PROJECTS_SHOWCASE`. In caso contrario, inietta automaticamente i blocchi predefiniti completi senza interruzioni.
-  2. In [ServicesGridBlock.tsx](file:///c:/Users/franc/Documents/Antigravity/Sito%20impresa%20edile/frontend/src/components/blocks/ServicesGridBlock.tsx): inserito un set di fallback robusto per garantire che le 6 lavorazioni principali con foto e dettagli siano sempre visibili.
-  3. In [seed.ts](file:///c:/Users/franc/Documents/Antigravity/Sito%20impresa%20edile/backend/prisma/seed.ts): aggiornato il seeder del database backend con tutte le sezioni complete.
+---
+
+### 4.7 Slider Prima/Dopo Multi-Scenario ([BeforeAfterBlock.tsx](file:///c:/Users/franc/Documents/Antigravity/Sito%20impresa%20edile/frontend/src/components/blocks/BeforeAfterBlock.tsx))
+- **3 Scenari Reali di Cantiere:** Selettore a tab per esplorare differenti lavorazioni tipiche di BMG:
+  1. *Ristrutturazione Appartamento & Open-Space:* Demolizioni, massetti e posa impianti/parquet.
+  2. *Isolamento a Cappotto & Facciata Condominiale:* Pannelli EPS con grafite CAM, doppia rete e intonachino silossanico.
+  3. *Opere Strutturali & Cemento Armato:* Scavi, gettata di platea continua, armatura ferro B450C e collaudo statico.
+- **Aggiornamento Dinamico:** Al cambio tab si aggiornano istantaneamente le descrizioni, la checklist delle specifiche tecniche e le immagini dello slider interattivo.
+
+---
+
+### 4.8 Simulatore Fiscale Interattivo Detrazioni 2026 ([TaxBonusSimulatorBlock.tsx](file:///c:/Users/franc/Documents/Antigravity/Sito%20impresa%20edile/frontend/src/components/blocks/TaxBonusSimulatorBlock.tsx))
+- **Tipologie di Agevolazione Selezionabili:**
+  - *Bonus Ristrutturazioni Casa 50%* (Massimale 96.000 €).
+  - *Ecobonus Risparmio Energetico 65%* (Cappotto termico e infissi ad alta efficienza).
+  - *Manutenzione Condomini & Facciate 50%* (Parti comuni, balconi e coperture).
+- **Calcolo Dinamico con Slider Budget:** Da 15.000 € a 150.000 € con aggiornamento in tempo reale di:
+  - Detrazione IRPEF complessiva recuperabile.
+  - Quota annuale rimborsata per 10 anni in dichiarazione dei redditi.
+  - Costo effettivo netto dell'intervento.
+- **Garanzia Pratiche BMG:** Evidenziazione della gestione interna di tutte le pratiche CILA/SCIA, fatturazione con bonifico parlante e asseverazione ENEA.
 
 ---
 
