@@ -182,18 +182,6 @@ All'interno dell'Area Riservata (sezione Page Builder):
   3. *Opere Strutturali & Cemento Armato:* Scavi, gettata di platea continua, armatura ferro B450C e collaudo statico.
 - **Aggiornamento Dinamico:** Al cambio tab si aggiornano istantaneamente le descrizioni, la checklist delle specifiche tecniche e le immagini dello slider interattivo.
 
----
-
-### 4.8 Simulatore Fiscale Interattivo Detrazioni 2026 ([TaxBonusSimulatorBlock.tsx](file:///c:/Users/franc/Documents/Antigravity/Sito%20impresa%20edile/frontend/src/components/blocks/TaxBonusSimulatorBlock.tsx))
-- **Tipologie di Agevolazione Selezionabili:**
-  - *Bonus Ristrutturazioni Casa 50%* (Massimale 96.000 €).
-  - *Ecobonus Risparmio Energetico 65%* (Cappotto termico e infissi ad alta efficienza).
-  - *Manutenzione Condomini & Facciate 50%* (Parti comuni, balconi e coperture).
-- **Calcolo Dinamico con Slider Budget:** Da 15.000 € a 150.000 € con aggiornamento in tempo reale di:
-  - Detrazione IRPEF complessiva recuperabile.
-  - Quota annuale rimborsata per 10 anni in dichiarazione dei redditi.
-  - Costo effettivo netto dell'intervento.
-- **Garanzia Pratiche BMG:** Evidenziazione della gestione interna di tutte le pratiche CILA/SCIA, fatturazione con bonifico parlante e asseverazione ENEA.
 
 ---
 

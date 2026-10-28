@@ -39,7 +39,6 @@ export const App: React.FC = () => {
           // Verifica se la sezione SERVICES_GRID è presente nel DB
           const hasServices = data.sections.some((s: PageSectionData) => s.type === 'SERVICES_GRID');
           const hasProjects = data.sections.some((s: PageSectionData) => s.type === 'PROJECTS_SHOWCASE');
-          const hasTaxSimulator = data.sections.some((s: PageSectionData) => s.type === 'TAX_SIMULATOR');
 
           let mergedSections = [...data.sections];
 
@@ -47,18 +46,6 @@ export const App: React.FC = () => {
             const defServices = defaultSections.find((s) => s.type === 'SERVICES_GRID');
             if (defServices) {
               mergedSections.splice(2, 0, defServices);
-            }
-          }
-
-          if (!hasTaxSimulator) {
-            const defTax = defaultSections.find((s) => s.type === 'TAX_SIMULATOR');
-            if (defTax) {
-              const insertIdx = mergedSections.findIndex((s) => s.type === 'PROJECTS_SHOWCASE');
-              if (insertIdx !== -1) {
-                mergedSections.splice(insertIdx, 0, defTax);
-              } else {
-                mergedSections.push(defTax);
-              }
             }
           }
 
@@ -338,20 +325,10 @@ function getBmgDefaultSections(): PageSectionData[] {
       },
     },
     {
-      id: 'sec-tax-simulator',
-      pageId: 'home',
-      type: 'TAX_SIMULATOR',
-      order: 4,
-      isVisible: true,
-      content: {
-        title: 'Calcola il Tuo Risparmio Fiscale Reale',
-      },
-    },
-    {
       id: 'sec-projects',
       pageId: 'home',
       type: 'PROJECTS_SHOWCASE',
-      order: 5,
+      order: 4,
       isVisible: true,
       content: {
         tagline: 'I Nostri Cantieri',

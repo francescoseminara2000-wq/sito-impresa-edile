@@ -9,7 +9,6 @@ import { StatsBlock } from './blocks/StatsBlock';
 import { ContactFormBlock } from './blocks/ContactFormBlock';
 import { TextImageBlock } from './blocks/TextImageBlock';
 import { FaqBlock } from './blocks/FaqBlock';
-import { TaxBonusSimulatorBlock } from './blocks/TaxBonusSimulatorBlock';
 
 interface PageRendererProps {
   sections: PageSectionData[];
@@ -34,8 +33,6 @@ export const PageRenderer: React.FC<PageRendererProps> = ({ sections, previewMod
         return <ProjectsShowcaseBlock content={section.content} />;
       case 'STATS':
         return <StatsBlock content={section.content} />;
-      case 'TAX_SIMULATOR':
-        return <TaxBonusSimulatorBlock content={section.content} />;
       case 'CTA_FORM':
         return <ContactFormBlock content={section.content} />;
       case 'TEXT_IMAGE':
