@@ -29,42 +29,42 @@ export const ContactFormBlock: React.FC<{ content: CtaFormContent }> = ({ conten
   }, []);
 
   return (
-    <section id="preventivo" className="py-20 sm:py-28 bg-[#0b0f19] text-white relative overflow-hidden scroll-mt-20">
+    <section id="preventivo" className="py-16 sm:py-28 bg-[#0b0f19] text-white relative overflow-hidden scroll-mt-20">
       {/* Sfondo geometrico discreto ed elegante con texture architettonica */}
       <div className="absolute inset-0 opacity-[0.04] pointer-events-none bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:24px_24px]" />
       
       {/* Glow d'atmosfera sottile alle estremità */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[350px] bg-brand-terracotta/10 blur-[120px] rounded-full pointer-events-none" />
 
-      <div className="max-w-6xl mx-auto px-6 lg:px-8 relative z-10">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Card Principale Call-to-Action Premium */}
-        <div className="relative bg-gradient-to-b from-white/[0.07] to-white/[0.02] border border-white/10 rounded-3xl p-8 sm:p-14 lg:p-16 backdrop-blur-xl shadow-2xl overflow-hidden">
+        <div className="relative bg-gradient-to-b from-white/[0.07] to-white/[0.02] border border-white/10 rounded-2xl sm:rounded-3xl p-6 sm:p-14 lg:p-16 backdrop-blur-xl shadow-2xl overflow-hidden">
           {/* Linea luminosa superiore ad accento terracotta */}
           <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-brand-terracotta to-transparent opacity-80" />
 
-          <div className="text-center max-w-3xl mx-auto mb-12 sm:mb-14">
+          <div className="text-center max-w-3xl mx-auto mb-10 sm:mb-14">
             {/* Tag Kicker Minimalista */}
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-brand-terracotta/15 border border-brand-terracotta/30 text-amber-300 text-xs font-bold uppercase tracking-widest mb-6">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-brand-terracotta/15 border border-brand-terracotta/30 text-amber-300 text-[11px] sm:text-xs font-bold uppercase tracking-widest mb-4 sm:mb-6">
               <span className="w-1.5 h-1.5 rounded-full bg-brand-terracotta animate-pulse" />
-              <span>Sopralluogo Tecnico & Preventivo Gratuito</span>
+              <span>Sopralluogo & Preventivo Gratuito</span>
             </div>
 
-            <h2 className="text-3xl sm:text-5xl font-black tracking-tight text-white mb-6 leading-tight font-display">
+            <h2 className="text-2xl sm:text-4xl lg:text-5xl font-black tracking-tight text-white mb-4 sm:mb-6 leading-tight font-display">
               {content.title || 'Diamo Forma al Tuo Progetto'}
             </h2>
 
-            <p className="text-base sm:text-lg text-slate-300 leading-relaxed font-normal">
+            <p className="text-sm sm:text-lg text-slate-300 leading-relaxed font-normal">
               {content.subtitle ||
                 'Pianifichiamo il tuo cantiere con rigore ingegneristico, computo metrico dettagliato e prezzi bloccati a contratto. Richiedi una stima preliminare in pochi clic.'}
             </p>
 
             {/* Pulsanti di Azione Diretti */}
-            <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
+            <div className="mt-8 sm:mt-10 flex flex-col sm:flex-row items-center justify-center gap-3.5 sm:gap-4">
               <motion.button
                 onClick={() => setIsModalOpen(true)}
                 whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.98 }}
-                className="relative group overflow-hidden w-full sm:w-auto inline-flex items-center justify-center gap-3 px-8 py-4.5 rounded-2xl bg-gradient-to-r from-brand-terracotta via-[#b3672d] to-[#9c5724] text-white font-extrabold text-sm sm:text-base uppercase tracking-wider shadow-glow-terracotta hover:shadow-2xl transition-all cursor-pointer"
+                className="relative group overflow-hidden w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-6 sm:px-8 py-3.5 sm:py-4.5 rounded-2xl bg-gradient-to-r from-brand-terracotta via-[#b3672d] to-[#9c5724] text-white font-extrabold text-xs sm:text-base uppercase tracking-wider shadow-glow-terracotta hover:shadow-2xl transition-all cursor-pointer"
               >
                 {/* Animazione Shimmer continua */}
                 <span className="absolute inset-0 w-1/2 h-full bg-white/20 skew-x-12 -translate-x-full group-hover:translate-x-[280%] transition-transform duration-1000 ease-out" />
@@ -78,7 +78,7 @@ export const ContactFormBlock: React.FC<{ content: CtaFormContent }> = ({ conten
                 href="tel:+393485696125"
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-6 py-4.5 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 text-slate-200 hover:text-white font-semibold text-sm transition-all"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-3.5 sm:py-4.5 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 text-slate-200 hover:text-white font-semibold text-xs sm:text-sm transition-all"
               >
                 <PhoneCall className="w-4 h-4 text-brand-terracotta shrink-0" />
                 <span>Ufficio Tecnico: <strong className="text-white font-mono font-bold">+39 348 569 6125</strong></span>

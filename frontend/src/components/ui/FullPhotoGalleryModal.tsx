@@ -83,8 +83,8 @@ export const FullPhotoGalleryModal: React.FC<{ isOpen: boolean; onClose: () => v
         </button>
       </div>
 
-      {/* Filtri */}
-      <div className="max-w-7xl mx-auto w-full py-4 flex flex-wrap gap-2">
+      {/* Filtri con swipe orizzontale su mobile */}
+      <div className="max-w-7xl mx-auto w-full py-3 flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
         {categories.map((cat) => (
           <button
             key={cat}
@@ -92,7 +92,7 @@ export const FullPhotoGalleryModal: React.FC<{ isOpen: boolean; onClose: () => v
               setActiveFilter(cat);
               setSelectedPhotoIndex(null);
             }}
-            className={`px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all ${
+            className={`px-3.5 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap shrink-0 transition-all cursor-pointer ${
               activeFilter === cat
                 ? 'bg-brand-terracotta text-white'
                 : 'bg-white/10 text-gray-300 hover:bg-white/20'

@@ -246,13 +246,13 @@ export const ProjectsShowcaseBlock: React.FC<{ content?: any }> = ({ content }) 
             </p>
           </div>
 
-          {/* Categorie Chip */}
-          <div className="flex flex-wrap gap-2">
+          {/* Categorie Chip con Swipe Orizzontale su Mobile */}
+          <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none w-full md:w-auto">
             {categories.map((cat) => (
               <button
                 key={cat}
                 onClick={() => setSelectedCategory(cat)}
-                className={`px-4 py-2 rounded-full text-xs font-semibold transition-all ${
+                className={`px-4 py-2 rounded-full text-xs font-semibold whitespace-nowrap shrink-0 transition-all cursor-pointer ${
                   selectedCategory === cat
                     ? 'bg-brand-dark text-white shadow-md'
                     : 'bg-brand-surface text-gray-600 hover:bg-gray-200'

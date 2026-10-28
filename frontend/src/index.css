@@ -9,6 +9,12 @@
     scroll-behavior: smooth;
     font-family: 'Inter', sans-serif;
     color: #111827;
+    background-color: #0b0f19;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    overflow-x: hidden;
     background-color: #F9FAFB;
   }
 
@@ -16,14 +22,34 @@
     font-family: 'Plus Jakarta Sans', sans-serif;
     letter-spacing: -0.025em;
   }
+
+  /* Previene lo zoom fastidioso di iOS Safari sui campi di input */
+  input, select, textarea {
+    font-size: 16px;
+  }
+  @media (min-width: 640px) {
+    input, select, textarea {
+      font-size: 0.875rem; /* 14px */
+    }
+  }
 }
 
-/* Scrollbar minimale personalizzata */
+/* Utilità per nascondere scrollbar su swipe orizzontali mobile */
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+
+/* Scrollbar minimale personalizzata desktop */
 ::-webkit-scrollbar {
   width: 8px;
+  height: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: #f1f1f1;
+  background: #0f172a;
 }
 ::-webkit-scrollbar-thumb {
   background: #c2783b;

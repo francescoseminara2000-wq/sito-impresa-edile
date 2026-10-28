@@ -197,54 +197,70 @@ export const Header: React.FC = () => {
         </div>
       </motion.header>
 
-      {/* Menu Mobile con animazione morbida di comparsa */}
+      {/* Menu Mobile con animazione morbida di comparsa e backdrop overlay */}
       <AnimatePresence>
         {mobileMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95, y: -10 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95, y: -10 }}
-            transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-            className="fixed top-20 left-4 right-4 z-40 sm:hidden bg-white/98 backdrop-blur-2xl rounded-3xl shadow-2xl border border-gray-200 p-5 overflow-hidden"
-          >
-            <div className="flex flex-col gap-1.5">
-              {NAV_ITEMS.map((item) => {
-                const isActive = activeSection === item.id;
-                return (
-                  <a
-                    key={item.id}
-                    href={item.href}
-                    onClick={() => setMobileMenuOpen(false)}
-                    className={`px-4 py-3 rounded-2xl text-sm font-semibold transition-all flex items-center justify-between ${
-                      isActive
-                        ? 'bg-[#0f172a] text-white font-bold shadow-md shadow-slate-900/25'
-                        : 'text-gray-800 hover:bg-slate-100 hover:text-[#0f172a]'
-                    }`}
-                  >
-                    <span>{item.name}</span>
-                    <ArrowUpRight className={`w-4 h-4 ${isActive ? 'text-white' : 'text-gray-400'}`} />
-                  </a>
-                );
-              })}
-            </div>
+          <>
+            {/* Backdrop cliccabile per chiudere il menu */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setMobileMenuOpen(false)}
+              className="fixed inset-0 z-30 bg-slate-950/60 backdrop-blur-xs sm:hidden"
+            />
 
-            <div className="pt-4 mt-3 border-t border-gray-100 flex flex-col gap-2.5">
-              <a
-                href="#preventivo"
-                onClick={() => setMobileMenuOpen(false)}
-                className="w-full text-center py-3 rounded-2xl bg-brand-terracotta text-white font-bold text-xs uppercase tracking-wider shadow-glow-terracotta"
-              >
-                Richiedi Preventivo
-              </a>
-              <a
-                href="tel:+393485696125"
-                className="w-full text-center py-2 text-xs font-semibold text-gray-600 hover:text-gray-900 flex items-center justify-center gap-2"
-              >
-                <Phone className="w-3.5 h-3.5 text-brand-terracotta" />
-                <span>+39 348 569 6125</span>
-              </a>
-            </div>
-          </motion.div>
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: -10 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: -10 }}
+              transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+              className="fixed top-20 left-4 right-4 z-40 sm:hidden bg-white/98 backdrop-blur-2xl rounded-3xl shadow-2xl border border-gray-200 p-5 overflow-hidden"
+            >
+              <div className="flex flex-col gap-1.5">
+                {NAV_ITEMS.map((item) => {
+                  const isActive = activeSection === item.id;
+                  return (
+                    <a
+                      key={item.id}
+                      href={item.href}
+                      onClick={() => setMobileMenuOpen(false)}
+                      className={`px-4 py-3 rounded-2xl text-sm font-semibold transition-all flex items-center justify-between ${
+                        isActive
+                          ? 'bg-[#0f172a] text-white font-bold shadow-md shadow-slate-900/25'
+                          : 'text-gray-800 hover:bg-slate-100 hover:text-[#0f172a]'
+                      }`}
+                    >
+                      <span>{item.name}</span>
+                      <ArrowUpRight className={`w-4 h-4 ${isActive ? 'text-white' : 'text-gray-400'}`} />
+                    </a>
+                  );
+                })}
+              </div>
+
+              <div className="pt-4 mt-3 border-t border-gray-100 flex flex-col gap-2.5">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    window.dispatchEvent(new CustomEvent('open-quote-modal'));
+                    const el = document.getElementById('preventivo');
+                    if (el) el.scrollIntoView({ behavior: 'smooth' });
+                  }}
+                  className="w-full text-center py-3.5 rounded-2xl bg-gradient-to-r from-brand-terracotta to-[#9c5724] text-white font-bold text-xs uppercase tracking-wider shadow-glow-terracotta cursor-pointer"
+                >
+                  Richiedi Preventivo (Apri Modulo)
+                </button>
+                <a
+                  href="tel:+393485696125"
+                  className="w-full text-center py-2.5 text-xs font-semibold text-gray-700 hover:text-gray-900 flex items-center justify-center gap-2"
+                >
+                  <Phone className="w-3.5 h-3.5 text-brand-terracotta" />
+                  <span>Chiama Ufficio Tecnico: <strong>+39 348 569 6125</strong></span>
+                </a>
+              </div>
+            </motion.div>
+          </>
         )}
       </AnimatePresence>
     </>

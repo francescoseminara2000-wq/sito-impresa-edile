@@ -104,8 +104,8 @@ export const BeforeAfterBlock: React.FC<{ content?: BeforeAfterContent }> = ({ c
           </p>
         </div>
 
-        {/* Tab di Selezione Scenari Interattivi */}
-        <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 mb-12">
+        {/* Tab di Selezione Scenari Interattivi con Swipe Orizzontale su Mobile */}
+        <div className="flex items-center sm:justify-center gap-2 sm:gap-3 mb-10 overflow-x-auto pb-3 scrollbar-none px-1">
           {scenarios.map((scenario) => {
             const Icon = scenario.icon;
             const isActive = scenario.id === activeScenarioId;
@@ -113,7 +113,7 @@ export const BeforeAfterBlock: React.FC<{ content?: BeforeAfterContent }> = ({ c
               <button
                 key={scenario.id}
                 onClick={() => setActiveScenarioId(scenario.id)}
-                className={`inline-flex items-center gap-2.5 px-5 py-3 rounded-xl text-xs sm:text-sm font-bold tracking-wide transition-all shadow-sm ${
+                className={`inline-flex items-center gap-2 px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl text-xs sm:text-sm font-bold tracking-wide transition-all shadow-sm whitespace-nowrap cursor-pointer shrink-0 ${
                   isActive
                     ? 'bg-[#0f172a] text-white shadow-lg ring-2 ring-brand-terracotta/40 scale-105'
                     : 'bg-gray-100 hover:bg-gray-200 text-gray-700 hover:text-gray-900'

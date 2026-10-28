@@ -111,7 +111,7 @@ export const BeforeAfterSlider: React.FC<BeforeAfterSliderProps> = ({
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}
       onPointerCancel={handlePointerUp}
-      className={`relative select-none overflow-hidden rounded-3xl shadow-2xl aspect-[16/10] bg-brand-dark cursor-ew-resize touch-none group ${className}`}
+      className={`relative select-none overflow-hidden rounded-3xl shadow-2xl aspect-[16/10] bg-brand-dark cursor-ew-resize touch-pan-y group ${className}`}
     >
       {/* 1. Immagine DOPO (Base a tutto schermo) */}
       <img
@@ -137,7 +137,7 @@ export const BeforeAfterSlider: React.FC<BeforeAfterSliderProps> = ({
 
       {/* 3. Linea di divisione e Manopola di Precisione perfettamente Centrata sull'asse */}
       <div
-        className="absolute top-0 bottom-0 pointer-events-none z-20"
+        className="absolute top-0 bottom-0 pointer-events-none z-20 touch-none"
         style={{ left: `${displayPosition}%` }}
       >
         {/* Linea verticale passante perfettamente centrata */}
@@ -149,7 +149,7 @@ export const BeforeAfterSlider: React.FC<BeforeAfterSliderProps> = ({
             isDragging
               ? 'scale-115 shadow-[0_0_25px_rgba(255,255,255,0.9),0_4px_20px_rgba(0,0,0,0.7)] ring-2 ring-brand-terracotta'
               : 'shadow-[0_4px_20px_rgba(0,0,0,0.5)] group-hover:scale-105'
-          } bg-white text-slate-800 border border-slate-300`}
+          } bg-white text-slate-800 border border-slate-300 pointer-events-auto cursor-ew-resize`}
         >
           {/* Frecce orizzontali minimali e separatore centrale */}
           <div className="flex items-center justify-center gap-1 text-slate-800">
@@ -165,7 +165,7 @@ export const BeforeAfterSlider: React.FC<BeforeAfterSliderProps> = ({
       </div>
 
       {/* 4. Etichette di Stato (sinistra e destra) con posizione e contrasto ottimali */}
-      <div className="absolute top-4 inset-x-4 flex items-center justify-between pointer-events-none z-10">
+      <div className="absolute top-3 sm:top-4 inset-x-3 sm:inset-x-4 flex items-center justify-between pointer-events-none z-10">
         {/* Badge PRIMA */}
         <button
           type="button"
@@ -173,7 +173,7 @@ export const BeforeAfterSlider: React.FC<BeforeAfterSliderProps> = ({
             e.stopPropagation();
             setPreset(100);
           }}
-          className={`pointer-events-auto cursor-pointer transition-all duration-200 px-3.5 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider backdrop-blur-md shadow-lg border ${
+          className={`pointer-events-auto cursor-pointer transition-all duration-200 px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-full text-[11px] sm:text-xs font-bold uppercase tracking-wider backdrop-blur-md shadow-lg border ${
             displayPosition > 50
               ? 'bg-slate-900/90 text-white border-white/30 scale-105'
               : 'bg-black/55 text-slate-300 border-white/10 hover:bg-black/80 hover:text-white'

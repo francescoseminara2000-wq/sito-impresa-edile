@@ -51,14 +51,14 @@ export const ServiceDetailModal: React.FC<ServiceDetailModalProps> = ({
   return (
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 overflow-y-auto">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-2.5 sm:p-6 overflow-y-auto">
           {/* Backdrop con sfocatura scura */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="fixed inset-0 bg-black/75 backdrop-blur-md"
+            className="fixed inset-0 bg-black/80 backdrop-blur-md"
           />
 
           {/* Finestra Modale */}
@@ -67,7 +67,7 @@ export const ServiceDetailModal: React.FC<ServiceDetailModalProps> = ({
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.94, y: 20 }}
             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-            className="relative w-full max-w-2xl bg-white rounded-3xl shadow-2xl border border-gray-100 overflow-hidden z-10 my-8"
+            className="relative w-full max-w-2xl bg-white rounded-2xl sm:rounded-3xl shadow-2xl border border-gray-100 overflow-hidden z-10 my-4 sm:my-8 max-h-[92vh] flex flex-col"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Foto di anteprima se disponibile */}
@@ -97,7 +97,7 @@ export const ServiceDetailModal: React.FC<ServiceDetailModalProps> = ({
               <X className="w-5 h-5" />
             </button>
 
-            <div className="p-6 sm:p-8">
+            <div className="p-4 sm:p-8 overflow-y-auto flex-1 overscroll-contain">
               {/* Intestazione */}
               <div className="flex items-start gap-4 mb-5">
                 <div className="w-14 h-14 rounded-2xl bg-amber-50 border border-brand-terracotta/20 flex items-center justify-center shrink-0">

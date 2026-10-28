@@ -94,7 +94,7 @@ export const HeroBlock: React.FC<{ content: HeroContent }> = ({ content }) => {
             animate="visible"
             className="overflow-hidden mb-6"
           >
-            <h1 className="text-4xl sm:text-6xl xl:text-7xl font-black tracking-tight leading-[1.08] font-display">
+            <h1 className="text-3xl sm:text-5xl md:text-6xl xl:text-7xl font-black tracking-tight leading-[1.1] font-display">
               <span className="block overflow-hidden py-1">
                 <motion.span variants={textItemVariants} className="block text-white">
                   {cleanTitle}
@@ -113,7 +113,7 @@ export const HeroBlock: React.FC<{ content: HeroContent }> = ({ content }) => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.35 }}
-            className="text-base sm:text-lg text-slate-300 max-w-2xl font-normal leading-relaxed mb-9"
+            className="text-sm sm:text-lg text-slate-300 max-w-2xl font-normal leading-relaxed mb-8"
           >
             {content.subtitle}
           </motion.p>
@@ -123,13 +123,13 @@ export const HeroBlock: React.FC<{ content: HeroContent }> = ({ content }) => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.55 }}
-            className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4"
+            className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5 sm:gap-4"
           >
             <motion.a
               href={content.primaryCtaLink || '#preventivo'}
               whileHover={{ scale: 1.03, boxShadow: '0 0 30px rgba(194,120,59,0.5)' }}
               whileTap={{ scale: 0.98 }}
-              className="relative group overflow-hidden inline-flex items-center justify-center gap-2.5 px-8 py-4 rounded-xl bg-gradient-to-r from-brand-terracotta via-[#b3672d] to-[#9c5724] text-white font-bold text-sm sm:text-base uppercase tracking-wider shadow-glow-terracotta transition-all"
+              className="relative group overflow-hidden inline-flex items-center justify-center gap-2.5 px-6 sm:px-8 py-3.5 sm:py-4 rounded-xl bg-gradient-to-r from-brand-terracotta via-[#b3672d] to-[#9c5724] text-white font-bold text-xs sm:text-base uppercase tracking-wider shadow-glow-terracotta transition-all"
             >
               {/* Shimmer di luce animato al passaggio del mouse */}
               <span className="absolute inset-0 w-1/2 h-full bg-white/20 skew-x-12 -translate-x-full group-hover:translate-x-[280%] transition-transform duration-1000 ease-out" />
@@ -144,7 +144,7 @@ export const HeroBlock: React.FC<{ content: HeroContent }> = ({ content }) => {
                 href={content.secondaryCtaLink || '#servizi'}
                 whileHover={{ scale: 1.02, backgroundColor: 'rgba(255, 255, 255, 0.16)' }}
                 whileTap={{ scale: 0.98 }}
-                className="inline-flex items-center justify-center gap-2.5 px-7 py-4 rounded-xl bg-white/[0.08] backdrop-blur-xl border border-white/20 text-white font-semibold text-sm sm:text-base tracking-wide transition-all hover:border-white/35 group"
+                className="inline-flex items-center justify-center gap-2.5 px-6 sm:px-7 py-3.5 sm:py-4 rounded-xl bg-white/[0.08] backdrop-blur-xl border border-white/20 text-white font-semibold text-xs sm:text-base tracking-wide transition-all hover:border-white/35 group"
               >
                 <Hammer className="w-4 h-4 text-amber-300 group-hover:rotate-[-15deg] transition-transform duration-300" />
                 <span>{content.secondaryCtaText}</span>
@@ -159,7 +159,7 @@ export const HeroBlock: React.FC<{ content: HeroContent }> = ({ content }) => {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.75 }}
-            className="mt-14 p-6 sm:p-7 rounded-2xl bg-white/[0.04] backdrop-blur-xl border border-white/10 shadow-2xl grid grid-cols-2 md:grid-cols-4 gap-6 relative overflow-hidden"
+            className="mt-10 sm:mt-14 p-4 sm:p-7 rounded-2xl bg-white/[0.04] backdrop-blur-xl border border-white/10 shadow-2xl grid grid-cols-2 md:grid-cols-4 gap-3.5 sm:gap-6 relative overflow-hidden"
           >
             {/* Sottile riflesso orizzontale in testata */}
             <div className="absolute top-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-white/25 to-transparent" />
@@ -169,7 +169,7 @@ export const HeroBlock: React.FC<{ content: HeroContent }> = ({ content }) => {
                 key={idx}
                 className="flex flex-col group transition-transform duration-300 hover:-translate-y-1"
               >
-                <span className="text-2xl sm:text-3xl lg:text-4xl font-black text-white tracking-tight font-display group-hover:text-amber-300 transition-colors">
+                <span className="text-xl sm:text-3xl lg:text-4xl font-black text-white tracking-tight font-display group-hover:text-amber-300 transition-colors">
                   <CountUp value={item.number} />
                 </span>
                 <span className="text-xs sm:text-sm text-slate-400 mt-1 font-medium leading-snug">
