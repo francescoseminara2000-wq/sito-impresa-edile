@@ -145,24 +145,8 @@ export const Header: React.FC = () => {
               })}
             </nav>
 
-            {/* Quick Actions su riga singola senza compressioni */}
+            {/* Quick Actions su riga singola pulita ed elegante */}
             <div className="hidden sm:flex items-center gap-3.5 shrink-0">
-              {/* Telefono con punto verde pulsante */}
-              <motion.a
-                href="tel:+393485696125"
-                whileHover={{ scale: 1.03 }}
-                whileTap={{ scale: 0.97 }}
-                className={`flex items-center gap-2 rounded-full font-semibold text-gray-800 bg-gray-50/90 hover:bg-gray-100 border border-gray-200/80 shadow-2xs transition-all whitespace-nowrap ${
-                  scrolled ? 'px-3.5 py-1.5 text-xs' : 'px-4 py-2 text-xs sm:text-sm'
-                }`}
-              >
-                <span className="relative flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
-                </span>
-                <Phone className="w-3.5 h-3.5 text-brand-terracotta shrink-0" />
-                <span className="font-mono tracking-tight font-bold">+39 348 569 6125</span>
-              </motion.a>
 
               {/* Pulsante CTA con Shimmer luminoso e gradiente dinamico */}
               <motion.a
