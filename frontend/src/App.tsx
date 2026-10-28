@@ -105,24 +105,23 @@ export const App: React.FC = () => {
           <>
             <PageRenderer sections={sections} />
 
-            {/* Banner Rapido Galleria Completa */}
-            <div className="bg-brand-dark py-12 px-6 border-t border-white/10 text-center text-white">
-              <div className="max-w-4xl mx-auto">
-                <span className="text-xs uppercase font-bold text-brand-terracotta tracking-widest block mb-2">
-                  Portfolio Fotografico Completo
-                </span>
-                <h3 className="text-2xl sm:text-3xl font-bold mb-4">
-                  Vuoi vedere tutte le foto dei nostri cantieri?
-                </h3>
-                <p className="text-sm text-gray-400 mb-6 max-w-xl mx-auto">
-                  Sfoglia l'archivio completo con tutte le 20 fotografie ad alta risoluzione dei lavori eseguiti da BMG Srl a Caponago, Monza Brianza e Milano.
-                </p>
+            {/* Banner Rapido Galleria Completa Snellito */}
+            <div className="bg-[#0b0f19] py-8 px-6 border-t border-white/10 text-white">
+              <div className="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div className="text-center sm:text-left">
+                  <h3 className="text-lg font-bold text-white mb-0.5">
+                    Portfolio Fotografico Completo
+                  </h3>
+                  <p className="text-xs text-gray-400">
+                    Sfoglia tutte le 20 fotografie ad alta definizione dei cantieri BMG
+                  </p>
+                </div>
                 <button
                   onClick={() => setIsGalleryOpen(true)}
-                  className="inline-flex items-center gap-2 px-8 py-3.5 rounded-xl bg-brand-terracotta hover:bg-[#a85e2b] text-white font-bold text-sm uppercase tracking-wider shadow-glow-terracotta transition-all"
+                  className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-brand-terracotta hover:bg-[#a85e2b] text-white font-bold text-xs uppercase tracking-wider shadow-glow-terracotta transition-all shrink-0"
                 >
-                  <Images className="w-5 h-5" />
-                  <span>Apri Galleria (20 Foto)</span>
+                  <Images className="w-4 h-4" />
+                  <span>Apri Galleria Completa</span>
                 </button>
               </div>
             </div>

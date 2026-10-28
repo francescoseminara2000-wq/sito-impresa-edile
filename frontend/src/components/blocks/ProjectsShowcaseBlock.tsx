@@ -235,14 +235,14 @@ export const ProjectsShowcaseBlock: React.FC<{ content?: any }> = ({ content }) 
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-8">
           <div>
             <span className="text-xs uppercase tracking-widest font-bold text-brand-terracotta mb-2 inline-flex items-center gap-1.5">
-              <Sparkles className="w-4 h-4 text-brand-terracotta" />
-              <span>Opere Reali Documentate e Gestite da CMS</span>
+              <Sparkles className="w-3.5 h-3.5 text-brand-terracotta" />
+              <span>Portfolio Lavori</span>
             </span>
-            <h2 className="text-3xl sm:text-5xl font-bold tracking-tight text-brand-dark">
-              Cantieri e Realizzazioni BMG Srl
+            <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-brand-dark">
+              Cantieri e Realizzazioni
             </h2>
-            <p className="text-sm text-gray-500 mt-2 max-w-xl">
-              Clicca su qualunque cantiere per aprire la <strong>scheda tecnica completa</strong>, la galleria con foto in alta definizione e i confronti Prima/Dopo.
+            <p className="text-sm text-gray-500 mt-1 max-w-lg">
+              Sfoglia i cantieri recenti e clicca su qualsiasi opera per vedere le foto e i dettagli tecnici.
             </p>
           </div>
 

@@ -139,25 +139,19 @@ export const BeforeAfterBlock: React.FC<{ content?: BeforeAfterContent }> = ({ c
             {/* Colonna Testuale & Specifiche Tecniche */}
             <div className="lg:col-span-5 space-y-6">
               <div>
-                <span className="text-xs uppercase tracking-widest font-extrabold text-brand-terracotta mb-2 block">
+                <span className="text-xs uppercase tracking-widest font-extrabold text-brand-terracotta mb-1.5 block">
                   {currentScenario.category}
                 </span>
-                <h3 className="text-2xl sm:text-3xl font-bold tracking-tight text-brand-dark mb-3">
+                <h3 className="text-2xl sm:text-3xl font-bold tracking-tight text-brand-dark mb-2.5">
                   {currentScenario.title}
                 </h3>
-                <p className="text-sm sm:text-base text-gray-600 leading-relaxed">
+                <p className="text-sm text-gray-600 leading-relaxed">
                   {currentScenario.subtitle}
                 </p>
               </div>
 
-              <div className="p-5 bg-slate-50 rounded-2xl border border-slate-200/80 shadow-xs">
-                <p className="text-xs sm:text-sm text-gray-700 leading-relaxed italic">
-                  "{currentScenario.description}"
-                </p>
-              </div>
-
               {/* Checklist Specifiche Tecniche */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
                 {currentScenario.details.map((detail, idx) => (
                   <div key={idx} className="flex items-start gap-2.5 p-3 rounded-xl bg-white border border-gray-100 shadow-xs">
                     <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
