@@ -16,6 +16,7 @@ const NAV_ITEMS: NavItem[] = [
 ];
 
 export const Header: React.FC = () => {
+  const [scrolled, setScrolled] = useState(false);
   const [scrollProgress, setScrollProgress] = useState(0);
   const [activeSection, setActiveSection] = useState<string>('');
   const [hoveredNav, setHoveredNav] = useState<string | null>(null);
@@ -24,6 +25,8 @@ export const Header: React.FC = () => {
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
+      setScrolled(currentScrollY > 30);
+
       const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
       if (totalHeight > 0) {
         setScrollProgress(Math.min(100, Math.max(0, (currentScrollY / totalHeight) * 100)));
@@ -60,21 +63,27 @@ export const Header: React.FC = () => {
 
   return (
     <>
-      {/* Header fisso con larghezza stabile, ampia ed elegante */}
+      {/* Header fisso con larghezza stabile, e altezza che si assottiglia fluidamente allo scroll */}
       <motion.header
         initial={{ y: -30, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-        className="fixed top-0 left-0 right-0 z-50 pointer-events-none flex justify-center px-4 sm:px-8 pt-3 sm:pt-4"
+        className={`fixed top-0 left-0 right-0 z-50 pointer-events-none flex justify-center px-4 sm:px-8 transition-all duration-300 ${
+          scrolled ? 'pt-2 sm:pt-2.5' : 'pt-4 sm:pt-5'
+        }`}
       >
         <div
-          className="pointer-events-auto relative w-full max-w-7xl rounded-full bg-white/95 backdrop-blur-2xl shadow-[0_12px_40px_-8px_rgba(0,0,0,0.14)] border border-gray-200/80 py-3 sm:py-3.5 px-5 sm:px-8 overflow-hidden transition-shadow"
+          className={`pointer-events-auto relative w-full max-w-7xl rounded-full bg-white/95 backdrop-blur-2xl border border-gray-200/80 overflow-hidden transition-all duration-300 ease-out ${
+            scrolled
+              ? 'py-2 sm:py-2.5 px-5 sm:px-7 shadow-[0_15px_35px_-8px_rgba(0,0,0,0.18)]'
+              : 'py-4 sm:py-5 px-6 sm:px-9 shadow-[0_12px_40px_-10px_rgba(0,0,0,0.10)]'
+          }`}
         >
-          {/* Riflesso luminoso superiore (vetro satinato premium) */}
+          {/* Riflesso luminoso superiore */}
           <div className="absolute inset-x-0 top-0 h-[1px] bg-gradient-to-r from-transparent via-white to-transparent opacity-90" />
 
           <div className="flex items-center justify-between gap-6">
-            {/* Logo BMG grande e stabile */}
+            {/* Logo BMG: si assottiglia dolcemente in altezza quando si scorre in basso */}
             <a
               href="/"
               className="flex items-center shrink-0 group focus:outline-none"
@@ -83,13 +92,15 @@ export const Header: React.FC = () => {
               <img
                 src="/logo.png"
                 alt="BMG Costruzioni"
-                className="h-10 sm:h-12 w-auto object-contain transition-transform duration-300 group-hover:scale-103"
+                className={`w-auto object-contain transition-all duration-300 ease-out group-hover:scale-103 ${
+                  scrolled ? 'h-8 sm:h-9' : 'h-10 sm:h-12'
+                }`}
               />
             </a>
 
             {/* Navigazione Desktop con Sliding Pill Indicator magnetico */}
             <nav
-              className="hidden md:flex items-center gap-1.5 relative p-1.5 rounded-full bg-gray-100/80 border border-gray-200/50"
+              className="hidden md:flex items-center gap-1.5 relative p-1 rounded-full bg-gray-100/80 border border-gray-200/50"
               onMouseLeave={() => setHoveredNav(null)}
             >
               {NAV_ITEMS.map((item) => {
@@ -101,7 +112,9 @@ export const Header: React.FC = () => {
                     key={item.id}
                     href={item.href}
                     onMouseEnter={() => setHoveredNav(item.id)}
-                    className={`relative z-10 px-5 py-2 rounded-full font-semibold text-xs sm:text-sm tracking-wide transition-colors duration-200 ${
+                    className={`relative z-10 rounded-full font-semibold tracking-wide transition-all duration-200 ${
+                      scrolled ? 'px-4 py-1.5 text-xs' : 'px-5 py-2 text-xs sm:text-sm'
+                    } ${
                       isActive
                         ? 'text-white'
                         : isHovered
@@ -134,13 +147,15 @@ export const Header: React.FC = () => {
             </nav>
 
             {/* Quick Actions su riga singola senza compressioni */}
-            <div className="hidden sm:flex items-center gap-4 shrink-0">
-              {/* Telefono con punto verde pulsante su riga singola */}
+            <div className="hidden sm:flex items-center gap-3.5 shrink-0">
+              {/* Telefono con punto verde pulsante */}
               <motion.a
                 href="tel:+393485696125"
                 whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.97 }}
-                className="flex items-center gap-2.5 px-4 py-2 rounded-full font-semibold text-xs sm:text-sm text-gray-800 bg-gray-50/90 hover:bg-gray-100 border border-gray-200/80 shadow-2xs transition-all whitespace-nowrap"
+                className={`flex items-center gap-2 rounded-full font-semibold text-gray-800 bg-gray-50/90 hover:bg-gray-100 border border-gray-200/80 shadow-2xs transition-all whitespace-nowrap ${
+                  scrolled ? 'px-3.5 py-1.5 text-xs' : 'px-4 py-2 text-xs sm:text-sm'
+                }`}
               >
                 <span className="relative flex h-2 w-2">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
@@ -150,12 +165,14 @@ export const Header: React.FC = () => {
                 <span className="font-mono tracking-tight font-bold">+39 348 569 6125</span>
               </motion.a>
 
-              {/* Pulsante CTA con Shimmer luminoso e gradiente dinamico su riga singola */}
+              {/* Pulsante CTA con Shimmer luminoso e gradiente dinamico */}
               <motion.a
                 href="#preventivo"
                 whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.97 }}
-                className="relative group overflow-hidden inline-flex items-center gap-2 px-6 py-2.5 rounded-full text-white font-bold text-xs tracking-wider uppercase transition-all shadow-glow-terracotta bg-gradient-to-r from-brand-terracotta via-[#b3672d] to-[#9c5724] hover:shadow-lg whitespace-nowrap"
+                className={`relative group overflow-hidden inline-flex items-center gap-2 rounded-full text-white font-bold tracking-wider uppercase transition-all shadow-glow-terracotta bg-gradient-to-r from-brand-terracotta via-[#b3672d] to-[#9c5724] hover:shadow-lg whitespace-nowrap ${
+                  scrolled ? 'px-5 py-2 text-xs' : 'px-6 py-2.5 text-xs'
+                }`}
               >
                 {/* Animazione Shimmer continua ad onda di luce */}
                 <span className="absolute inset-0 w-1/2 h-full bg-white/25 skew-x-12 -translate-x-full group-hover:translate-x-[250%] transition-transform duration-1000 ease-out" />
@@ -170,7 +187,7 @@ export const Header: React.FC = () => {
             <div className="flex sm:hidden items-center gap-2">
               <a
                 href="tel:+393485696125"
-                className="p-2.5 rounded-full text-brand-terracotta bg-brand-terracotta/10 hover:bg-brand-terracotta/20 transition-colors"
+                className="p-2 rounded-full text-brand-terracotta bg-brand-terracotta/10 hover:bg-brand-terracotta/20 transition-colors"
                 aria-label="Chiama"
               >
                 <Phone className="w-4 h-4" />
@@ -179,15 +196,15 @@ export const Header: React.FC = () => {
               <button
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                 aria-label="Apri Menu"
-                className="p-2.5 rounded-full text-gray-800 hover:bg-gray-100 transition-colors"
+                className="p-2 rounded-full text-gray-800 hover:bg-gray-100 transition-colors"
               >
                 {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
               </button>
             </div>
           </div>
 
-          {/* Sottile indicatore di scroll (Hairline Progress) integrato sul bordo inferiore */}
-          <div className="absolute inset-x-0 bottom-0 h-[2.5px] bg-gray-100/60 overflow-hidden">
+          {/* Sottile indicatore di scroll (Hairline Progress) integrato sul fondo */}
+          <div className="absolute inset-x-0 bottom-0 h-[2px] bg-gray-100/60 overflow-hidden">
             <motion.div
               className="h-full bg-gradient-to-r from-brand-terracotta via-amber-500 to-brand-terracotta"
               style={{ width: `${scrollProgress}%` }}

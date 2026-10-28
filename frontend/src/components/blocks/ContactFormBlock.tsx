@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Send, CheckCircle2, AlertCircle, PhoneCall, Clock, ShieldCheck, Sparkles } from 'lucide-react';
 import { CtaFormContent } from '../../types/blocks';
 import { InteractiveQuoteWizard } from '../ui/InteractiveQuoteWizard';
+import confetti from 'canvas-confetti';
 
 export const ContactFormBlock: React.FC<{ content: CtaFormContent }> = ({ content }) => {
   const serviceOptions = content.servicesOptions || [
@@ -62,6 +63,12 @@ export const ContactFormBlock: React.FC<{ content: CtaFormContent }> = ({ conten
       }
 
       setStatus('success');
+      confetti({
+        particleCount: 80,
+        spread: 70,
+        origin: { y: 0.6 },
+        colors: ['#c2783b', '#d97706', '#fbbf24', '#ffffff'],
+      });
       setFullName('');
       setEmail('');
       setPhone('');

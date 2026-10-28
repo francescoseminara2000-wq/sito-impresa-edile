@@ -2,6 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Check, ArrowRight, Home, Building2, Paintbrush, Hammer } from 'lucide-react';
 import { ServicesGridContent } from '../../types/blocks';
+import { SpotlightCard } from '../ui/SpotlightCard';
 
 const iconMap: Record<string, React.ReactNode> = {
   Home: <Home className="w-6 h-6 text-brand-terracotta" />,
@@ -63,39 +64,39 @@ export const ServicesGridBlock: React.FC<{ content: ServicesGridContent }> = ({ 
             <motion.div
               key={index}
               variants={itemVariants}
-              whileHover={{ y: -8, transition: { duration: 0.25 } }}
-              className="bg-white rounded-2xl p-8 shadow-sm hover:shadow-soft-elevation border border-brand-stone/60 transition-all flex flex-col justify-between group"
             >
-              <div>
-                <div className="w-14 h-14 rounded-xl bg-amber-50 flex items-center justify-center mb-6 group-hover:bg-brand-terracotta/10 transition-colors">
-                  {service.iconName && iconMap[service.iconName] ? iconMap[service.iconName] : <Building2 className="w-6 h-6 text-brand-terracotta" />}
+              <SpotlightCard className="h-full bg-white rounded-2xl p-8 shadow-sm hover:shadow-xl border border-brand-stone/60 transition-all flex flex-col justify-between group">
+                <div>
+                  <div className="w-14 h-14 rounded-xl bg-amber-50 flex items-center justify-center mb-6 group-hover:bg-brand-terracotta/10 group-hover:scale-110 transition-all">
+                    {service.iconName && iconMap[service.iconName] ? iconMap[service.iconName] : <Building2 className="w-6 h-6 text-brand-terracotta" />}
+                  </div>
+                  <h3 className="text-xl font-bold mb-3 text-brand-dark group-hover:text-brand-terracotta transition-colors">
+                    {service.title}
+                  </h3>
+                  <p className="text-sm text-gray-600 mb-6 leading-relaxed">
+                    {service.description}
+                  </p>
+
+                  {service.features && (
+                    <ul className="space-y-2 mb-8 border-t border-gray-100 pt-4">
+                      {service.features.map((feat, fIdx) => (
+                        <li key={fIdx} className="flex items-center gap-2 text-xs text-gray-600">
+                          <Check className="w-4 h-4 text-brand-terracotta shrink-0" />
+                          <span>{feat}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
                 </div>
-                <h3 className="text-xl font-bold mb-3 text-brand-dark group-hover:text-brand-terracotta transition-colors">
-                  {service.title}
-                </h3>
-                <p className="text-sm text-gray-600 mb-6 leading-relaxed">
-                  {service.description}
-                </p>
 
-                {service.features && (
-                  <ul className="space-y-2 mb-8 border-t border-gray-100 pt-4">
-                    {service.features.map((feat, fIdx) => (
-                      <li key={fIdx} className="flex items-center gap-2 text-xs text-gray-600">
-                        <Check className="w-4 h-4 text-brand-terracotta shrink-0" />
-                        <span>{feat}</span>
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </div>
-
-              <a
-                href="#preventivo"
-                className="inline-flex items-center gap-2 text-xs font-bold text-brand-dark uppercase tracking-wider group-hover:text-brand-terracotta transition-colors pt-2"
-              >
-                <span>Richiedi Consulenza</span>
-                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-              </a>
+                <a
+                  href="#preventivo"
+                  className="inline-flex items-center gap-2 text-xs font-bold text-brand-dark uppercase tracking-wider group-hover:text-brand-terracotta transition-colors pt-2"
+                >
+                  <span>Richiedi Consulenza</span>
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1.5 transition-transform" />
+                </a>
+              </SpotlightCard>
             </motion.div>
           ))}
         </motion.div>

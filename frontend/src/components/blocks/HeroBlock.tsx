@@ -2,6 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { ArrowUpRight, ShieldCheck, Hammer } from 'lucide-react';
 import { HeroContent } from '../../types/blocks';
+import { CountUp } from '../ui/CountUp';
 
 export const HeroBlock: React.FC<{ content: HeroContent }> = ({ content }) => {
   // Varianti per animazione a comparsa mascherata (mask/reveal)
@@ -143,7 +144,7 @@ export const HeroBlock: React.FC<{ content: HeroContent }> = ({ content }) => {
             {content.statsPreview.map((item, idx) => (
               <div key={idx} className="flex flex-col">
                 <span className="text-3xl lg:text-4xl font-extrabold text-white tracking-tight font-display">
-                  {item.number}
+                  <CountUp value={item.number} />
                 </span>
                 <span className="text-xs sm:text-sm text-brand-subtle mt-1 font-medium">
                   {item.label}

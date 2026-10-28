@@ -5,6 +5,7 @@ import {
   Wrench, Layers, Zap, Hammer, MapPin, Calendar, Percent, 
   ShieldCheck, Phone, Mail, User, Sparkles, Clock, FileText 
 } from 'lucide-react';
+import confetti from 'canvas-confetti';
 
 interface WizardState {
   serviceType: string;
@@ -164,6 +165,12 @@ ${formData.notes || 'Nessuna nota specificata.'}
       }
 
       setIsSuccess(true);
+      confetti({
+        particleCount: 100,
+        spread: 80,
+        origin: { y: 0.5 },
+        colors: ['#c2783b', '#d97706', '#fbbf24', '#ffffff'],
+      });
       if (onFinished) onFinished();
     } catch (err: any) {
       setErrorMessage(err.message || 'Errore invio configuratore. Riprova o chiamaci direttamente.');
