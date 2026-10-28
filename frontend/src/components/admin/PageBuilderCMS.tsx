@@ -878,6 +878,344 @@ function renderBlockForm(section: PageSectionData, setSection: (s: PageSectionDa
         </div>
       );
 
+    case 'SERVICES_GRID': {
+      const servicesList: any[] = content.services || [];
+
+      const addService = () => {
+        const newService = {
+          id: `srv-${Date.now()}`,
+          title: 'Nuovo Servizio',
+          badge: 'Nuovo',
+          iconName: 'Building2',
+          description: 'Descrizione breve delle lavorazioni offerte con maestranze e materiali certificati.',
+          fullDetails: 'Dettagli tecnici approfonditi per la scheda del servizio, tempi di posa e vantaggi per il cliente.',
+          features: ['Sopralluogo tecnico preliminare gratuito', 'Computo metrico trasparente', 'Garanzia e certificazioni a norma'],
+          imageUrl: '',
+        };
+        updateContent('services', [...servicesList, newService]);
+      };
+
+      const updateService = (index: number, key: string, val: any) => {
+        const updated = [...servicesList];
+        updated[index] = { ...updated[index], [key]: val };
+        updateContent('services', updated);
+      };
+
+      const removeService = (index: number) => {
+        if (window.confirm('Sei sicuro di voler eliminare questo servizio?')) {
+          const updated = servicesList.filter((_, i) => i !== index);
+          updateContent('services', updated);
+        }
+      };
+
+      const moveService = (index: number, direction: 'up' | 'down') => {
+        if (
+          (direction === 'up' && index === 0) ||
+          (direction === 'down' && index === servicesList.length - 1)
+        )
+          return;
+        const targetIndex = direction === 'up' ? index - 1 : index + 1;
+        const updated = [...servicesList];
+        const [moved] = updated.splice(index, 1);
+        updated.splice(targetIndex, 0, moved);
+        updateContent('services', updated);
+      };
+
+      const addFeatureToService = (srvIndex: number) => {
+        const updated = [...servicesList];
+        const features = updated[srvIndex].features || [];
+        updated[srvIndex].features = [...features, 'Nuovo punto di forza'];
+        updateContent('services', updated);
+      };
+
+      const updateFeatureInService = (srvIndex: number, featIndex: number, text: string) => {
+        const updated = [...servicesList];
+        const features = [...(updated[srvIndex].features || [])];
+        features[featIndex] = text;
+        updated[srvIndex].features = features;
+        updateContent('services', updated);
+      };
+
+      const removeFeatureFromService = (srvIndex: number, featIndex: number) => {
+        const updated = [...servicesList];
+        const features = (updated[srvIndex].features || []).filter((_: any, i: number) => i !== featIndex);
+        updated[srvIndex].features = features;
+        updateContent('services', updated);
+      };
+
+      return (
+        <div className="space-y-6 text-xs">
+          {/* Intestazione Sezione Servizi */}
+          <div className="p-4 rounded-xl bg-white/5 border border-white/10 space-y-3">
+            <h4 className="font-bold text-sm text-brand-terracotta uppercase tracking-wide">
+              Intestazione Sezione
+            </h4>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block font-semibold uppercase text-gray-300 mb-1">Tagline Superiore</label>
+                <input
+                  type="text"
+                  placeholder="Competenza Globale in Cantiere"
+                  value={content.tagline || ''}
+                  onChange={(e) => updateContent('tagline', e.target.value)}
+                  className="w-full px-3 py-2 rounded-lg bg-white/10 border border-white/15 text-white"
+                />
+              </div>
+              <div>
+                <label className="block font-semibold uppercase text-gray-300 mb-1">Titolo Principale</label>
+                <input
+                  type="text"
+                  placeholder="Tutti i Servizi Offerti da BMG Srl"
+                  value={content.title || ''}
+                  onChange={(e) => updateContent('title', e.target.value)}
+                  className="w-full px-3 py-2 rounded-lg bg-white/10 border border-white/15 text-white font-bold"
+                />
+              </div>
+            </div>
+            <div>
+              <label className="block font-semibold uppercase text-gray-300 mb-1">Descrizione Introduttiva</label>
+              <textarea
+                rows={2}
+                placeholder="Descrizione di sintesi..."
+                value={content.description || ''}
+                onChange={(e) => updateContent('description', e.target.value)}
+                className="w-full px-3 py-2 rounded-lg bg-white/10 border border-white/15 text-white resize-none"
+              />
+            </div>
+          </div>
+
+          {/* Elenco Servizi Configurato */}
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <span className="font-bold uppercase tracking-wider text-sm text-white">
+                Servizi Offerti ({servicesList.length})
+              </span>
+              <button
+                type="button"
+                onClick={addService}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-brand-terracotta hover:bg-[#a85e2b] text-white font-bold transition-all text-xs shadow-sm"
+              >
+                <Plus className="w-4 h-4" />
+                <span>Aggiungi Servizio</span>
+              </button>
+            </div>
+
+            {servicesList.length === 0 ? (
+              <div className="p-8 text-center bg-white/5 rounded-2xl border border-dashed border-white/15 text-gray-400">
+                <p className="mb-3">Nessun servizio inserito in questa sezione.</p>
+                <button
+                  type="button"
+                  onClick={addService}
+                  className="px-4 py-2 rounded-lg bg-brand-terracotta text-white font-semibold text-xs"
+                >
+                  Crea il primo servizio
+                </button>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {servicesList.map((srv, sIdx) => (
+                  <div
+                    key={srv.id || sIdx}
+                    className="p-4 rounded-2xl bg-white/5 border border-white/10 hover:border-brand-terracotta/40 transition-all space-y-4"
+                  >
+                    {/* Header Scheda Servizio con azioni */}
+                    <div className="flex items-center justify-between border-b border-white/10 pb-3">
+                      <div className="flex items-center gap-2">
+                        <span className="w-6 h-6 rounded-full bg-brand-terracotta text-white font-bold flex items-center justify-center text-[10px]">
+                          {sIdx + 1}
+                        </span>
+                        <span className="font-bold text-white text-sm">
+                          {srv.title || 'Senza Titolo'}
+                        </span>
+                        {srv.badge && (
+                          <span className="px-2 py-0.5 rounded-full text-[10px] bg-white/10 text-brand-terracotta font-semibold">
+                            {srv.badge}
+                          </span>
+                        )}
+                      </div>
+
+                      <div className="flex items-center gap-1">
+                        <button
+                          type="button"
+                          onClick={() => moveService(sIdx, 'up')}
+                          disabled={sIdx === 0}
+                          title="Sposta Su"
+                          className="p-1 rounded bg-white/10 hover:bg-white/20 text-gray-300 disabled:opacity-30"
+                        >
+                          <ArrowUp className="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => moveService(sIdx, 'down')}
+                          disabled={sIdx === servicesList.length - 1}
+                          title="Sposta Giù"
+                          className="p-1 rounded bg-white/10 hover:bg-white/20 text-gray-300 disabled:opacity-30"
+                        >
+                          <ArrowDown className="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => removeService(sIdx)}
+                          title="Elimina Servizio"
+                          className="p-1 rounded bg-rose-500/20 hover:bg-rose-500 text-rose-300 hover:text-white transition-colors ml-1"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Campi Principali */}
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                      <div className="sm:col-span-2">
+                        <label className="block font-semibold uppercase text-gray-400 mb-1">
+                          Nome Servizio
+                        </label>
+                        <input
+                          type="text"
+                          value={srv.title || ''}
+                          onChange={(e) => updateService(sIdx, 'title', e.target.value)}
+                          className="w-full px-3 py-2 rounded-lg bg-white/10 border border-white/15 text-white font-semibold"
+                        />
+                      </div>
+                      <div>
+                        <label className="block font-semibold uppercase text-gray-400 mb-1">
+                          Badge Evidenziato
+                        </label>
+                        <input
+                          type="text"
+                          placeholder="es. Chiavi in Mano"
+                          value={srv.badge || ''}
+                          onChange={(e) => updateService(sIdx, 'badge', e.target.value)}
+                          className="w-full px-3 py-2 rounded-lg bg-white/10 border border-white/15 text-white"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Scelta Icona */}
+                    <div>
+                      <label className="block font-semibold uppercase text-gray-400 mb-1">
+                        Icona Rappresentativa
+                      </label>
+                      <select
+                        value={srv.iconName || 'Building2'}
+                        onChange={(e) => updateService(sIdx, 'iconName', e.target.value)}
+                        className="w-full px-3 py-2 rounded-lg bg-brand-dark border border-white/15 text-white font-semibold"
+                      >
+                        <option value="Building2">🏢 Building2 (Edilizia / Capannoni)</option>
+                        <option value="Home">🏠 Home (Ristrutturazioni Casa)</option>
+                        <option value="Layers">🧱 Layers (Facciate / Cappotto / Isolamenti)</option>
+                        <option value="Zap">⚡ Zap (Impianti Elettrici / Tecnologici)</option>
+                        <option value="Wrench">🔧 Wrench (Impianti Idraulici / Assistenza)</option>
+                        <option value="Maximize2">🪟 Maximize2 (Serramenti / Infissi)</option>
+                        <option value="Paintbrush">🎨 Paintbrush (Finiture / Cartongesso / Tinteggiature)</option>
+                        <option value="Hammer">🔨 Hammer (Demolizioni / Opere Murarie)</option>
+                        <option value="Flame">🔥 Flame (Riscaldamento / Pompe di Calore)</option>
+                        <option value="Sparkles">✨ Sparkles (Parquet / Finiture di Pregio)</option>
+                      </select>
+                    </div>
+
+                    {/* Descrizione Breve (Card) */}
+                    <div>
+                      <label className="block font-semibold uppercase text-gray-400 mb-1">
+                        Descrizione Breve (visibile sulla Card)
+                      </label>
+                      <textarea
+                        rows={2}
+                        value={srv.description || ''}
+                        onChange={(e) => updateService(sIdx, 'description', e.target.value)}
+                        className="w-full px-3 py-2 rounded-lg bg-white/10 border border-white/15 text-white resize-none"
+                      />
+                    </div>
+
+                    {/* Dettagli Completi (Scheda Modale al click) */}
+                    <div>
+                      <label className="block font-semibold uppercase text-gray-400 mb-1">
+                        Dettagli Approfonditi (visibili nella finestra "Dettagli")
+                      </label>
+                      <textarea
+                        rows={3}
+                        placeholder="Spiega nel dettaglio come operiamo, quali garanzie offriamo, normative..."
+                        value={srv.fullDetails || ''}
+                        onChange={(e) => updateService(sIdx, 'fullDetails', e.target.value)}
+                        className="w-full px-3 py-2 rounded-lg bg-white/10 border border-white/15 text-white resize-none"
+                      />
+                    </div>
+
+                    {/* Foto del Servizio */}
+                    <div>
+                      <label className="block font-semibold uppercase text-gray-400 mb-1">
+                        Foto di Anteprima del Servizio (URL o clicca sotto)
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="/images/cantieri/cantiere-01.jpg"
+                        value={srv.imageUrl || ''}
+                        onChange={(e) => updateService(sIdx, 'imageUrl', e.target.value)}
+                        className="w-full px-3 py-2 rounded-lg bg-white/10 border border-white/15 text-white font-mono text-xs"
+                      />
+
+                      {/* Selettore rapido foto */}
+                      <div className="mt-2 flex gap-2 overflow-x-auto py-1">
+                        {allBmgPhotos.slice(0, 10).map((photo) => (
+                          <img
+                            key={photo.id}
+                            src={photo.url}
+                            onClick={() => updateService(sIdx, 'imageUrl', photo.url)}
+                            alt="anteprima"
+                            className={`w-12 h-9 object-cover rounded cursor-pointer border transition-all shrink-0 ${
+                              srv.imageUrl === photo.url ? 'border-brand-terracotta ring-2 ring-brand-terracotta' : 'border-white/20 opacity-60 hover:opacity-100'
+                            }`}
+                            title="Seleziona questa foto per il servizio"
+                          />
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Punti di Forza (Features / Checklist) */}
+                    <div className="space-y-2 pt-2 border-t border-white/10">
+                      <div className="flex items-center justify-between">
+                        <label className="font-semibold uppercase text-gray-400">
+                          Punti di Forza / Specifiche ({(srv.features || []).length})
+                        </label>
+                        <button
+                          type="button"
+                          onClick={() => addFeatureToService(sIdx)}
+                          className="text-[11px] font-bold text-brand-terracotta hover:text-amber-400 transition-colors"
+                        >
+                          + Aggiungi Punto
+                        </button>
+                      </div>
+
+                      <div className="space-y-1.5">
+                        {(srv.features || []).map((feat: string, fIdx: number) => (
+                          <div key={fIdx} className="flex items-center gap-2">
+                            <input
+                              type="text"
+                              value={feat}
+                              onChange={(e) => updateFeatureInService(sIdx, fIdx, e.target.value)}
+                              className="flex-1 px-3 py-1.5 rounded-lg bg-white/10 border border-white/15 text-white"
+                            />
+                            <button
+                              type="button"
+                              onClick={() => removeFeatureFromService(sIdx, fIdx)}
+                              className="p-1.5 text-gray-400 hover:text-rose-400 transition-colors"
+                              title="Rimuovi punto"
+                            >
+                              <X className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      );
+    }
+
     default:
       return (
         <div className="space-y-4 text-xs">
@@ -949,9 +1287,31 @@ function getDefaultContentForType(type: SectionType) {
       };
     case 'SERVICES_GRID':
       return {
-        tagline: 'I Nostri Servizi',
-        title: 'Competenza Globale in Cantiere',
-        services: [],
+        tagline: 'Competenza Globale in Cantiere',
+        title: 'Tutti i Servizi Offerti da BMG Srl',
+        description: 'Gestiamo internamente ogni fase con maestranze dirette e unico responsabile.',
+        services: [
+          {
+            id: 'srv-1',
+            iconName: 'Building2',
+            badge: 'Civile & Industriale',
+            title: 'Costruzioni Civili ed Industriali',
+            description: 'Nuove costruzioni, capannoni, strutture portanti e consolidamenti.',
+            fullDetails: 'Realizzazione di nuovi fabbricati con strutture in cemento armato, muratura o acciaio a norma sismica.',
+            features: ['Nuove costruzioni residenziali', 'Opere strutturali e consolidamenti', 'Fondazioni e recinzioni'],
+            imageUrl: '/images/cantieri/cantiere-10.jpg',
+          },
+          {
+            id: 'srv-2',
+            iconName: 'Home',
+            badge: 'Chiavi in Mano',
+            title: 'Ristrutturazioni Complete',
+            description: 'Riqualificazione totale chiavi in mano di appartamenti e complessi produttivi.',
+            fullDetails: 'Dalla demolizione al rifacimento totale impianti e finiture di pregio con costi bloccati a contratto.',
+            features: ['Demolizioni controllate', 'Rifacimento bagni e impianti', 'Cartongesso e pareti termiche'],
+            imageUrl: '/images/cantieri/cantiere-04.jpg',
+          },
+        ],
       };
     case 'STATS':
       return {

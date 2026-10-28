@@ -180,68 +180,92 @@ function getBmgDefaultSections(): PageSectionData[] {
         services: [
           {
             iconName: 'Building2',
+            badge: 'Civile & Industriale',
+            imageUrl: '/images/cantieri/cantiere-10.jpg',
             title: 'Costruzioni Civili ed Industriali',
             description:
               'Realizzazione di nuovi fabbricati, ampliamenti, capannoni industriali e ville con strutture in cemento armato, muratura portante o acciaio.',
+            fullDetails:
+              'Dalla progettazione esecutiva e scavi di fondazione fino al grezzo avanzato e alle opere di finitura. Gestiamo commesse sia per privati (ville singole e bifamiliari ad alta efficienza energetica) sia per aziende (capannoni, magazzini logistici e sedi direzionali) con collaudi statici e conformità sismica.',
             features: [
               'Nuove costruzioni residenziali e produttive',
-              'Interventi strutturali e consolidamenti',
-              'Scavi, fondazioni e recinzioni perimetrali',
+              'Interventi strutturali, sottomurazioni e consolidamenti',
+              'Scavi, fondazioni in c.a. e recinzioni perimetrali',
             ],
           },
           {
             iconName: 'Home',
+            badge: 'Chiavi in Mano',
+            imageUrl: '/images/cantieri/cantiere-04.jpg',
             title: 'Ristrutturazioni Complete (Civili & Industriali)',
             description:
               'Riqualificazione completa di appartamenti, uffici, negozi e complessi industriali: demolizioni, ridistribuzione spazi interni e rifacimento totale.',
+            fullDetails:
+              'Affidandoti a BMG Srl hai un unico interlocutore responsabile per l\'intero cantiere: dalla demolizione controllata alla rimozione amianto certificata, dal rifacimento impianti a norma fino alla posa di rivestimenti e tinteggiature. Tempi certi e costi bloccati a contratto.',
             features: [
-              'Demolizioni controllate e smaltimento macerie',
-              'Rifacimento bagni, cucine e ambienti di lavoro',
-              'Opere in cartongesso e pareti divisorie isolanti',
+              'Demolizioni controllate e smaltimento macerie a norma',
+              'Rifacimento completo bagni, cucine e ambienti operativi',
+              'Opere in cartongesso, contropareti termiche e pareti divisorie',
             ],
           },
           {
-            iconName: 'Building2',
+            iconName: 'Layers',
+            badge: 'Detrazione Fiscale',
+            imageUrl: '/images/cantieri/cantiere-06.jpg',
             title: 'Manutenzione Condomini & Facciate',
             description:
-              'Interventi di manutenzione ordinaria e straordinaria per condomini e stabili: ripristino frontalini, balconi, tetti e parti comuni.',
+              'Interventi di manutenzione ordinaria e straordinaria per condomini e stabili: ripristino frontalini, balconi, tetti e cappotti termici certificati.',
+            fullDetails:
+              'Collaboriamo continuativamente con amministratori di condominio in tutta la provincia di Monza Brianza e Milano. Realizziamo cappotti termici certificati con pannelli EPS o lana di roccia ad alte prestazioni, ripristino calcestruzzo ammalorato, impermeabilizzazioni tetti e terrazzi.',
             features: [
-              'Isolamento a cappotto termico certificato',
-              'Manutenzione programmata per amministratori',
-              'Ripristino intonaci e impermeabilizzazioni',
+              'Isolamento a cappotto termico con certificazione energetica',
+              'Manutenzione programmata per stabili e parti comuni',
+              'Ripristino intonaci, frontalini e impermeabilizzazioni',
             ],
           },
           {
-            iconName: 'Hammer',
+            iconName: 'Zap',
+            badge: 'Certificato Di.Co.',
+            imageUrl: '/images/cantieri/cantiere-03.jpg',
             title: 'Impianti Elettrici ed Idraulici',
             description:
               'Progettazione, posa e collaudo di impianti tecnologici civili ed industriali con rilascio di dichiarazione di conformità a regola d\'arte.',
+            fullDetails:
+              'Impiantistica di ultima generazione: impianti radianti a pavimento, pompe di calore, canalizzazioni climatizzazione, quadri elettrici industriali e domotica residenziale. Ogni intervento è seguito dai nostri tecnici abilitati e certificato secondo il DM 37/08.',
             features: [
-              'Impianti elettrici completi, illuminazione e quadri',
+              'Impianti elettrici completi, illuminazione LED e quadri',
               'Impianti idrosanitari, riscaldamento e condizionamento',
-              'Adeguamento normativo e certificazioni',
+              'Adeguamento normativo e rilascio Dichiarazione di Conformità',
             ],
           },
           {
-            iconName: 'Paintbrush',
+            iconName: 'Maximize2',
+            badge: 'Isolamento Termico',
+            imageUrl: '/images/cantieri/cantiere-07.jpg',
             title: 'Fornitura e Posa Serramenti & Recinzioni',
             description:
               'Installazione di serramenti ad alto isolamento termoacustico (PVC, alluminio, legno) e realizzazione di recinzioni civili ed industriali.',
+            fullDetails:
+              'Sostituzione infissi con certificazione termica per detrazioni fiscali. Fornitura e posa di finestre scorrevoli, persiane blindate, portoncini d\'ingresso antieffrazione e recinzioni in ferro zincato, grigliati industriali e muretti di cinta.',
             features: [
-              'Fornitura e posa serramenti certificati',
-              'Recinzioni perimetrali, cancellate e muretti',
-              'Miglioramento classe energetica dell\'immobile',
+              'Fornitura e posa certificata serramenti termoisolanti',
+              'Recinzioni perimetrali, cancelli carrai e muretti di cinta',
+              'Riqualificazione energetica dell\'immobile e abbattimento acustico',
             ],
           },
           {
             iconName: 'Paintbrush',
+            badge: 'Finiture di Pregio',
+            imageUrl: '/images/cantieri/cantiere-05.jpg',
             title: 'Finiture: Cartongesso, Imbiancature & Parquet',
             description:
               'Cura meticolosa delle finiture interne: controsoffitti, velette di design, tinteggiature professionali, posa e levigatura parquet.',
+            fullDetails:
+              'I dettagli fanno la differenza: maestri artigiani per la posa di parquet in rovere massello o prefinito, controsoffitti con gole di luce LED integrate, tinteggiature lavabili, smalti ecologici e resine decorative per pavimenti e pareti.',
             features: [
               'Posa e levigatura parquet tradizionale e prefinito',
-              'Imbiancature civili, industriali e decorativi',
-              'Opere in cartongesso fonoassorbenti e REI',
+              'Imbiancature civili, industriali e decorativi materici',
+              'Opere in cartongesso fonoassorbenti, botole a scomparsa e pareti REI',
             ],
           },
         ],

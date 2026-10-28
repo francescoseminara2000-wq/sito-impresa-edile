@@ -42,17 +42,22 @@ export interface BeforeAfterContent {
   details?: { label: string; value: string }[];
 }
 
+export interface ServiceItem {
+  id?: string;
+  iconName?: string;
+  title: string;
+  description: string;
+  features: string[];
+  badge?: string;
+  imageUrl?: string;
+  fullDetails?: string;
+}
+
 export interface ServicesGridContent {
   tagline?: string;
   title: string;
   description?: string;
-  services: {
-    iconName?: string;
-    title: string;
-    description: string;
-    features: string[];
-    image?: string;
-  }[];
+  services: ServiceItem[];
 }
 
 export interface ProjectsShowcaseContent {
