@@ -141,12 +141,13 @@ Sito impresa edile/
 
 ---
 
-### 4.3 Cursore Personalizzato "Studio Architettura" ([CustomCursor.tsx](file:///c:/Users/franc/Documents/Antigravity/Sito%20impresa%20edile/frontend/src/components/ui/CustomCursor.tsx))
-- **Puntino di Precisione:** Micro-dot centrale terracotta `#C2783B` con rendering hardware-accelerated.
-- **Anello Trailing Fluido:** Anello con inerzia elastica (`framer-motion` spring: stiffness 350, damping 25) che insegue il puntatore.
-- **Micro-Mirino Tecnico su Elementi Cliccabili:** Al passaggio su link, pulsanti o card, l'anello si espande di 1.6x, assume uno sfondo ambrato e fa apparire una crocetta tecnica da mirino.
-- **Click Feedback:** Effetto contrazione elastica alla pressione del mouse.
-- **Auto-Disabilitazione Touch:** Rileva automaticamente schermi touch per disattivarsi ed evitare conflitti su smartphone e tablet.
+### 4.3 Cursore Personalizzato "Distanziometro Laser da Cantiere" ([CustomCursor.tsx](file:///c:/Users/franc/Documents/Antigravity/Sito%20impresa%20edile/frontend/src/components/ui/CustomCursor.tsx))
+- **Diodo Laser Rosso di Precisione:** Micro-dot laser ad alta luminosità con glow ottico (`#ef4444`) a latenza zero.
+- **Reticolo Ottico a 4 Quadranti:** Cerchio con tacche di mira ortogonali che segue fluidamente il puntatore con fisica a molla (`stiffness: 380, damping: 24`).
+- **HUD Digitale con Misurazione Metrica Live:** Mini display LCD da cantiere in sovrimpressione che calcola e aggiorna in tempo reale la quota metrica percorsa dal mouse (es. `0.00 m`, `1.45 m`, `2.80 m`).
+- **Target Lock Intelligente:** Al passaggio su elementi cliccabili (link, bottoni, card), il mirino si stringe con rotazione a 45°, passa istantaneamente dal rosso laser a un verde smeraldo ottico (`#10b981`) e visualizza lo stato `TARGET LOCK`.
+- **Rilievo al Click (Impulso Laser):** Alla pressione del mouse, azzera la quota metrica simulando una misurazione di cantiere ed emette un'onda d'urto laser circolare ad espansione rapida.
+- **Auto-Disabilitazione Touch:** Rileva automaticamente schermi touch (`pointer: coarse`) per disattivarsi ed evitare conflitti su smartphone e tablet.
 
 ---
 
