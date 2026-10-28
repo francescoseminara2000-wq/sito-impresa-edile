@@ -33,10 +33,36 @@ export const App: React.FC = () => {
     fetch('/api/pages/home')
       .then((res) => (res.ok ? res.json() : null))
       .then((data) => {
+        const defaultSections = getBmgDefaultSections();
         if (data && data.sections && data.sections.length > 0) {
-          setSections(data.sections);
+          // Verifica se la sezione SERVICES_GRID è presente nel DB
+          const hasServices = data.sections.some((s: PageSectionData) => s.type === 'SERVICES_GRID');
+          const hasProjects = data.sections.some((s: PageSectionData) => s.type === 'PROJECTS_SHOWCASE');
+
+          let mergedSections = [...data.sections];
+
+          if (!hasServices) {
+            const defServices = defaultSections.find((s) => s.type === 'SERVICES_GRID');
+            if (defServices) {
+              mergedSections.splice(2, 0, defServices);
+            }
+          }
+
+          if (!hasProjects) {
+            const defProjects = defaultSections.find((s) => s.type === 'PROJECTS_SHOWCASE');
+            if (defProjects) {
+              const insertIdx = mergedSections.findIndex((s) => s.type === 'CTA_FORM');
+              if (insertIdx !== -1) {
+                mergedSections.splice(insertIdx, 0, defProjects);
+              } else {
+                mergedSections.push(defProjects);
+              }
+            }
+          }
+
+          setSections(mergedSections);
         } else {
-          setSections(getBmgDefaultSections());
+          setSections(defaultSections);
         }
       })
       .catch(() => {

@@ -21,8 +21,69 @@ const iconMap: Record<string, React.ReactNode> = {
   Sparkles: <Sparkles className="w-6 h-6 text-brand-terracotta" />,
 };
 
+const fallbackServices: ServiceItem[] = [
+  {
+    iconName: 'Building2',
+    badge: 'Civile & Industriale',
+    imageUrl: '/images/cantieri/cantiere-10.jpg',
+    title: 'Costruzioni Civili ed Industriali',
+    description: 'Realizzazione di nuovi fabbricati, ampliamenti, capannoni industriali e ville con strutture in cemento armato, muratura o acciaio.',
+    fullDetails: 'Dalla progettazione esecutiva e scavi di fondazione fino al grezzo avanzato e alle opere di finitura. Gestiamo commesse sia per privati sia per aziende con collaudi statici e conformità sismica.',
+    features: ['Nuove costruzioni residenziali e produttive', 'Interventi strutturali, sottomurazioni e consolidamenti', 'Scavi, fondazioni in c.a. e recinzioni perimetrali'],
+  },
+  {
+    iconName: 'Home',
+    badge: 'Chiavi in Mano',
+    imageUrl: '/images/cantieri/cantiere-04.jpg',
+    title: 'Ristrutturazioni Complete (Civili & Industriali)',
+    description: 'Riqualificazione completa di appartamenti, uffici, negozi e complessi industriali: demolizioni, impianti e finiture.',
+    fullDetails: 'Affidandoti a BMG Srl hai un unico interlocutore responsabile per l\'intero cantiere: dalla demolizione controllata alla posa pavimenti e certificazioni.',
+    features: ['Demolizioni controllate e smaltimento a norma', 'Rifacimento completo bagni, cucine e ambienti', 'Opere in cartongesso e pareti termiche'],
+  },
+  {
+    iconName: 'Layers',
+    badge: 'Detrazione Fiscale',
+    imageUrl: '/images/cantieri/cantiere-06.jpg',
+    title: 'Manutenzione Condomini & Facciate',
+    description: 'Interventi di manutenzione ordinaria e straordinaria per condomini e stabili: ripristino frontalini, balconi, tetti e cappotti termici certificati.',
+    fullDetails: 'Collaboriamo con amministratori di condominio in tutta la provincia di Monza Brianza e Milano per cappotti termici certificati e risanamento facciate.',
+    features: ['Isolamento a cappotto termico certificato', 'Manutenzione programmata per stabili', 'Ripristino intonaci e impermeabilizzazioni'],
+  },
+  {
+    iconName: 'Zap',
+    badge: 'Certificato Di.Co.',
+    imageUrl: '/images/cantieri/cantiere-03.jpg',
+    title: 'Impianti Elettrici ed Idraulici',
+    description: 'Progettazione, posa e collaudo di impianti tecnologici civili ed industriali con rilascio di dichiarazione di conformità a regola d\'arte.',
+    fullDetails: 'Impianti radianti a pavimento, pompe di calore, canalizzazioni climatizzazione, quadri elettrici industriali e domotica residenziale.',
+    features: ['Impianti elettrici completi e quadri', 'Impianti idrosanitari, riscaldamento e condizionamento', 'Adeguamento normativo e rilascio Di.Co.'],
+  },
+  {
+    iconName: 'Maximize2',
+    badge: 'Isolamento Termico',
+    imageUrl: '/images/cantieri/cantiere-07.jpg',
+    title: 'Fornitura e Posa Serramenti & Recinzioni',
+    description: 'Installazione di serramenti ad alto isolamento termoacustico (PVC, alluminio, legno) e realizzazione di recinzioni civili ed industriali.',
+    fullDetails: 'Sostituzione infissi con certificazione termica per detrazioni fiscali. Fornitura e posa di finestre scorrevoli, persiane blindate e recinzioni.',
+    features: ['Posa certificata serramenti termoisolanti', 'Recinzioni perimetrali e cancelli carrai', 'Abbattimento termoacustico garantito'],
+  },
+  {
+    iconName: 'Paintbrush',
+    badge: 'Finiture di Pregio',
+    imageUrl: '/images/cantieri/cantiere-05.jpg',
+    title: 'Finiture: Cartongesso, Imbiancature & Parquet',
+    description: 'Cura meticolosa delle finiture interne: controsoffitti, velette di design, tinteggiature professionali, posa e levigatura parquet.',
+    fullDetails: 'Maestri artigiani per la posa di parquet in rovere massello o prefinito, velette LED a gola, tinteggiature lavabili e resine decorative.',
+    features: ['Posa e levigatura parquet tradizionale e prefinito', 'Imbiancature civili ed industriali', 'Opere in cartongesso fonoassorbenti e REI'],
+  },
+];
+
 export const ServicesGridBlock: React.FC<{ content: ServicesGridContent }> = ({ content }) => {
   const [selectedService, setSelectedService] = useState<ServiceItem | null>(null);
+
+  const servicesList = (content?.services && content.services.length > 0)
+    ? content.services
+    : fallbackServices;
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -52,12 +113,12 @@ export const ServicesGridBlock: React.FC<{ content: ServicesGridContent }> = ({ 
         {/* Intestazione Sezione */}
         <div className="max-w-3xl mb-16">
           <span className="text-xs uppercase tracking-widest font-bold text-brand-terracotta mb-2 block">
-            {content.tagline || 'Competenza Globale in Cantiere'}
+            {content?.tagline || 'Competenza Globale in Cantiere'}
           </span>
           <h2 className="text-3xl sm:text-5xl font-bold tracking-tight mb-4 text-brand-dark font-display">
-            {content.title || 'I Nostri Servizi'}
+            {content?.title || 'I Nostri Servizi'}
           </h2>
-          {content.description && (
+          {content?.description && (
             <p className="text-base sm:text-lg text-gray-600 leading-relaxed">
               {content.description}
             </p>
@@ -72,7 +133,7 @@ export const ServicesGridBlock: React.FC<{ content: ServicesGridContent }> = ({ 
           viewport={{ once: true, margin: '-80px' }}
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
         >
-          {content.services && content.services.map((service, index) => (
+          {servicesList.map((service, index) => (
             <motion.div
               key={service.id || index}
               variants={itemVariants}
