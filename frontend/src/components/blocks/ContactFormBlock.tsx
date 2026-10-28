@@ -76,7 +76,7 @@ export const ContactFormBlock: React.FC<{ content: CtaFormContent }> = ({ conten
   };
 
   return (
-    <section id="preventivo" className="py-24 bg-brand-dark text-white relative overflow-hidden">
+    <section id="preventivo" className="py-24 bg-brand-dark text-white relative overflow-hidden scroll-mt-20">
       {/* Texture decorativa geometrica di sfondo */}
       <div className="absolute inset-0 opacity-5 pointer-events-none bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:24px_24px]" />
 

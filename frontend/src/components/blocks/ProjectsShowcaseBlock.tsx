@@ -228,7 +228,7 @@ export const ProjectsShowcaseBlock: React.FC<{ content?: any }> = ({ content }) 
       : projects.filter((p) => p.category === selectedCategory);
 
   return (
-    <section id="cantieri" className="py-24 bg-white text-brand-dark relative">
+    <section id="cantieri" className="py-24 bg-white text-brand-dark relative scroll-mt-20">
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
         
         {/* Intestazione e Categorie */}

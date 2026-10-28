@@ -4,7 +4,7 @@ import { StatsContent } from '../../types/blocks';
 
 export const StatsBlock: React.FC<{ content: StatsContent }> = ({ content }) => {
   return (
-    <section className="py-20 bg-brand-dark text-white border-y border-white/10 relative overflow-hidden">
+    <section id="chi-siamo" className="py-20 bg-brand-dark text-white border-y border-white/10 relative overflow-hidden scroll-mt-20">
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12 text-center">
           {content.stats.map((stat, idx) => (

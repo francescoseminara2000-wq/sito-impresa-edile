@@ -34,7 +34,7 @@ export const ServicesGridBlock: React.FC<{ content: ServicesGridContent }> = ({ 
   };
 
   return (
-    <section id="servizi" className="py-24 bg-brand-surface text-brand-dark">
+    <section id="servizi" className="py-24 bg-brand-surface text-brand-dark scroll-mt-20">
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
         {/* Intestazione Sezione */}
         <div className="max-w-2xl mb-16">
