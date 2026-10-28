@@ -22,47 +22,51 @@ export const Header: React.FC = () => {
   const [hoveredNav, setHoveredNav] = useState<string | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
+  // Monitora scroll progress, stato scrolled e traccia dinamicamente la sezione attiva
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
       setScrolled(currentScrollY > 30);
 
-      if (currentScrollY < 180) {
-        setActiveSection('');
-      }
-
       const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
       if (totalHeight > 0) {
         setScrollProgress(Math.min(100, Math.max(0, (currentScrollY / totalHeight) * 100)));
       }
+
+      // Rilevamento continuo e affidabile della sezione attiva allo scroll
+      const headerOffset = 220; // Offset visivo sotto l'header
+      let activeId = '';
+
+      // Controlla dall'ultimo al primo per selezionare la sezione visibile corretta
+      for (let i = NAV_ITEMS.length - 1; i >= 0; i--) {
+        const item = NAV_ITEMS[i];
+        const el = document.getElementById(item.id);
+        if (el) {
+          const rect = el.getBoundingClientRect();
+          if (rect.top <= headerOffset) {
+            activeId = item.id;
+            break;
+          }
+        }
+      }
+
+      // Se siamo nella Hero in cima alla pagina, nessuna voce è selezionata
+      if (currentScrollY < 200) {
+        activeId = '';
+      }
+
+      setActiveSection(activeId);
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
+    // Esegui anche un controllo iniziale e un ritardo per quando i componenti asincroni finiscono il render
     handleScroll();
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+    const timer = setTimeout(handleScroll, 400);
 
-  // Scrollspy per rilevare la sezione visibile
-  useEffect(() => {
-    const observerCallback: IntersectionObserverCallback = (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          setActiveSection(entry.target.id);
-        }
-      });
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      clearTimeout(timer);
     };
-
-    const observer = new IntersectionObserver(observerCallback, {
-      rootMargin: '-25% 0px -60% 0px',
-      threshold: 0,
-    });
-
-    NAV_ITEMS.forEach((item) => {
-      const el = document.getElementById(item.id);
-      if (el) observer.observe(el);
-    });
-
-    return () => observer.disconnect();
   }, []);
 
   return (
@@ -102,7 +106,7 @@ export const Header: React.FC = () => {
               />
             </a>
 
-            {/* Navigazione Desktop con Sliding Pill Indicator magnetico */}
+            {/* Navigazione Desktop con Sliding Pill Indicator magnetico nello stesso blu scuro del tema (#0f172a) */}
             <nav
               className="hidden md:flex items-center gap-1.5 relative p-1 rounded-full bg-gray-100/80 border border-gray-200/50"
               onMouseLeave={() => setHoveredNav(null)}
@@ -110,6 +114,7 @@ export const Header: React.FC = () => {
               {NAV_ITEMS.map((item) => {
                 const isActive = activeSection === item.id;
                 const isHovered = hoveredNav === item.id;
+                // La chip si illumina se il mouse è sopra, oppure sulla sezione attualmente in vista durante lo scroll
                 const isHighlighted = isHovered || (isActive && !hoveredNav);
 
                 return (
@@ -122,15 +127,15 @@ export const Header: React.FC = () => {
                     } ${
                       isHighlighted
                         ? 'text-white font-bold'
-                        : 'text-gray-700 hover:text-blue-600'
+                        : 'text-gray-700 hover:text-[#0f172a]'
                     }`}
                   >
-                    {/* Chip blu magnetico animato: scivola fluidamente sul link attivo o su quello puntato col mouse */}
+                    {/* Chip animato nel blu scuro profondo del tema (#0f172a / #111827) */}
                     {isHighlighted && (
                       <motion.div
-                        layoutId="navActiveBlueChip"
-                        className="absolute inset-0 bg-blue-600 rounded-full -z-10 shadow-md shadow-blue-500/35"
-                        transition={{ type: 'spring', stiffness: 450, damping: 30 }}
+                        layoutId="navThemeDarkChip"
+                        className="absolute inset-0 bg-[#0f172a] rounded-full -z-10 shadow-md shadow-slate-900/30"
+                        transition={{ type: 'spring', stiffness: 420, damping: 28 }}
                       />
                     )}
 
@@ -228,8 +233,8 @@ export const Header: React.FC = () => {
                     onClick={() => setMobileMenuOpen(false)}
                     className={`px-4 py-3 rounded-2xl text-sm font-semibold transition-all flex items-center justify-between ${
                       isActive
-                        ? 'bg-blue-600 text-white font-bold shadow-md shadow-blue-500/25'
-                        : 'text-gray-800 hover:bg-blue-50 hover:text-blue-600'
+                        ? 'bg-[#0f172a] text-white font-bold shadow-md shadow-slate-900/25'
+                        : 'text-gray-800 hover:bg-slate-100 hover:text-[#0f172a]'
                     }`}
                   >
                     <span>{item.name}</span>
