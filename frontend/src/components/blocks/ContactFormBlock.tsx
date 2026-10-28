@@ -1,367 +1,134 @@
-import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Send, CheckCircle2, AlertCircle, PhoneCall, Clock, ShieldCheck, Sparkles } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
+import { Sparkles, PhoneCall, Clock, ShieldCheck, FileCheck, ArrowRight, CheckCircle2 } from 'lucide-react';
 import { CtaFormContent } from '../../types/blocks';
-import { InteractiveQuoteWizard } from '../ui/InteractiveQuoteWizard';
-import confetti from 'canvas-confetti';
+import { QuoteModal } from '../ui/QuoteModal';
 
 export const ContactFormBlock: React.FC<{ content: CtaFormContent }> = ({ content }) => {
-  const serviceOptions = content.servicesOptions || [
-    'Ristrutturazione Completa',
-    'Restauro Conservativo',
-    'Nuova Costruzione Villa',
-    'Ampliamento / Sopraelevazione',
-    'Riqualificazione Energetica (Cappotto/Tetto)',
-    'Ristrutturazione Commerciale / Showroom',
-  ];
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const budgetOptions = content.budgetOptions || [
-    '50.000€ - 100.000€',
-    '100.000€ - 250.000€',
-    '250.000€ - 500.000€',
-    'Oltre 500.000€',
-  ];
+  // Ascolta l'evento personalizzato 'open-quote-modal' se scatenato da altri pulsanti del sito
+  useEffect(() => {
+    const handleOpenModal = () => setIsModalOpen(true);
+    window.addEventListener('open-quote-modal', handleOpenModal);
 
-  const [selectedService, setSelectedService] = useState<string>(serviceOptions[0]);
-  const [selectedBudget, setSelectedBudget] = useState<string>(budgetOptions[1]);
-  const [fullName, setFullName] = useState('');
-  const [email, setEmail] = useState('');
-  const [phone, setPhone] = useState('');
-  const [location, setLocation] = useState('');
-  const [message, setMessage] = useState('');
-  const [formMode, setFormMode] = useState<'wizard' | 'quick'>('wizard');
-
-  const [loading, setLoading] = useState(false);
-  const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle');
-  const [errorMessage, setErrorMessage] = useState('');
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setStatus('idle');
-    setErrorMessage('');
-
-    try {
-      const response = await fetch('/api/quotes', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          fullName,
-          email,
-          phone,
-          serviceType: selectedService,
-          budgetRange: selectedBudget,
-          location,
-          message,
-        }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Si è verificato un errore.');
-      }
-
-      setStatus('success');
-      confetti({
-        particleCount: 80,
-        spread: 70,
-        origin: { y: 0.6 },
-        colors: ['#c2783b', '#d97706', '#fbbf24', '#ffffff'],
-      });
-      setFullName('');
-      setEmail('');
-      setPhone('');
-      setLocation('');
-      setMessage('');
-    } catch (err: any) {
-      setStatus('error');
-      setErrorMessage(err.message || 'Errore durante l\'invio. Riprova più tardi.');
-    } finally {
-      setLoading(false);
+    // Controlla se la pagina è stata caricata con hash #preventivo-modal
+    if (window.location.hash === '#preventivo-modal') {
+      setIsModalOpen(true);
     }
-  };
+
+    return () => {
+      window.removeEventListener('open-quote-modal', handleOpenModal);
+    };
+  }, []);
 
   return (
-    <section id="preventivo" className="py-24 bg-brand-dark text-white relative overflow-hidden scroll-mt-20">
-      {/* Texture decorativa geometrica di sfondo */}
-      <div className="absolute inset-0 opacity-5 pointer-events-none bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:24px_24px]" />
+    <section id="preventivo" className="py-20 sm:py-28 bg-[#0b0f19] text-white relative overflow-hidden scroll-mt-20">
+      {/* Sfondo geometrico discreto ed elegante con texture architettonica */}
+      <div className="absolute inset-0 opacity-[0.04] pointer-events-none bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:24px_24px]" />
+      
+      {/* Glow d'atmosfera sottile alle estremità */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[350px] bg-brand-terracotta/10 blur-[120px] rounded-full pointer-events-none" />
 
-      <div className="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16">
-          {/* Colonna Informativa e Rassicurazione */}
-          <div className="lg:col-span-5 flex flex-col justify-between">
-            <div>
-              <span className="text-xs uppercase tracking-widest font-bold text-brand-terracotta mb-2 block">
-                Contatto Diretto & Sopralluogo
-              </span>
-              <h2 className="text-3xl sm:text-5xl font-bold tracking-tight mb-6">
-                {content.title || 'Diamo Forma al Tuo Progetto'}
-              </h2>
-              <p className="text-base text-brand-subtle mb-8 leading-relaxed">
-                {content.subtitle ||
-                  'Richiedi una consulenza preliminare e un sopralluogo tecnico senza impegno. Analizzeremo fattibilità, computo metrico e cronoprogramma dei lavori.'}
-              </p>
+      <div className="max-w-6xl mx-auto px-6 lg:px-8 relative z-10">
+        {/* Card Principale Call-to-Action Premium */}
+        <div className="relative bg-gradient-to-b from-white/[0.07] to-white/[0.02] border border-white/10 rounded-3xl p-8 sm:p-14 lg:p-16 backdrop-blur-xl shadow-2xl overflow-hidden">
+          {/* Linea luminosa superiore ad accento terracotta */}
+          <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-brand-terracotta to-transparent opacity-80" />
 
-              <div className="space-y-6 pt-4 border-t border-white/10">
-                <div className="flex items-start gap-4">
-                  <div className="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center shrink-0">
-                    <Clock className="w-5 h-5 text-brand-terracotta" />
-                  </div>
-                  <div>
-                    <h4 className="text-sm font-semibold text-white">Risposta Entro 24 Ore</h4>
-                    <p className="text-xs text-brand-subtle mt-0.5">
-                      Un nostro ingegnere o geometra dedicato analizzerà la tua richiesta e ti ricontatterà rapidamente.
-                    </p>
-                  </div>
-                </div>
+          <div className="text-center max-w-3xl mx-auto mb-12 sm:mb-14">
+            {/* Tag Kicker Minimalista */}
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-brand-terracotta/15 border border-brand-terracotta/30 text-amber-300 text-xs font-bold uppercase tracking-widest mb-6">
+              <span className="w-1.5 h-1.5 rounded-full bg-brand-terracotta animate-pulse" />
+              <span>Sopralluogo Tecnico & Preventivo Gratuito</span>
+            </div>
 
-                <div className="flex items-start gap-4">
-                  <div className="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center shrink-0">
-                    <ShieldCheck className="w-5 h-5 text-brand-terracotta" />
-                  </div>
-                  <div>
-                    <h4 className="text-sm font-semibold text-white">Trasparenza Contrattuale & Garanzie</h4>
-                    <p className="text-xs text-brand-subtle mt-0.5">
-                      Prezzi bloccati a computo metrico, polizza decennale postuma e gestione completa di pratiche edilizie edili.
-                    </p>
-                  </div>
-                </div>
+            <h2 className="text-3xl sm:text-5xl font-black tracking-tight text-white mb-6 leading-tight font-display">
+              {content.title || 'Diamo Forma al Tuo Progetto'}
+            </h2>
 
-                <div className="flex items-start gap-4">
-                  <div className="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center shrink-0">
-                    <PhoneCall className="w-5 h-5 text-brand-terracotta" />
-                  </div>
-                  <div>
-                    <h4 className="text-sm font-semibold text-white">Centralino Ufficio Tecnico</h4>
-                    <p className="text-xs text-brand-subtle mt-0.5 font-mono">
-                      +39 02 8900 1234 • Dal lunedì al venerdì (08:30 - 18:30)
-                    </p>
-                  </div>
-                </div>
+            <p className="text-base sm:text-lg text-slate-300 leading-relaxed font-normal">
+              {content.subtitle ||
+                'Pianifichiamo il tuo cantiere con rigore ingegneristico, computo metrico dettagliato e prezzi bloccati a contratto. Richiedi una stima preliminare in pochi clic.'}
+            </p>
+
+            {/* Pulsanti di Azione Diretti */}
+            <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
+              <motion.button
+                onClick={() => setIsModalOpen(true)}
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.98 }}
+                className="relative group overflow-hidden w-full sm:w-auto inline-flex items-center justify-center gap-3 px-8 py-4.5 rounded-2xl bg-gradient-to-r from-brand-terracotta via-[#b3672d] to-[#9c5724] text-white font-extrabold text-sm sm:text-base uppercase tracking-wider shadow-glow-terracotta hover:shadow-2xl transition-all cursor-pointer"
+              >
+                {/* Animazione Shimmer continua */}
+                <span className="absolute inset-0 w-1/2 h-full bg-white/20 skew-x-12 -translate-x-full group-hover:translate-x-[280%] transition-transform duration-1000 ease-out" />
+                
+                <Sparkles className="w-4 h-4 text-amber-200 group-hover:rotate-12 transition-transform shrink-0" />
+                <span className="relative z-10">Compila Richiesta Preventivo</span>
+                <ArrowRight className="w-4 h-4 text-white group-hover:translate-x-1 transition-transform shrink-0" />
+              </motion.button>
+
+              <motion.a
+                href="tel:+393485696125"
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-6 py-4.5 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 text-slate-200 hover:text-white font-semibold text-sm transition-all"
+              >
+                <PhoneCall className="w-4 h-4 text-brand-terracotta shrink-0" />
+                <span>Ufficio Tecnico: <strong className="text-white font-mono font-bold">+39 348 569 6125</strong></span>
+              </motion.a>
+            </div>
+
+            <p className="mt-4 text-xs text-slate-400">
+              Nessun impegno d'acquisto • Sopralluogo sul posto sempre gratuito in Lombardia
+            </p>
+          </div>
+
+          {/* 3 Garanzie Chiave Strutturate in Griglia Pulita */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-10 border-t border-white/10">
+            <div className="flex items-start gap-4 p-4 rounded-2xl bg-white/[0.02] border border-white/5">
+              <div className="w-10 h-10 rounded-xl bg-brand-terracotta/20 border border-brand-terracotta/30 flex items-center justify-center shrink-0">
+                <Clock className="w-5 h-5 text-amber-300" />
+              </div>
+              <div>
+                <h4 className="text-sm font-bold text-white mb-1">Risposta Entro 24 Ore</h4>
+                <p className="text-xs text-slate-400 leading-relaxed">
+                  Un tecnico o geometra abilitato analizza i requisiti e ti contatta per concordare l'eventuale visita.
+                </p>
               </div>
             </div>
 
-            <div className="mt-8 pt-6 border-t border-white/10 text-xs text-brand-subtle">
-              Trattamento dati nel pieno rispetto del GDPR (UE 2016/679). Nessun invio di spam.
-            </div>
-          </div>
-
-          {/* Form Interattivo ad Alta Conversione con Switcher */}
-          <div className="lg:col-span-7">
-            {/* Selettore Modalità: Step-by-Step vs Rapido */}
-            <div className="flex items-center gap-2 mb-4 bg-white/5 p-1.5 rounded-2xl border border-white/10">
-              <button
-                type="button"
-                onClick={() => setFormMode('wizard')}
-                className={`flex-1 py-2.5 px-3 rounded-xl text-xs font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-2 ${
-                  formMode === 'wizard'
-                    ? 'bg-brand-terracotta text-white shadow-glow-terracotta'
-                    : 'text-gray-400 hover:text-white hover:bg-white/5'
-                }`}
-              >
-                <Sparkles className="w-3.5 h-3.5" />
-                <span>Configuratore Guidato (Step-by-Step)</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setFormMode('quick')}
-                className={`flex-1 py-2.5 px-3 rounded-xl text-xs font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-2 ${
-                  formMode === 'quick'
-                    ? 'bg-brand-terracotta text-white shadow-glow-terracotta'
-                    : 'text-gray-400 hover:text-white hover:bg-white/5'
-                }`}
-              >
-                <Send className="w-3.5 h-3.5" />
-                <span>Modulo Rapido Diretto</span>
-              </button>
+            <div className="flex items-start gap-4 p-4 rounded-2xl bg-white/[0.02] border border-white/5">
+              <div className="w-10 h-10 rounded-xl bg-brand-terracotta/20 border border-brand-terracotta/30 flex items-center justify-center shrink-0">
+                <FileCheck className="w-5 h-5 text-amber-300" />
+              </div>
+              <div>
+                <h4 className="text-sm font-bold text-white mb-1">Computo a Prezzo Bloccato</h4>
+                <p className="text-xs text-slate-400 leading-relaxed">
+                  Preventivazione dettagliata voce per voce. Prezzo garantito a contratto senza costi imprevisti.
+                </p>
+              </div>
             </div>
 
-            {formMode === 'wizard' ? (
-              <InteractiveQuoteWizard />
-            ) : (
-            <div className="bg-white/5 backdrop-blur-xl border border-white/10 p-8 sm:p-10 rounded-3xl shadow-2xl">
-              <AnimatePresence mode="wait">
-                {status === 'success' ? (
-                  <motion.div
-                    key="success"
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0 }}
-                    className="py-12 text-center"
-                  >
-                    <div className="w-16 h-16 bg-emerald-500/20 text-emerald-400 rounded-full flex items-center justify-center mx-auto mb-6">
-                      <CheckCircle2 className="w-10 h-10" />
-                    </div>
-                    <h3 className="text-2xl font-bold text-white mb-3">Richiesta Ricevuta con Successo!</h3>
-                    <p className="text-sm text-brand-subtle max-w-md mx-auto mb-8">
-                      Abbiamo preso in carico la tua richiesta e inviato un'email di riepilogo. Un nostro responsabile tecnico ti contatterà al più presto.
-                    </p>
-                    <button
-                      onClick={() => setStatus('idle')}
-                      className="px-6 py-2.5 rounded-xl bg-brand-terracotta text-white font-semibold text-sm hover:bg-[#a85e2b] transition-colors"
-                    >
-                      Invia un'altra richiesta
-                    </button>
-                  </motion.div>
-                ) : (
-                  <motion.form
-                    key="form"
-                    onSubmit={handleSubmit}
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    className="space-y-6"
-                  >
-                    {/* Chip Selezione Tipo Intervento */}
-                    <div>
-                      <label className="block text-xs font-semibold uppercase tracking-wider text-brand-terracotta mb-3">
-                        1. Che tipo di intervento intendi realizzare? *
-                      </label>
-                      <div className="flex flex-wrap gap-2">
-                        {serviceOptions.map((srv) => (
-                          <button
-                            type="button"
-                            key={srv}
-                            onClick={() => setSelectedService(srv)}
-                            className={`px-3.5 py-2 rounded-xl text-xs font-semibold transition-all ${
-                              selectedService === srv
-                                ? 'bg-brand-terracotta text-white shadow-glow-terracotta'
-                                : 'bg-white/10 text-gray-300 hover:bg-white/20'
-                            }`}
-                          >
-                            {srv}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Chip Selezione Budget Indicativo */}
-                    <div>
-                      <label className="block text-xs font-semibold uppercase tracking-wider text-brand-terracotta mb-3">
-                        2. Fascia di Budget Previsto
-                      </label>
-                      <div className="flex flex-wrap gap-2">
-                        {budgetOptions.map((bgt) => (
-                          <button
-                            type="button"
-                            key={bgt}
-                            onClick={() => setSelectedBudget(bgt)}
-                            className={`px-3.5 py-2 rounded-xl text-xs font-semibold transition-all ${
-                              selectedBudget === bgt
-                                ? 'bg-white text-brand-dark font-bold'
-                                : 'bg-white/10 text-gray-300 hover:bg-white/20'
-                            }`}
-                          >
-                            {bgt}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Campi Anagrafici Ordinati */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      <div>
-                        <label className="block text-xs font-medium text-gray-300 mb-1.5">
-                          Nome e Cognome *
-                        </label>
-                        <input
-                          type="text"
-                          required
-                          value={fullName}
-                          onChange={(e) => setFullName(e.target.value)}
-                          placeholder="es. Marco Rossi"
-                          className="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/15 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-terracotta text-sm"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-xs font-medium text-gray-300 mb-1.5">
-                          Recapito Telefonico *
-                        </label>
-                        <input
-                          type="tel"
-                          required
-                          value={phone}
-                          onChange={(e) => setPhone(e.target.value)}
-                          placeholder="es. +39 340 1234567"
-                          className="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/15 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-terracotta text-sm"
-                        />
-                      </div>
-                    </div>
-
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      <div>
-                        <label className="block text-xs font-medium text-gray-300 mb-1.5">
-                          Indirizzo Email *
-                        </label>
-                        <input
-                          type="email"
-                          required
-                          value={email}
-                          onChange={(e) => setEmail(e.target.value)}
-                          placeholder="es. marco.rossi@email.it"
-                          className="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/15 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-terracotta text-sm"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-xs font-medium text-gray-300 mb-1.5">
-                          Comune / Provincia del Cantiere
-                        </label>
-                        <input
-                          type="text"
-                          value={location}
-                          onChange={(e) => setLocation(e.target.value)}
-                          placeholder="es. Monza e Brianza"
-                          className="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/15 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-terracotta text-sm"
-                        />
-                      </div>
-                    </div>
-
-                    {/* Descrizione Progetto */}
-                    <div>
-                      <label className="block text-xs font-medium text-gray-300 mb-1.5">
-                        Dettagli dell'Intervento / Note *
-                      </label>
-                      <textarea
-                        rows={3}
-                        required
-                        value={message}
-                        onChange={(e) => setMessage(e.target.value)}
-                        placeholder="Descrivi brevemente lo stato attuale dell'immobile, le tempistiche desiderate o particolari esigenze tecniche..."
-                        className="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/15 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-terracotta text-sm resize-none"
-                      />
-                    </div>
-
-                    {status === 'error' && (
-                      <div className="flex items-center gap-2 p-3 rounded-xl bg-red-500/20 border border-red-500/30 text-red-300 text-xs">
-                        <AlertCircle className="w-4 h-4 shrink-0" />
-                        <span>{errorMessage}</span>
-                      </div>
-                    )}
-
-                    {/* Pulsante Invio */}
-                    <button
-                      type="submit"
-                      disabled={loading}
-                      className="w-full py-4 rounded-xl bg-brand-terracotta hover:bg-[#a85e2b] text-white font-bold text-sm tracking-wide uppercase shadow-glow-terracotta flex items-center justify-center gap-2 transition-all disabled:opacity-50"
-                    >
-                      {loading ? (
-                        <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                      ) : (
-                        <>
-                          <span>Richiedi Sopralluogo Gratuito</span>
-                          <Send className="w-4 h-4" />
-                        </>
-                      )}
-                    </button>
-                  </motion.form>
-                )}
-              </AnimatePresence>
+            <div className="flex items-start gap-4 p-4 rounded-2xl bg-white/[0.02] border border-white/5">
+              <div className="w-10 h-10 rounded-xl bg-brand-terracotta/20 border border-brand-terracotta/30 flex items-center justify-center shrink-0">
+                <ShieldCheck className="w-5 h-5 text-amber-300" />
+              </div>
+              <div>
+                <h4 className="text-sm font-bold text-white mb-1">Garanzie & Assicurazioni</h4>
+                <p className="text-xs text-slate-400 leading-relaxed">
+                  Polizza decennale postuma, DURC regolare e maestranze interne regolarmente inquadrate.
+                </p>
+              </div>
             </div>
-            )}
           </div>
         </div>
       </div>
+
+      {/* Modal Dedicata con il Configuratore Guidato e il Modulo Rapido */}
+      <QuoteModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </section>
   );
 };
+
+export default ContactFormBlock;
