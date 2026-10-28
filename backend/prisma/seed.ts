@@ -47,8 +47,8 @@ async function main() {
           isVisible: true,
           content: {
             badge: 'Impresa Edile d\'Eccellenza • Garanzia Decennale',
-            title: 'Architettura d\'Autore e',
-            highlightedWord: 'Precisione Costruttiva',
+            title: 'Architettura d\'Autore',
+            highlightedWord: '& Precisione Costruttiva',
             subtitle:
               'Dalla ristrutturazione conservativa di dimore storiche alla realizzazione di ville moderne a impatto zero: trasformiamo ogni progetto in un\'opera d\'arte duratura.',
             primaryCtaText: 'Richiedi un Sopralluogo',

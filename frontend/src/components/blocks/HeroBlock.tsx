@@ -1,10 +1,18 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { ArrowUpRight, ShieldCheck, Hammer, ChevronDown, Sparkles } from 'lucide-react';
+import { ArrowUpRight, Hammer, ChevronDown, Sparkles } from 'lucide-react';
 import { HeroContent } from '../../types/blocks';
 import { CountUp } from '../ui/CountUp';
 
 export const HeroBlock: React.FC<{ content: HeroContent }> = ({ content }) => {
+  // Pulizia e formattazione tipografica per evitare congiunzioni orfane su una riga da sole
+  const rawTitle = (content.title || 'Architettura d\'Autore').trim();
+  const endsWithAnd = /\s+e$/i.test(rawTitle);
+  const cleanTitle = rawTitle.replace(/\s+e$/i, '').trim();
+
+  const rawHighlight = (content.highlightedWord || 'Precisione Costruttiva').trim();
+  const cleanHighlight = endsWithAnd ? `& ${rawHighlight}` : rawHighlight;
+
   // Varianti per animazione testo con reveal progressivo
   const titleContainerVariants = {
     hidden: { opacity: 0 },
@@ -79,41 +87,24 @@ export const HeroBlock: React.FC<{ content: HeroContent }> = ({ content }) => {
 
       <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-8 w-full my-auto">
         <div className="max-w-3xl">
-          {/* Badge Territoriale con Micro-bagliore Animato */}
-          <motion.div
-            initial={{ opacity: 0, y: -18 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.1 }}
-            className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-white/[0.08] backdrop-blur-xl border border-white/15 text-xs sm:text-sm font-semibold text-amber-200 mb-6 shadow-sm hover:border-brand-terracotta/40 transition-colors group cursor-default"
-          >
-            <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
-            </span>
-            <ShieldCheck className="w-4 h-4 text-brand-terracotta shrink-0 group-hover:scale-110 transition-transform" />
-            <span>{content.badge || 'BMG S.r.l. • Impresa Edile Caponago (MB)'}</span>
-          </motion.div>
-
-          {/* Titolo Principale ad Altissimo Impatto Tipografico */}
+          {/* Titolo Principale ad Altissimo Impatto Tipografico (senza elementi orfani o badge ingombranti) */}
           <motion.div
             variants={titleContainerVariants}
             initial="hidden"
             animate="visible"
             className="overflow-hidden mb-6"
           >
-            <h1 className="text-4xl sm:text-6xl xl:text-7xl font-black tracking-tight leading-[1.05] font-display">
+            <h1 className="text-4xl sm:text-6xl xl:text-7xl font-black tracking-tight leading-[1.08] font-display">
               <span className="block overflow-hidden py-1">
                 <motion.span variants={textItemVariants} className="block text-white">
-                  {content.title}
+                  {cleanTitle}
                 </motion.span>
               </span>
-              {content.highlightedWord && (
-                <span className="block overflow-hidden py-1 text-transparent bg-clip-text bg-gradient-to-r from-brand-terracotta via-amber-300 to-amber-100">
-                  <motion.span variants={textItemVariants} className="block">
-                    {content.highlightedWord}
-                  </motion.span>
-                </span>
-              )}
+              <span className="block overflow-hidden py-1 text-transparent bg-clip-text bg-gradient-to-r from-brand-terracotta via-amber-300 to-amber-100">
+                <motion.span variants={textItemVariants} className="block">
+                  {cleanHighlight}
+                </motion.span>
+              </span>
             </h1>
           </motion.div>
 
@@ -121,7 +112,7 @@ export const HeroBlock: React.FC<{ content: HeroContent }> = ({ content }) => {
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
+            transition={{ duration: 0.8, delay: 0.35 }}
             className="text-base sm:text-lg text-slate-300 max-w-2xl font-normal leading-relaxed mb-9"
           >
             {content.subtitle}
@@ -131,7 +122,7 @@ export const HeroBlock: React.FC<{ content: HeroContent }> = ({ content }) => {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.6 }}
+            transition={{ duration: 0.8, delay: 0.55 }}
             className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4"
           >
             <motion.a
@@ -167,7 +158,7 @@ export const HeroBlock: React.FC<{ content: HeroContent }> = ({ content }) => {
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.8 }}
+            transition={{ duration: 0.8, delay: 0.75 }}
             className="mt-14 p-6 sm:p-7 rounded-2xl bg-white/[0.04] backdrop-blur-xl border border-white/10 shadow-2xl grid grid-cols-2 md:grid-cols-4 gap-6 relative overflow-hidden"
           >
             {/* Sottile riflesso orizzontale in testata */}
@@ -194,7 +185,7 @@ export const HeroBlock: React.FC<{ content: HeroContent }> = ({ content }) => {
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 1.1, duration: 0.8 }}
+        transition={{ delay: 1, duration: 0.8 }}
         className="absolute bottom-2.5 left-1/2 -translate-x-1/2 flex flex-col items-center gap-0.5 text-[10px] text-slate-400 uppercase tracking-widest pointer-events-none"
       >
         <motion.div
