@@ -188,7 +188,7 @@ export const BeforeAfterBlock: React.FC<{ content?: BeforeAfterContent }> = ({ c
                 />
               </div>
               <p className="text-center text-xs text-gray-500 mt-4 flex items-center justify-center gap-2 font-medium">
-                <span>✨</span> Arriva al centro con lo scroll per la trasformazione totale, oppure clicca sull'immagine <span>✨</span>
+                <span>✨</span> Trascina la levetta per confrontare i dettagli, oppure clicca sui badge Prima / Dopo <span>✨</span>
               </p>
             </div>
           </motion.div>
