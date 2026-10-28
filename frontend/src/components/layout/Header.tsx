@@ -16,7 +16,6 @@ const NAV_ITEMS: NavItem[] = [
 ];
 
 export const Header: React.FC = () => {
-  const [scrolled, setScrolled] = useState(false);
   const [scrollProgress, setScrollProgress] = useState(0);
   const [activeSection, setActiveSection] = useState<string>('');
   const [hoveredNav, setHoveredNav] = useState<string | null>(null);
@@ -25,8 +24,6 @@ export const Header: React.FC = () => {
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
-      setScrolled(currentScrollY > 40);
-
       const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
       if (totalHeight > 0) {
         setScrollProgress(Math.min(100, Math.max(0, (currentScrollY / totalHeight) * 100)));
@@ -63,51 +60,36 @@ export const Header: React.FC = () => {
 
   return (
     <>
-      {/* Wrapper fisso in alto con animazione di posizione */}
+      {/* Header fisso con larghezza stabile, ampia ed elegante */}
       <motion.header
         initial={{ y: -30, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-        className="fixed top-0 left-0 right-0 z-50 pointer-events-none flex justify-center px-3 sm:px-6 pt-3 sm:pt-4"
+        className="fixed top-0 left-0 right-0 z-50 pointer-events-none flex justify-center px-4 sm:px-8 pt-3 sm:pt-4"
       >
-        {/* Floating Island: si allarga all'inizio e si restringe/compatta allo scroll */}
-        <motion.div
-          layout
-          transition={{
-            type: 'spring',
-            stiffness: 280,
-            damping: 28,
-            mass: 0.8,
-          }}
-          className={`pointer-events-auto relative w-full transition-all duration-300 overflow-hidden ${
-            scrolled
-              ? 'max-w-4xl rounded-full bg-white/92 backdrop-blur-2xl shadow-[0_18px_50px_-10px_rgba(0,0,0,0.22)] border border-gray-200/90 py-2 sm:py-2.5 px-4 sm:px-6'
-              : 'max-w-7xl rounded-2xl sm:rounded-full bg-white/95 backdrop-blur-xl shadow-[0_12px_40px_-12px_rgba(0,0,0,0.12)] border border-white/90 py-3.5 sm:py-5 px-5 sm:px-9'
-          }`}
+        <div
+          className="pointer-events-auto relative w-full max-w-7xl rounded-full bg-white/95 backdrop-blur-2xl shadow-[0_12px_40px_-8px_rgba(0,0,0,0.14)] border border-gray-200/80 py-3 sm:py-3.5 px-5 sm:px-8 overflow-hidden transition-shadow"
         >
           {/* Riflesso luminoso superiore (vetro satinato premium) */}
-          <div className="absolute inset-x-0 top-0 h-[1px] bg-gradient-to-r from-transparent via-white to-transparent opacity-80" />
+          <div className="absolute inset-x-0 top-0 h-[1px] bg-gradient-to-r from-transparent via-white to-transparent opacity-90" />
 
-          <div className="flex items-center justify-between gap-4">
-            {/* Logo BMG con animazione di ridimensionamento fluido */}
+          <div className="flex items-center justify-between gap-6">
+            {/* Logo BMG grande e stabile */}
             <a
               href="/"
               className="flex items-center shrink-0 group focus:outline-none"
               aria-label="BMG Costruzioni Home"
             >
-              <motion.img
-                layout
+              <img
                 src="/logo.png"
                 alt="BMG Costruzioni"
-                className={`w-auto object-contain transition-all duration-300 group-hover:scale-103 ${
-                  scrolled ? 'h-7 sm:h-8' : 'h-9 sm:h-12'
-                }`}
+                className="h-10 sm:h-12 w-auto object-contain transition-transform duration-300 group-hover:scale-103"
               />
             </a>
 
-            {/* Navigazione Desktop con Sliding Pill Indicator */}
+            {/* Navigazione Desktop con Sliding Pill Indicator magnetico */}
             <nav
-              className="hidden md:flex items-center gap-1 sm:gap-1.5 relative p-1 rounded-full bg-gray-100/70 border border-gray-200/40"
+              className="hidden md:flex items-center gap-1.5 relative p-1.5 rounded-full bg-gray-100/80 border border-gray-200/50"
               onMouseLeave={() => setHoveredNav(null)}
             >
               {NAV_ITEMS.map((item) => {
@@ -119,9 +101,7 @@ export const Header: React.FC = () => {
                     key={item.id}
                     href={item.href}
                     onMouseEnter={() => setHoveredNav(item.id)}
-                    className={`relative z-10 px-4 py-1.5 rounded-full font-semibold transition-colors duration-200 ${
-                      scrolled ? 'text-xs' : 'text-xs sm:text-sm'
-                    } ${
+                    className={`relative z-10 px-5 py-2 rounded-full font-semibold text-xs sm:text-sm tracking-wide transition-colors duration-200 ${
                       isActive
                         ? 'text-white'
                         : isHovered
@@ -153,45 +133,36 @@ export const Header: React.FC = () => {
               })}
             </nav>
 
-            {/* Quick Actions (Telefono con animazione live + CTA Shimmer) */}
-            <div className="hidden sm:flex items-center gap-3">
-              {/* Telefono con punto verde pulsante */}
+            {/* Quick Actions su riga singola senza compressioni */}
+            <div className="hidden sm:flex items-center gap-4 shrink-0">
+              {/* Telefono con punto verde pulsante su riga singola */}
               <motion.a
-                layout
                 href="tel:+393485696125"
                 whileHover={{ scale: 1.03 }}
-                className={`flex items-center gap-2 rounded-full font-semibold text-gray-700 hover:text-brand-terracotta hover:bg-gray-100/80 transition-all ${
-                  scrolled
-                    ? 'px-2.5 py-1 text-xs'
-                    : 'px-3.5 py-1.5 text-xs sm:text-sm bg-gray-50/80 border border-gray-200/60 shadow-2xs'
-                }`}
+                whileTap={{ scale: 0.97 }}
+                className="flex items-center gap-2.5 px-4 py-2 rounded-full font-semibold text-xs sm:text-sm text-gray-800 bg-gray-50/90 hover:bg-gray-100 border border-gray-200/80 shadow-2xs transition-all whitespace-nowrap"
               >
                 <span className="relative flex h-2 w-2">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
                   <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
                 </span>
-                <Phone className={scrolled ? 'w-3 h-3 text-brand-terracotta' : 'w-3.5 h-3.5 text-brand-terracotta'} />
-                <span className="font-mono tracking-tight">+39 348 569 6125</span>
+                <Phone className="w-3.5 h-3.5 text-brand-terracotta shrink-0" />
+                <span className="font-mono tracking-tight font-bold">+39 348 569 6125</span>
               </motion.a>
 
-              {/* Pulsante CTA con Shimmer luminoso e gradiente dinamico */}
+              {/* Pulsante CTA con Shimmer luminoso e gradiente dinamico su riga singola */}
               <motion.a
-                layout
                 href="#preventivo"
-                whileHover={{ scale: 1.04 }}
-                whileTap={{ scale: 0.96 }}
-                className={`relative group overflow-hidden inline-flex items-center gap-1.5 rounded-full text-white font-bold tracking-wide uppercase transition-all shadow-glow-terracotta bg-gradient-to-r from-brand-terracotta via-[#b3672d] to-[#9c5724] ${
-                  scrolled
-                    ? 'px-4 py-1.5 text-[11px]'
-                    : 'px-6 py-2.5 text-xs shadow-md'
-                }`}
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.97 }}
+                className="relative group overflow-hidden inline-flex items-center gap-2 px-6 py-2.5 rounded-full text-white font-bold text-xs tracking-wider uppercase transition-all shadow-glow-terracotta bg-gradient-to-r from-brand-terracotta via-[#b3672d] to-[#9c5724] hover:shadow-lg whitespace-nowrap"
               >
                 {/* Animazione Shimmer continua ad onda di luce */}
                 <span className="absolute inset-0 w-1/2 h-full bg-white/25 skew-x-12 -translate-x-full group-hover:translate-x-[250%] transition-transform duration-1000 ease-out" />
                 
-                <Sparkles className="w-3.5 h-3.5 relative z-10 transition-transform duration-300 group-hover:rotate-12" />
+                <Sparkles className="w-3.5 h-3.5 relative z-10 transition-transform duration-300 group-hover:rotate-12 shrink-0" />
                 <span className="relative z-10">Richiedi Preventivo</span>
-                <ArrowUpRight className="w-3.5 h-3.5 relative z-10 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                <ArrowUpRight className="w-3.5 h-3.5 relative z-10 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 shrink-0" />
               </motion.a>
             </div>
 
@@ -199,7 +170,7 @@ export const Header: React.FC = () => {
             <div className="flex sm:hidden items-center gap-2">
               <a
                 href="tel:+393485696125"
-                className="p-2 rounded-full text-brand-terracotta bg-brand-terracotta/10 hover:bg-brand-terracotta/20 transition-colors"
+                className="p-2.5 rounded-full text-brand-terracotta bg-brand-terracotta/10 hover:bg-brand-terracotta/20 transition-colors"
                 aria-label="Chiama"
               >
                 <Phone className="w-4 h-4" />
@@ -208,22 +179,22 @@ export const Header: React.FC = () => {
               <button
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                 aria-label="Apri Menu"
-                className="p-2 rounded-full text-gray-800 hover:bg-gray-100 transition-colors"
+                className="p-2.5 rounded-full text-gray-800 hover:bg-gray-100 transition-colors"
               >
                 {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
               </button>
             </div>
           </div>
 
-          {/* Sottile indicatore di scroll (Hairline Progress) integrato sul bordo inferiore della capsula */}
-          <div className="absolute inset-x-0 bottom-0 h-[2px] bg-gray-100 overflow-hidden">
+          {/* Sottile indicatore di scroll (Hairline Progress) integrato sul bordo inferiore */}
+          <div className="absolute inset-x-0 bottom-0 h-[2.5px] bg-gray-100/60 overflow-hidden">
             <motion.div
               className="h-full bg-gradient-to-r from-brand-terracotta via-amber-500 to-brand-terracotta"
               style={{ width: `${scrollProgress}%` }}
               transition={{ ease: 'easeOut', duration: 0.1 }}
             />
           </div>
-        </motion.div>
+        </div>
       </motion.header>
 
       {/* Menu Mobile con animazione morbida di comparsa */}
@@ -234,7 +205,7 @@ export const Header: React.FC = () => {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: -10 }}
             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-            className="fixed top-20 left-4 right-4 z-40 sm:hidden bg-white/95 backdrop-blur-2xl rounded-3xl shadow-2xl border border-gray-200/80 p-5 overflow-hidden"
+            className="fixed top-20 left-4 right-4 z-40 sm:hidden bg-white/98 backdrop-blur-2xl rounded-3xl shadow-2xl border border-gray-200 p-5 overflow-hidden"
           >
             <div className="flex flex-col gap-1.5">
               {NAV_ITEMS.map((item) => (
