@@ -1,225 +1,194 @@
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Check, ArrowRight, Home, Building2, Paintbrush, Hammer, 
-  Zap, Wrench, Layers, Maximize2, Flame, Sparkles, Info 
+  Zap, Wrench, Layers, Maximize2, Flame, Sparkles, Info, ShieldCheck, Sparkle 
 } from 'lucide-react';
 import { ServicesGridContent, ServiceItem } from '../../types/blocks';
 import { SpotlightCard } from '../ui/SpotlightCard';
 import { ServiceDetailModal } from '../ui/ServiceDetailModal';
+import { BMG_ALL_SERVICES, SERVICE_CATEGORIES, BmgFullService } from '../../data/bmgServices';
 
 const iconMap: Record<string, React.ReactNode> = {
-  Home: <Home className="w-6 h-6 text-brand-terracotta" />,
-  Building2: <Building2 className="w-6 h-6 text-brand-terracotta" />,
-  Paintbrush: <Paintbrush className="w-6 h-6 text-brand-terracotta" />,
-  Hammer: <Hammer className="w-6 h-6 text-brand-terracotta" />,
-  Zap: <Zap className="w-6 h-6 text-brand-terracotta" />,
-  Wrench: <Wrench className="w-6 h-6 text-brand-terracotta" />,
-  Layers: <Layers className="w-6 h-6 text-brand-terracotta" />,
-  Maximize2: <Maximize2 className="w-6 h-6 text-brand-terracotta" />,
-  Flame: <Flame className="w-6 h-6 text-brand-terracotta" />,
-  Sparkles: <Sparkles className="w-6 h-6 text-brand-terracotta" />,
+  Home: <Home className="w-5 h-5 text-brand-terracotta" />,
+  Building2: <Building2 className="w-5 h-5 text-brand-terracotta" />,
+  Paintbrush: <Paintbrush className="w-5 h-5 text-brand-terracotta" />,
+  Hammer: <Hammer className="w-5 h-5 text-brand-terracotta" />,
+  Zap: <Zap className="w-5 h-5 text-brand-terracotta" />,
+  Wrench: <Wrench className="w-5 h-5 text-brand-terracotta" />,
+  Layers: <Layers className="w-5 h-5 text-brand-terracotta" />,
+  Maximize2: <Maximize2 className="w-5 h-5 text-brand-terracotta" />,
+  ShieldCheck: <ShieldCheck className="w-5 h-5 text-brand-terracotta" />,
+  Flame: <Flame className="w-5 h-5 text-brand-terracotta" />,
+  Sparkles: <Sparkles className="w-5 h-5 text-brand-terracotta" />,
 };
 
-const fallbackServices: ServiceItem[] = [
-  {
-    iconName: 'Building2',
-    badge: 'Civile & Industriale',
-    imageUrl: '/images/cantieri/cantiere-10.jpg',
-    title: 'Costruzioni Civili ed Industriali',
-    description: 'Realizzazione di nuovi fabbricati, ampliamenti, capannoni industriali e ville con strutture in cemento armato, muratura o acciaio.',
-    fullDetails: 'Dalla progettazione esecutiva e scavi di fondazione fino al grezzo avanzato e alle opere di finitura. Gestiamo commesse sia per privati sia per aziende con collaudi statici e conformità sismica.',
-    features: ['Nuove costruzioni residenziali e produttive', 'Interventi strutturali, sottomurazioni e consolidamenti', 'Scavi, fondazioni in c.a. e recinzioni perimetrali'],
-  },
-  {
-    iconName: 'Home',
-    badge: 'Chiavi in Mano',
-    imageUrl: '/images/cantieri/cantiere-04.jpg',
-    title: 'Ristrutturazioni Complete (Civili & Industriali)',
-    description: 'Riqualificazione completa di appartamenti, uffici, negozi e complessi industriali: demolizioni, impianti e finiture.',
-    fullDetails: 'Affidandoti a BMG Srl hai un unico interlocutore responsabile per l\'intero cantiere: dalla demolizione controllata alla posa pavimenti e certificazioni.',
-    features: ['Demolizioni controllate e smaltimento a norma', 'Rifacimento completo bagni, cucine e ambienti', 'Opere in cartongesso e pareti termiche'],
-  },
-  {
-    iconName: 'Layers',
-    badge: 'Detrazione Fiscale',
-    imageUrl: '/images/cantieri/cantiere-06.jpg',
-    title: 'Manutenzione Condomini & Facciate',
-    description: 'Interventi di manutenzione ordinaria e straordinaria per condomini e stabili: ripristino frontalini, balconi, tetti e cappotti termici certificati.',
-    fullDetails: 'Collaboriamo con amministratori di condominio in tutta la provincia di Monza Brianza e Milano per cappotti termici certificati e risanamento facciate.',
-    features: ['Isolamento a cappotto termico certificato', 'Manutenzione programmata per stabili', 'Ripristino intonaci e impermeabilizzazioni'],
-  },
-  {
-    iconName: 'Zap',
-    badge: 'Certificato Di.Co.',
-    imageUrl: '/images/cantieri/cantiere-03.jpg',
-    title: 'Impianti Elettrici ed Idraulici',
-    description: 'Progettazione, posa e collaudo di impianti tecnologici civili ed industriali con rilascio di dichiarazione di conformità a regola d\'arte.',
-    fullDetails: 'Impianti radianti a pavimento, pompe di calore, canalizzazioni climatizzazione, quadri elettrici industriali e domotica residenziale.',
-    features: ['Impianti elettrici completi e quadri', 'Impianti idrosanitari, riscaldamento e condizionamento', 'Adeguamento normativo e rilascio Di.Co.'],
-  },
-  {
-    iconName: 'Maximize2',
-    badge: 'Isolamento Termico',
-    imageUrl: '/images/cantieri/cantiere-07.jpg',
-    title: 'Fornitura e Posa Serramenti & Recinzioni',
-    description: 'Installazione di serramenti ad alto isolamento termoacustico (PVC, alluminio, legno) e realizzazione di recinzioni civili ed industriali.',
-    fullDetails: 'Sostituzione infissi con certificazione termica per detrazioni fiscali. Fornitura e posa di finestre scorrevoli, persiane blindate e recinzioni.',
-    features: ['Posa certificata serramenti termoisolanti', 'Recinzioni perimetrali e cancelli carrai', 'Abbattimento termoacustico garantito'],
-  },
-  {
-    iconName: 'Paintbrush',
-    badge: 'Finiture di Pregio',
-    imageUrl: '/images/cantieri/cantiere-05.jpg',
-    title: 'Finiture: Cartongesso, Imbiancature & Parquet',
-    description: 'Cura meticolosa delle finiture interne: controsoffitti, velette di design, tinteggiature professionali, posa e levigatura parquet.',
-    fullDetails: 'Maestri artigiani per la posa di parquet in rovere massello o prefinito, velette LED a gola, tinteggiature lavabili e resine decorative.',
-    features: ['Posa e levigatura parquet tradizionale e prefinito', 'Imbiancature civili ed industriali', 'Opere in cartongesso fonoassorbenti e REI'],
-  },
-];
-
-export const ServicesGridBlock: React.FC<{ content: ServicesGridContent }> = ({ content }) => {
+export const ServicesGridBlock: React.FC<{ content?: ServicesGridContent }> = ({ content }) => {
   const [selectedService, setSelectedService] = useState<ServiceItem | null>(null);
+  const [activeCategory, setActiveCategory] = useState<string>('all');
 
-  const servicesList = (content?.services && content.services.length > 0)
-    ? content.services
-    : fallbackServices;
+  // Filtra i servizi in base alla categoria attiva
+  const filteredServices = activeCategory === 'all'
+    ? BMG_ALL_SERVICES
+    : BMG_ALL_SERVICES.filter((s) => s.category === activeCategory);
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.12,
-      },
-    },
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 30 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.6,
-        ease: 'easeOut',
-      },
-    },
+  const handleOpenQuote = (serviceTitle: string) => {
+    // Invia evento personalizzato per aprire direttamente la QuoteModal con il servizio selezionato
+    window.dispatchEvent(new CustomEvent('open-quote-modal', { detail: { service: serviceTitle } }));
+    
+    // Scorri fluidamente verso la sezione preventivo se necessario
+    const preventivoSection = document.getElementById('preventivo');
+    if (preventivoSection) {
+      preventivoSection.scrollIntoView({ behavior: 'smooth' });
+    }
   };
 
   return (
-    <section id="servizi" className="py-24 bg-brand-surface text-brand-dark scroll-mt-20">
-      <div className="max-w-7xl mx-auto px-6 lg:px-8">
+    <section id="servizi" className="py-24 bg-[#0d131f] text-white scroll-mt-20 relative overflow-hidden">
+      {/* Texture geometrica di sfondo */}
+      <div className="absolute inset-0 opacity-[0.03] pointer-events-none bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:24px_24px]" />
+      
+      {/* Glow ambientale caldo */}
+      <div className="absolute top-1/4 right-0 w-96 h-96 bg-brand-terracotta/10 blur-[140px] rounded-full pointer-events-none" />
+      <div className="absolute bottom-1/4 left-0 w-96 h-96 bg-brand-terracotta/10 blur-[140px] rounded-full pointer-events-none" />
+
+      <div className="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
         {/* Intestazione Sezione */}
-        <div className="max-w-3xl mb-16">
-          <span className="text-xs uppercase tracking-widest font-bold text-brand-terracotta mb-2 block">
-            {content?.tagline || 'Competenza Globale in Cantiere'}
-          </span>
-          <h2 className="text-3xl sm:text-5xl font-bold tracking-tight mb-4 text-brand-dark font-display">
-            {content?.title || 'I Nostri Servizi'}
+        <div className="max-w-3xl mb-12">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-terracotta/15 border border-brand-terracotta/30 text-amber-300 text-xs font-bold uppercase tracking-wider mb-4">
+            <Sparkle className="w-3.5 h-3.5 text-brand-terracotta" />
+            <span>13 Ambiti di Specializzazione Diretta</span>
+          </div>
+          
+          <h2 className="text-3xl sm:text-5xl font-black tracking-tight text-white mb-5 font-display leading-tight">
+            {content?.title || 'Tutti i Servizi & Lavori di BMG Srl'}
           </h2>
-          {content?.description && (
-            <p className="text-base sm:text-lg text-gray-600 leading-relaxed">
-              {content.description}
-            </p>
-          )}
+          
+          <p className="text-base sm:text-lg text-slate-300 leading-relaxed font-normal">
+            {content?.description ||
+              'Dalle grandi opere strutturali alle finiture d\'interni più ricercate: operiamo con maestranze interne qualificate, macchinari all\'avanguardia e garanzia totale su ogni lavorazione a Monza Brianza e Milano.'}
+          </p>
         </div>
 
-        {/* Griglia Servizi con Stagger e 3D Tilt */}
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: '-80px' }}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+        {/* Barra Filtri Categorie Dinamica */}
+        <div className="flex items-center gap-2 overflow-x-auto pb-4 mb-12 scrollbar-none">
+          {SERVICE_CATEGORIES.map((cat) => {
+            const isActive = activeCategory === cat.id;
+            return (
+              <button
+                key={cat.id}
+                type="button"
+                onClick={() => setActiveCategory(cat.id)}
+                className={`px-4.5 py-2.5 rounded-2xl text-xs font-bold uppercase tracking-wider whitespace-nowrap transition-all flex items-center gap-2 cursor-pointer ${
+                  isActive
+                    ? 'bg-gradient-to-r from-brand-terracotta to-[#a85e2b] text-white shadow-glow-terracotta scale-[1.02]'
+                    : 'bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white border border-white/10'
+                }`}
+              >
+                <span>{cat.label}</span>
+                <span className={`px-2 py-0.5 rounded-full text-[10px] font-mono ${
+                  isActive ? 'bg-black/25 text-amber-200' : 'bg-white/10 text-slate-400'
+                }`}>
+                  {cat.count}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Griglia delle 13 Schede Servizi con Immagine Simbolo Generata */}
+        <motion.div 
+          layout
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7 sm:gap-8"
         >
-          {servicesList.map((service, index) => (
-            <motion.div
-              key={service.id || index}
-              variants={itemVariants}
-            >
-              <SpotlightCard className="h-full bg-white rounded-3xl p-7 sm:p-8 shadow-sm hover:shadow-2xl border border-brand-stone/70 transition-all flex flex-col justify-between group">
-                <div>
-                  {/* Foto anteprima opzionale */}
-                  {service.imageUrl && (
-                    <div className="h-44 -mx-7 -mt-7 sm:-mx-8 sm:-mt-8 mb-6 overflow-hidden rounded-t-3xl relative">
+          <AnimatePresence>
+            {filteredServices.map((service, index) => (
+              <motion.div
+                key={service.id}
+                layout
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                transition={{ duration: 0.35, delay: index * 0.04 }}
+                className="h-full"
+              >
+                <SpotlightCard className="h-full bg-slate-900/80 rounded-3xl p-6 sm:p-7 shadow-xl hover:shadow-2xl border border-white/10 hover:border-brand-terracotta/40 transition-all flex flex-col justify-between group backdrop-blur-sm">
+                  <div>
+                    {/* Immagine Simbolo Rappresentativa Generata ad Alta Risoluzione */}
+                    <div className="h-48 -mx-6 -mt-6 sm:-mx-7 sm:-mt-7 mb-5 overflow-hidden rounded-t-3xl relative bg-slate-950">
                       <img
                         src={service.imageUrl}
                         alt={service.title}
-                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-108"
+                        loading="lazy"
+                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-108"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
+                      {/* Gradient overlay per leggibilità */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/30 to-transparent" />
+                      
+                      {/* Badge Categoria / Caratteristica */}
                       {service.badge && (
-                        <span className="absolute top-4 right-4 px-3 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-brand-terracotta text-white shadow-md">
+                        <span className="absolute top-3.5 right-3.5 px-3 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-brand-terracotta text-white shadow-lg backdrop-blur-md">
                           {service.badge}
                         </span>
                       )}
-                    </div>
-                  )}
 
-                  {/* Header Card (Icona e Badge se non c'è foto) */}
-                  <div className="flex items-center justify-between mb-5">
-                    <div className="w-14 h-14 rounded-2xl bg-amber-50/80 border border-brand-terracotta/20 flex items-center justify-center group-hover:bg-brand-terracotta/15 group-hover:scale-110 transition-all duration-300">
-                      {service.iconName && iconMap[service.iconName] ? (
-                        iconMap[service.iconName]
-                      ) : (
-                        <Building2 className="w-6 h-6 text-brand-terracotta" />
-                      )}
+                      {/* Icona in sovraimpressione elegante */}
+                      <div className="absolute bottom-3 left-4 w-11 h-11 rounded-xl bg-slate-950/80 backdrop-blur-md border border-white/15 flex items-center justify-center shadow-md">
+                        {iconMap[service.iconName] || <Building2 className="w-5 h-5 text-brand-terracotta" />}
+                      </div>
                     </div>
 
-                    {!service.imageUrl && service.badge && (
-                      <span className="px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider bg-brand-terracotta/10 text-brand-terracotta border border-brand-terracotta/20">
-                        {service.badge}
-                      </span>
+                    {/* Titolo del Servizio */}
+                    <h3 className="text-xl font-extrabold text-white group-hover:text-amber-300 transition-colors mb-2.5 leading-snug">
+                      {service.title}
+                    </h3>
+
+                    {/* Descrizione Breve e Chiara */}
+                    <p className="text-xs sm:text-sm text-slate-300 mb-5 leading-relaxed line-clamp-3 font-normal">
+                      {service.description}
+                    </p>
+
+                    {/* 3 Caratteristiche Tecniche con Spunta */}
+                    {service.features && service.features.length > 0 && (
+                      <ul className="space-y-2 mb-6 border-t border-white/10 pt-4">
+                        {service.features.map((feat, fIdx) => (
+                          <li key={fIdx} className="flex items-start gap-2 text-xs text-slate-300">
+                            <Check className="w-4 h-4 text-brand-terracotta shrink-0 mt-0.5" />
+                            <span className="leading-snug">{feat}</span>
+                          </li>
+                        ))}
+                      </ul>
                     )}
                   </div>
 
-                  {/* Titolo e Descrizione Breve */}
-                  <h3 className="text-xl font-bold mb-3 text-brand-dark group-hover:text-brand-terracotta transition-colors leading-snug">
-                    {service.title}
-                  </h3>
-                  <p className="text-sm text-gray-600 mb-6 leading-relaxed line-clamp-3">
-                    {service.description}
-                  </p>
+                  {/* Azioni Scheda: Dettagli Modale + Preventivo Veloce */}
+                  <div className="pt-4 border-t border-white/10 flex items-center justify-between gap-3 mt-auto">
+                    <button
+                      type="button"
+                      onClick={() => setSelectedService(service)}
+                      className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-300 hover:text-white transition-colors py-2 cursor-pointer"
+                    >
+                      <Info className="w-4 h-4 text-brand-terracotta" />
+                      <span>Scheda Tecnica</span>
+                    </button>
 
-                  {/* Punti di Forza (Features) */}
-                  {service.features && service.features.length > 0 && (
-                    <ul className="space-y-2 mb-8 border-t border-gray-100 pt-4">
-                      {service.features.slice(0, 3).map((feat, fIdx) => (
-                        <li key={fIdx} className="flex items-center gap-2 text-xs text-gray-600">
-                          <Check className="w-4 h-4 text-brand-terracotta shrink-0" />
-                          <span className="line-clamp-1">{feat}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                </div>
-
-                {/* Pulsanti Azione: Dettagli Modale + Preventivo Rapido */}
-                <div className="pt-3 border-t border-gray-100 flex items-center justify-between gap-2">
-                  <button
-                    onClick={() => setSelectedService(service)}
-                    className="inline-flex items-center gap-1.5 text-xs font-bold text-gray-700 hover:text-brand-terracotta transition-colors py-1.5"
-                  >
-                    <Info className="w-4 h-4 text-brand-terracotta" />
-                    <span>Dettagli</span>
-                  </button>
-
-                  <button
-                    onClick={() => setSelectedService(service)}
-                    className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-brand-terracotta/10 hover:bg-brand-terracotta text-brand-terracotta hover:text-white font-bold text-xs uppercase tracking-wider transition-all"
-                  >
-                    <span>Preventivo</span>
-                    <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
-                  </button>
-                </div>
-              </SpotlightCard>
-            </motion.div>
-          ))}
+                    <button
+                      type="button"
+                      onClick={() => handleOpenQuote(service.title)}
+                      className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-brand-terracotta/20 hover:bg-brand-terracotta text-amber-200 hover:text-white border border-brand-terracotta/40 hover:border-transparent font-bold text-xs uppercase tracking-wider transition-all cursor-pointer shadow-sm hover:shadow-glow-terracotta"
+                    >
+                      <span>Preventivo</span>
+                      <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+                    </button>
+                  </div>
+                </SpotlightCard>
+              </motion.div>
+            ))}
+          </AnimatePresence>
         </motion.div>
       </div>
 
-      {/* Scheda Modale con Dettagli Approfonditi del Servizio */}
+      {/* Modale con Scheda Tecnica e Dettagli Approfonditi del Servizio */}
       <ServiceDetailModal
         service={selectedService}
         isOpen={!!selectedService}
@@ -228,3 +197,5 @@ export const ServicesGridBlock: React.FC<{ content: ServicesGridContent }> = ({ 
     </section>
   );
 };
+
+export default ServicesGridBlock;

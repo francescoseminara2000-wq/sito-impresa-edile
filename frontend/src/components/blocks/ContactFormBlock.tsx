@@ -6,10 +6,16 @@ import { QuoteModal } from '../ui/QuoteModal';
 
 export const ContactFormBlock: React.FC<{ content: CtaFormContent }> = ({ content }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalService, setModalService] = useState<string | undefined>(undefined);
 
   // Ascolta l'evento personalizzato 'open-quote-modal' se scatenato da altri pulsanti del sito
   useEffect(() => {
-    const handleOpenModal = () => setIsModalOpen(true);
+    const handleOpenModal = (e: any) => {
+      if (e?.detail?.service) {
+        setModalService(e.detail.service);
+      }
+      setIsModalOpen(true);
+    };
     window.addEventListener('open-quote-modal', handleOpenModal);
 
     // Controlla se la pagina è stata caricata con hash #preventivo-modal
@@ -126,7 +132,11 @@ export const ContactFormBlock: React.FC<{ content: CtaFormContent }> = ({ conten
       </div>
 
       {/* Modal Dedicata con il Configuratore Guidato e il Modulo Rapido */}
-      <QuoteModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+      <QuoteModal 
+        isOpen={isModalOpen} 
+        onClose={() => setIsModalOpen(false)} 
+        defaultService={modalService}
+      />
     </section>
   );
 };

@@ -162,14 +162,19 @@ export const ServiceDetailModal: React.FC<ServiceDetailModalProps> = ({
 
               {/* Bottoni di Azione */}
               <div className="flex flex-col sm:flex-row items-center gap-3">
-                <a
-                  href="#preventivo"
-                  onClick={onClose}
-                  className="w-full sm:flex-1 py-3.5 px-6 rounded-xl bg-brand-terracotta hover:bg-[#a85e2b] text-white font-bold text-sm tracking-wide text-center uppercase shadow-glow-terracotta transition-all flex items-center justify-center gap-2"
+                <button
+                  type="button"
+                  onClick={() => {
+                    onClose();
+                    window.dispatchEvent(new CustomEvent('open-quote-modal', { detail: { service: service.title } }));
+                    const el = document.getElementById('preventivo');
+                    if (el) el.scrollIntoView({ behavior: 'smooth' });
+                  }}
+                  className="w-full sm:flex-1 py-3.5 px-6 rounded-xl bg-brand-terracotta hover:bg-[#a85e2b] text-white font-bold text-sm tracking-wide text-center uppercase shadow-glow-terracotta transition-all flex items-center justify-center gap-2 cursor-pointer"
                 >
                   <span>Richiedi Preventivo per questo Servizio</span>
                   <ArrowRight className="w-4 h-4" />
-                </a>
+                </button>
 
                 <a
                   href="tel:+393485696125"

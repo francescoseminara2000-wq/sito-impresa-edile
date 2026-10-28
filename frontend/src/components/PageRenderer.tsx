@@ -53,10 +53,10 @@ export const PageRenderer: React.FC<PageRendererProps> = ({ sections, previewMod
       {activeSections.map((section) => (
         <motion.div
           key={section.id}
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.1 }}
-          transition={{ duration: 0.6, ease: 'easeOut' }}
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true, margin: '150px' }}
+          transition={{ duration: 0.5 }}
           className={`relative ${previewMode && !section.isVisible ? 'opacity-40 border-2 border-dashed border-amber-500' : ''}`}
         >
           {previewMode && !section.isVisible && (

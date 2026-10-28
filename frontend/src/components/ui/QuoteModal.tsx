@@ -22,19 +22,33 @@ export const QuoteModal: React.FC<QuoteModalProps> = ({
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [location, setLocation] = useState('');
-  const [selectedService, setSelectedService] = useState(defaultService || 'Ristrutturazione Completa');
+  const [selectedService, setSelectedService] = useState(defaultService || 'Costruzioni Civili ed Industriali');
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [errorMessage, setErrorMessage] = useState('');
 
+  // Sincronizza il servizio selezionato se cambia dall'esterno
+  useEffect(() => {
+    if (defaultService) {
+      setSelectedService(defaultService);
+    }
+  }, [defaultService]);
+
   const servicesList = [
-    'Ristrutturazione Completa Chiavi in Mano',
-    'Nuova Costruzione & Opere Strutturali in C.A.',
-    'Isolamento a Cappotto & Risanamento Facciate',
-    'Manutenzione Condomini & Parti Comuni',
-    'Opere in Cartongesso, Velette & Parquet',
-    'Impianti Elettrici, Idraulici & Serramenti',
+    'Costruzioni Civili ed Industriali',
+    'Ristrutturazione Civile ed Industriale',
+    'Manutenzione Condomini',
+    'Demolizioni',
+    'Cartongesso',
+    'Imbiancature',
+    'Impianti Elettrici',
+    'Impianti Idraulici',
+    'Fornitura Posa e Serramenti',
+    'Recinzioni',
+    'Capotto',
+    'Interventi Strutturali',
+    'Posa e Levigatura Parquet',
   ];
 
   // Gestione tasto Escape e blocco scroll del body
