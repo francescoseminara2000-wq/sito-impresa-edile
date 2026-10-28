@@ -1,61 +1,67 @@
-import React, { useEffect, useState } from 'react';
-import { motion, useSpring, useMotionValue, AnimatePresence } from 'framer-motion';
-
-interface Spark {
-  id: number;
-  x: number;
-  y: number;
-  angle: number;
-}
+import React, { useEffect, useState, useRef } from 'react';
+import { motion, useSpring, useMotionValue } from 'framer-motion';
 
 export const CustomCursor: React.FC = () => {
   const [isPointer, setIsPointer] = useState(false);
-  const [isStriking, setIsStriking] = useState(false);
+  const [isClicking, setIsClicking] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const [isTouchDevice, setIsTouchDevice] = useState(false);
-  const [sparks, setSparks] = useState<Spark[]>([]);
+  const [distanceDisplay, setDistanceDisplay] = useState('0.00 m');
+  const [ripples, setRipples] = useState<{ id: number; x: number; y: number }[]>([]);
 
-  // Coordinate mouse istantanee
+  // Coordinate del mouse a latenza zero
   const mouseX = useMotionValue(-100);
   const mouseY = useMotionValue(-100);
 
-  // Inerzia fluida a molla per il martello
-  const springConfig = { damping: 28, stiffness: 450, mass: 0.4 };
-  const smoothX = useSpring(mouseX, springConfig);
-  const smoothY = useSpring(mouseY, springConfig);
+  // Inseguimento elastico e morbido per il reticolo del distanziometro
+  const smoothX = useSpring(mouseX, { damping: 26, stiffness: 340, mass: 0.35 });
+  const smoothY = useSpring(mouseY, { damping: 26, stiffness: 340, mass: 0.35 });
+
+  const accumulatedDistance = useRef(0);
+  const lastMousePos = useRef<{ x: number; y: number } | null>(null);
 
   useEffect(() => {
-    // Disabilita su dispositivi touch (smartphone, tablet)
+    // Disabilita completamente su dispositivi touch (smartphone, tablet)
     if (window.matchMedia('(pointer: coarse)').matches || 'ontouchstart' in window) {
       setIsTouchDevice(true);
       return;
     }
 
     const handleMouseMove = (e: MouseEvent) => {
-      mouseX.set(e.clientX);
-      mouseY.set(e.clientY);
+      const currentX = e.clientX;
+      const currentY = e.clientY;
+
+      mouseX.set(currentX);
+      mouseY.set(currentY);
+
       if (!isVisible) setIsVisible(true);
+
+      // Calcolo distanza metrica percorsa (scala architettonica: ~100px = 1.00m)
+      if (lastMousePos.current) {
+        const dx = currentX - lastMousePos.current.x;
+        const dy = currentY - lastMousePos.current.y;
+        const stepDist = Math.sqrt(dx * dx + dy * dy);
+        accumulatedDistance.current += stepDist;
+
+        const meters = (accumulatedDistance.current / 120).toFixed(2);
+        setDistanceDisplay(`${meters} m`);
+      }
+
+      lastMousePos.current = { x: currentX, y: currentY };
     };
 
-    const triggerStrike = () => {
-      setIsStriking(true);
+    const handleMouseDown = (e: MouseEvent) => {
+      setIsClicking(true);
+      // Genera un impulso d'onda laser al punto di rilievo
+      const newRipple = { id: Date.now(), x: e.clientX, y: e.clientY };
+      setRipples((prev) => [...prev.slice(-3), newRipple]);
 
-      // Genera 4 scintille all'impatto della testa del martello
-      const newSparks: Spark[] = [0, 60, 120, 180, 240, 300].map((angle, idx) => ({
-        id: Date.now() + idx,
-        x: mouseX.get(),
-        y: mouseY.get(),
-        angle,
-      }));
-      setSparks(newSparks);
-
-      setTimeout(() => {
-        setSparks([]);
-      }, 350);
+      // Ricalibra la misurazione a ogni click (rilievo del punto)
+      accumulatedDistance.current = 0;
+      setDistanceDisplay('0.00 m');
     };
 
-    const handleMouseDown = () => triggerStrike();
-    const handleMouseUp = () => setIsStriking(false);
+    const handleMouseUp = () => setIsClicking(false);
     const handleMouseLeave = () => setIsVisible(false);
     const handleMouseEnter = () => setIsVisible(true);
 
@@ -94,11 +100,69 @@ export const CustomCursor: React.FC = () => {
     };
   }, [isVisible, mouseX, mouseY]);
 
+  // Rimozione automatica delle onde d'urto laser finite
+  useEffect(() => {
+    if (ripples.length > 0) {
+      const timer = setTimeout(() => {
+        setRipples((prev) => prev.slice(1));
+      }, 700);
+      return () => clearTimeout(timer);
+    }
+  }, [ripples]);
+
   if (isTouchDevice || !isVisible) return null;
 
   return (
     <div className="pointer-events-none fixed inset-0 z-[9999] overflow-hidden select-none">
-      {/* 1. Puntino di precisione (Punto esatto di mira sul colpo) */}
+      {/* Onde d'urto a impulso laser emesse al click di rilievo */}
+      {ripples.map((rip) => (
+        <motion.div
+          key={rip.id}
+          initial={{ scale: 0.2, opacity: 0.9 }}
+          animate={{ scale: 3.5, opacity: 0 }}
+          transition={{ duration: 0.6, ease: 'easeOut' }}
+          style={{
+            left: rip.x,
+            top: rip.y,
+            translateX: '-50%',
+            translateY: '-50%',
+          }}
+          className="fixed w-8 h-8 rounded-full border border-red-500/80 shadow-[0_0_15px_rgba(239,68,68,0.7)]"
+        />
+      ))}
+
+      {/* 1. Mirino Esterno Ottico con Assi di Puntamento (Segue morbidamente con molla) */}
+      <motion.div
+        style={{
+          x: smoothX,
+          y: smoothY,
+          translateX: '-50%',
+          translateY: '-50%',
+        }}
+        animate={{
+          scale: isClicking ? 0.75 : isPointer ? 1.35 : 1,
+          rotate: isPointer ? 45 : 0,
+        }}
+        transition={{ type: 'spring', stiffness: 380, damping: 24 }}
+        className="fixed top-0 left-0 flex items-center justify-center pointer-events-none"
+      >
+        {/* Cerchio del reticolo ottico */}
+        <div
+          className={`w-7 h-7 rounded-full border transition-colors duration-200 flex items-center justify-center ${
+            isPointer
+              ? 'border-emerald-400 bg-emerald-500/10 shadow-[0_0_12px_rgba(16,185,129,0.5)]'
+              : 'border-red-500/60 bg-red-500/5 shadow-[0_0_10px_rgba(239,68,68,0.3)]'
+          }`}
+        >
+          {/* Micro tacche sui 4 quadranti */}
+          <div className="absolute top-0 w-[1px] h-1.5 bg-red-400/90" />
+          <div className="absolute bottom-0 w-[1px] h-1.5 bg-red-400/90" />
+          <div className="absolute left-0 h-[1px] w-1.5 bg-red-400/90" />
+          <div className="absolute right-0 h-[1px] w-1.5 bg-red-400/90" />
+        </div>
+      </motion.div>
+
+      {/* 2. Fascio di Luce Laser e Punto di Puntamento Reale (Coordinate esatte a latenza 0) */}
       <motion.div
         style={{
           x: mouseX,
@@ -107,145 +171,55 @@ export const CustomCursor: React.FC = () => {
           translateY: '-50%',
         }}
         animate={{
-          scale: isStriking ? 1.6 : isPointer ? 1.2 : 1,
-          backgroundColor: isPointer ? '#D97706' : '#C2783B',
+          scale: isClicking ? 1.8 : isPointer ? 1.4 : 1,
         }}
         transition={{ duration: 0.1 }}
-        className="w-1.5 h-1.5 rounded-full fixed top-0 left-0 shadow-[0_0_8px_rgba(194,120,59,0.9)]"
-      />
+        className="fixed top-0 left-0 pointer-events-none"
+      >
+        {/* Diodo Laser Rosso ad Altissima Luminosità */}
+        <div
+          className={`w-2 h-2 rounded-full transition-colors duration-200 ${
+            isPointer
+              ? 'bg-emerald-400 shadow-[0_0_12px_#34d399,0_0_24px_rgba(52,211,153,0.8)]'
+              : 'bg-red-500 shadow-[0_0_10px_#ef4444,0_0_20px_rgba(239,68,68,0.9)]'
+          }`}
+        />
+      </motion.div>
 
-      {/* 2. Martello Animato da Costruzione / Carpentiere */}
+      {/* 3. Display Digitale LCD del Distanziometro (Micro-HUD Tecnico Leica) */}
       <motion.div
         style={{
           x: smoothX,
           y: smoothY,
-          transformOrigin: '4px 4px', // Punto di rotazione sulla testa di battuta del martello
         }}
         animate={{
-          // Al click il martello "batte" con una rotazione verso il basso e rimbalzo elastico
-          rotate: isStriking ? -32 : isPointer ? -8 : 12,
-          scale: isStriking ? 1.15 : isPointer ? 1.1 : 1,
+          x: 18,
+          y: -24,
+          scale: isClicking ? 0.95 : 1,
         }}
-        transition={{
-          type: 'spring',
-          stiffness: isStriking ? 700 : 350,
-          damping: isStriking ? 15 : 22,
-        }}
-        className="fixed top-0 left-0 -translate-x-1 -translate-y-1 filter drop-shadow-md"
+        transition={{ type: 'spring', stiffness: 450, damping: 28 }}
+        className="fixed top-0 left-0 pointer-events-none flex flex-col items-start"
       >
-        <svg
-          width="34"
-          height="34"
-          viewBox="0 0 34 34"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          {/* Manico del martello (Legno / Terracotta materica) */}
-          <path
-            d="M8 8 L26 26"
-            stroke="url(#woodGradient)"
-            strokeWidth="3.5"
-            strokeLinecap="round"
+        <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-slate-950/85 backdrop-blur-md border border-slate-700/80 shadow-lg text-[9px] font-mono leading-none tracking-wider">
+          {/* Indicatore Stato Laser */}
+          <span
+            className={`inline-block w-1.5 h-1.5 rounded-full animate-pulse ${
+              isPointer ? 'bg-emerald-400 shadow-[0_0_6px_#34d399]' : 'bg-red-500 shadow-[0_0_6px_#ef4444]'
+            }`}
           />
 
-          {/* Dettaglio impugnatura antiscivolo */}
-          <path
-            d="M18 18 L26 26"
-            stroke="#5c381c"
-            strokeWidth="3.5"
-            strokeLinecap="round"
-            strokeDasharray="1.5 2"
-          />
-
-          {/* Testa in Acciaio Forgiato del Martello */}
-          <rect
-            x="2"
-            y="2"
-            width="12"
-            height="7"
-            rx="1.5"
-            fill="url(#steelGradient)"
-            stroke="#0f172a"
-            strokeWidth="1"
-          />
-
-          {/* Penna / Battente posteriore smussato */}
-          <path
-            d="M3 3.5 L0.5 5 L3 6.5 Z"
-            fill="#334155"
-            stroke="#0f172a"
-            strokeWidth="0.8"
-          />
-
-          {/* Fronte di battuta piatto (dove avviene il colpo) */}
-          <rect
-            x="13"
-            y="1.5"
-            width="2"
-            height="8"
-            rx="0.8"
-            fill="#cbd5e1"
-            stroke="#0f172a"
-            strokeWidth="0.8"
-          />
-
-          {/* Riflesso metallico luminoso */}
-          <line
-            x1="4"
-            y1="3.5"
-            x2="12"
-            y2="3.5"
-            stroke="white"
-            strokeWidth="0.8"
-            strokeOpacity="0.7"
-          />
-
-          {/* Gradienti SVG */}
-          <defs>
-            <linearGradient id="woodGradient" x1="8" y1="8" x2="26" y2="26" gradientUnits="userSpaceOnUse">
-              <stop stopColor="#C2783B" />
-              <stop offset="0.5" stopColor="#a35d27" />
-              <stop offset="1" stopColor="#783e15" />
-            </linearGradient>
-            <linearGradient id="steelGradient" x1="2" y1="2" x2="14" y2="9" gradientUnits="userSpaceOnUse">
-              <stop stopColor="#64748b" />
-              <stop offset="0.5" stopColor="#334155" />
-              <stop offset="1" stopColor="#1e293b" />
-            </linearGradient>
-          </defs>
-        </svg>
+          {/* Valore Digitale o Target Lock */}
+          {isPointer ? (
+            <span className="font-bold text-emerald-400 font-sans tracking-widest text-[8.5px]">
+              TARGET LOCK
+            </span>
+          ) : (
+            <span className="font-semibold text-slate-200">
+              {distanceDisplay}
+            </span>
+          )}
+        </div>
       </motion.div>
-
-      {/* 3. Scintille d'Impatto al Colpo del Martello */}
-      <AnimatePresence>
-        {sparks.map((spark) => {
-          const rad = (spark.angle * Math.PI) / 180;
-          const dist = 18;
-          const deltaX = Math.cos(rad) * dist;
-          const deltaY = Math.sin(rad) * dist;
-
-          return (
-            <motion.div
-              key={spark.id}
-              initial={{
-                x: spark.x,
-                y: spark.y,
-                scale: 1,
-                opacity: 1,
-              }}
-              animate={{
-                x: spark.x + deltaX,
-                y: spark.y + deltaY,
-                scale: 0,
-                opacity: 0,
-              }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.3, ease: 'easeOut' }}
-              className="fixed top-0 left-0 -translate-x-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-amber-400 shadow-[0_0_6px_#f59e0b]"
-            />
-          );
-        })}
-      </AnimatePresence>
     </div>
   );
 };
