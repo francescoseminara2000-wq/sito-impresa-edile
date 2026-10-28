@@ -7,6 +7,7 @@ import { WhatsAppButton } from './components/ui/WhatsAppButton';
 import { AdminDashboard } from './components/admin/AdminDashboard';
 import { PageSectionData } from './types/blocks';
 import { Images } from 'lucide-react';
+import { CustomCursor } from './components/ui/CustomCursor';
 
 export const App: React.FC = () => {
   const [sections, setSections] = useState<PageSectionData[]>([]);
@@ -89,6 +90,9 @@ export const App: React.FC = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-brand-light text-brand-dark selection:bg-brand-terracotta selection:text-white">
+      {/* Cursore Architettonico Personalizzato */}
+      <CustomCursor />
+
       <Header />
       
       <main className="flex-1">
