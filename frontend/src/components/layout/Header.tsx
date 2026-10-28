@@ -27,6 +27,10 @@ export const Header: React.FC = () => {
       const currentScrollY = window.scrollY;
       setScrolled(currentScrollY > 30);
 
+      if (currentScrollY < 180) {
+        setActiveSection('');
+      }
+
       const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
       if (totalHeight > 0) {
         setScrollProgress(Math.min(100, Math.max(0, (currentScrollY / totalHeight) * 100)));
@@ -106,6 +110,7 @@ export const Header: React.FC = () => {
               {NAV_ITEMS.map((item) => {
                 const isActive = activeSection === item.id;
                 const isHovered = hoveredNav === item.id;
+                const isHighlighted = isHovered || (isActive && !hoveredNav);
 
                 return (
                   <a
@@ -115,28 +120,17 @@ export const Header: React.FC = () => {
                     className={`relative z-10 rounded-full font-semibold tracking-wide transition-all duration-200 ${
                       scrolled ? 'px-4 py-1.5 text-xs' : 'px-5 py-2 text-xs sm:text-sm'
                     } ${
-                      isActive
-                        ? 'text-white'
-                        : isHovered
-                        ? 'text-brand-dark'
-                        : 'text-gray-600'
+                      isHighlighted
+                        ? 'text-white font-bold'
+                        : 'text-gray-700 hover:text-blue-600'
                     }`}
                   >
-                    {/* Pillola animata per l'hover che scivola da un link all'altro */}
-                    {isHovered && (
+                    {/* Chip blu magnetico animato: scivola fluidamente sul link attivo o su quello puntato col mouse */}
+                    {isHighlighted && (
                       <motion.div
-                        layoutId="navHoverPill"
-                        className="absolute inset-0 bg-white shadow-xs rounded-full -z-10"
-                        transition={{ type: 'spring', stiffness: 450, damping: 32 }}
-                      />
-                    )}
-
-                    {/* Pillola scura per la sezione attualmente attiva */}
-                    {isActive && !isHovered && (
-                      <motion.div
-                        layoutId="navActivePill"
-                        className="absolute inset-0 bg-brand-dark rounded-full -z-10 shadow-sm"
-                        transition={{ type: 'spring', stiffness: 450, damping: 32 }}
+                        layoutId="navActiveBlueChip"
+                        className="absolute inset-0 bg-blue-600 rounded-full -z-10 shadow-md shadow-blue-500/35"
+                        transition={{ type: 'spring', stiffness: 450, damping: 30 }}
                       />
                     )}
 
@@ -225,17 +219,24 @@ export const Header: React.FC = () => {
             className="fixed top-20 left-4 right-4 z-40 sm:hidden bg-white/98 backdrop-blur-2xl rounded-3xl shadow-2xl border border-gray-200 p-5 overflow-hidden"
           >
             <div className="flex flex-col gap-1.5">
-              {NAV_ITEMS.map((item) => (
-                <a
-                  key={item.id}
-                  href={item.href}
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="px-4 py-3 rounded-2xl text-sm font-semibold text-gray-800 hover:bg-brand-terracotta/10 hover:text-brand-terracotta transition-colors flex items-center justify-between"
-                >
-                  <span>{item.name}</span>
-                  <ArrowUpRight className="w-4 h-4 text-gray-400" />
-                </a>
-              ))}
+              {NAV_ITEMS.map((item) => {
+                const isActive = activeSection === item.id;
+                return (
+                  <a
+                    key={item.id}
+                    href={item.href}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className={`px-4 py-3 rounded-2xl text-sm font-semibold transition-all flex items-center justify-between ${
+                      isActive
+                        ? 'bg-blue-600 text-white font-bold shadow-md shadow-blue-500/25'
+                        : 'text-gray-800 hover:bg-blue-50 hover:text-blue-600'
+                    }`}
+                  >
+                    <span>{item.name}</span>
+                    <ArrowUpRight className={`w-4 h-4 ${isActive ? 'text-white' : 'text-gray-400'}`} />
+                  </a>
+                );
+              })}
             </div>
 
             <div className="pt-4 mt-3 border-t border-gray-100 flex flex-col gap-2.5">
