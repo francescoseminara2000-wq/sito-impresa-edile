@@ -188,7 +188,7 @@ export const BeforeAfterBlock: React.FC<{ content?: BeforeAfterContent }> = ({ c
                 />
               </div>
               <p className="text-center text-xs text-gray-500 mt-4 flex items-center justify-center gap-2 font-medium">
-                <span>◀</span> Trascina il cursore al centro per confrontare prima e dopo <span>▶</span>
+                <span>✨</span> Scorri la pagina per vedere la trasformazione animata, oppure trascina il cursore <span>✨</span>
               </p>
             </div>
           </motion.div>

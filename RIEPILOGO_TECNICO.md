@@ -182,7 +182,8 @@ All'interno dell'Area Riservata (sezione Page Builder):
   1. *Ristrutturazione Appartamento & Open-Space:* Demolizioni, massetti e posa impianti/parquet.
   2. *Isolamento a Cappotto & Facciata Condominiale:* Pannelli EPS con grafite CAM, doppia rete e intonachino silossanico.
   3. *Opere Strutturali & Cemento Armato:* Scavi, gettata di platea continua, armatura ferro B450C e collaudo statico.
-- **Aggiornamento Dinamico:** Al cambio tab si aggiornano istantaneamente le descrizioni, la checklist delle specifiche tecniche e le immagini dello slider interattivo.
+- **Animazione Automatica Guidata dallo Scroll:** La levetta divisoria scorre fluidamente da sinistra a destra con fisica a molla (`useScroll` + `useSpring`) man mano che l'utente scende lungo la pagina, svelando in tempo reale la trasformazione dal cantiere grezzo all'opera finita.
+- **Interattività Manuale Ibrida:** L'utente può comunque afferrare e trascinare la levetta in qualsiasi momento con il mouse o touch screen; il sistema riprende automaticamente la sincronizzazione con lo scroll non appena si riprende a scorrere.
 
 
 ---
