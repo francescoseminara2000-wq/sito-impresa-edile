@@ -8,6 +8,7 @@ import { AdminDashboard } from './components/admin/AdminDashboard';
 import { PageSectionData } from './types/blocks';
 import { Images } from 'lucide-react';
 import { CustomCursor } from './components/ui/CustomCursor';
+import { BackToTop } from './components/ui/BackToTop';
 
 export const App: React.FC = () => {
   const [sections, setSections] = useState<PageSectionData[]>([]);
@@ -133,6 +134,9 @@ export const App: React.FC = () => {
 
       {/* Pulsante Chat WhatsApp Moderno in Basso a Destra */}
       <WhatsAppButton />
+
+      {/* Pulsante Torna Su con anello circolare di avanzamento */}
+      <BackToTop />
 
       {/* Pulsante rapido Area Riservata in basso a sinistra */}
       <div className="fixed bottom-4 left-4 z-40">

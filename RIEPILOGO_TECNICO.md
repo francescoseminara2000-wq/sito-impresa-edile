@@ -138,6 +138,8 @@ Sito impresa edile/
    - Integrato su tutte le card dei servizi in [ServicesGridBlock.tsx](file:///c:/Users/franc/Documents/Antigravity/Sito%20impresa%20edile/frontend/src/components/blocks/ServicesGridBlock.tsx).
 3. **Esplosione di Coriandoli Celebrativi ([canvas-confetti](file:///c:/Users/franc/Documents/Antigravity/Sito%20impresa%20edile/frontend/package.json))**:
    - Trigger animato all'invio con successo del modulo di preventivo ([ContactFormBlock.tsx](file:///c:/Users/franc/Documents/Antigravity/Sito%20impresa%20edile/frontend/src/components/blocks/ContactFormBlock.tsx)) e al completamento del configuratore guidato a 4 passaggi ([InteractiveQuoteWizard.tsx](file:///c:/Users/franc/Documents/Antigravity/Sito%20impresa%20edile/frontend/src/components/ui/InteractiveQuoteWizard.tsx)), con coriandoli nei colori aziendali terracotta e oro.
+4. **Pulsante Torna Su con Anello di Lettura ([BackToTop.tsx](file:///c:/Users/franc/Documents/Antigravity/Sito%20impresa%20edile/frontend/src/components/ui/BackToTop.tsx))**:
+   - Micro-interazione flottante in basso a destra con indicatore ad anello SVG circolare che traccia in tempo reale la percentuale di avanzamento nella pagina e consente il ritorno morbido in testata con un click.
 
 ---
 
