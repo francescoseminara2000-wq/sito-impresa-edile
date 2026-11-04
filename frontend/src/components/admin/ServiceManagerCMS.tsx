@@ -84,34 +84,51 @@ export const ServiceManagerCMS: React.FC<{ token: string }> = ({ token }) => {
       if (res.ok) {
         const data = await res.json();
         if (Array.isArray(data) && data.length > 0) {
-          setServices(data);
-          localStorage.setItem('bmg_services_data', JSON.stringify(data));
-          return;
-        }
-      }
-    } catch (err) {
-      console.warn('Backend /api/services non raggiungibile, utilizzo cache locale:', err);
-    }
-
-    // 2. Fallback a localStorage
-    const cached = localStorage.getItem('bmg_services_data');
-    if (cached) {
-      try {
-        const parsed = JSON.parse(cached);
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          setServices(parsed);
+          const normalized: BmgFullService[] = data.map((item: any, idx: number) => ({
+            ...item,
+            id: item.id || `srv-${idx}`,
+            category: item.category || 'strutture',
+            categoryLabel: item.categoryLabel || 'Costruzioni & Strutture',
+            shortTitle: item.shortTitle || item.title || 'Servizio',
+            title: item.title || 'Servizio',
+            description: item.description || '',
+            fullDetails: item.fullDetails || item.description || '',
+            features: Array.isArray(item.features) ? item.features : [],
+            iconName: item.iconName || 'Building2',
+            badge: item.badge || '',
+            imageUrl: item.imageUrl || '',
+          }));
+          setServices(normalized);
+          localStorage.setItem('bmg_services_data', JSON.stringify(normalized));
           setLoading(false);
           return;
         }
-      } catch (e) {
-        console.error(e);
       }
-    }
 
-    // 3. Fallback a dati predefiniti certificati BMG
-    setServices(BMG_ALL_SERVICES);
-    localStorage.setItem('bmg_services_data', JSON.stringify(BMG_ALL_SERVICES));
-    setLoading(false);
+      // 2. Fallback a localStorage
+      const cached = localStorage.getItem('bmg_services_data');
+      if (cached) {
+        try {
+          const parsed = JSON.parse(cached);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            setServices(parsed);
+            setLoading(false);
+            return;
+          }
+        } catch (e) {
+          console.error(e);
+        }
+      }
+
+      // 3. Fallback a dati predefiniti certificati BMG
+      setServices(BMG_ALL_SERVICES);
+      localStorage.setItem('bmg_services_data', JSON.stringify(BMG_ALL_SERVICES));
+    } catch (err) {
+      console.warn('Backend /api/services non raggiungibile, fallback BMG:', err);
+      setServices(BMG_ALL_SERVICES);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const saveAllServicesToBackend = async (updatedList: BmgFullService[]) => {
@@ -317,7 +334,8 @@ export const ServiceManagerCMS: React.FC<{ token: string }> = ({ token }) => {
 
   // Filtro categoria e ricerca
   const filteredServices = services.filter((s) => {
-    const matchesCategory = activeCategoryFilter === 'all' || s.category === activeCategoryFilter;
+    const sCat = s.category || 'strutture';
+    const matchesCategory = activeCategoryFilter === 'all' || sCat === activeCategoryFilter;
     const matchesSearch =
       !searchQuery.trim() ||
       s.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -330,7 +348,7 @@ export const ServiceManagerCMS: React.FC<{ token: string }> = ({ token }) => {
   // Conteggi categorie dinamici
   const counts = {
     all: services.length,
-    strutture: services.filter((s) => s.category === 'strutture').length,
+    strutture: services.filter((s) => (s.category || 'strutture') === 'strutture').length,
     involucro: services.filter((s) => s.category === 'involucro').length,
     impianti: services.filter((s) => s.category === 'impianti').length,
     finiture: services.filter((s) => s.category === 'finiture').length,
@@ -398,6 +416,26 @@ export const ServiceManagerCMS: React.FC<{ token: string }> = ({ token }) => {
           </button>
         </div>
       </div>
+
+      {/* Banner se il catalogo ha meno di 5 servizi */}
+      {services.length < 5 && !loading && (
+        <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-amber-200">
+          <div className="flex items-center gap-2.5 text-xs">
+            <Sparkles className="w-5 h-5 text-amber-400 shrink-0" />
+            <div>
+              <span className="font-bold">Attualmente nel database sono presenti solo {services.length} servizi.</span>
+              <p className="text-[11px] text-amber-200/80">Vuoi popolare subito il catalogo con l'elenco completo dei 13 servizi certificati BMG Srl?</p>
+            </div>
+          </div>
+          <button
+            onClick={handleResetDefaults}
+            className="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs uppercase tracking-wider shrink-0 transition-colors shadow-md flex items-center gap-1.5"
+          >
+            <RefreshCw className="w-3.5 h-3.5" />
+            <span>Carica Tutti i 13 Servizi BMG</span>
+          </button>
+        </div>
+      )}
 
       {/* Toolbar: Filtri Categorie & Barra di Ricerca */}
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-white/5 border border-white/10 p-3 rounded-2xl">
