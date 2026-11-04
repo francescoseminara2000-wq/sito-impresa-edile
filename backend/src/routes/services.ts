@@ -331,7 +331,7 @@ async function getOrCreateServicesSection() {
           description:
             'Gestiamo internamente ogni fase: opere strutturali, demolizioni, impianti elettrici ed idraulici, finiture di pregio e posa serramenti con un unico interlocutore responsabile.',
           services: DEFAULT_SERVICES,
-        },
+        } as any,
       },
     });
   }
@@ -378,7 +378,7 @@ servicesRouter.put('/', authenticateJwt, async (req: Request, res: Response) => 
         content: {
           ...currentContent,
           services,
-        },
+        } as any,
       },
     });
 
@@ -419,7 +419,7 @@ servicesRouter.post('/', authenticateJwt, async (req: Request, res: Response) =>
         content: {
           ...currentContent,
           services,
-        },
+        } as any,
       },
     });
 
@@ -466,7 +466,7 @@ servicesRouter.put('/:id', authenticateJwt, async (req: Request, res: Response) 
         content: {
           ...currentContent,
           services,
-        },
+        } as any,
       },
     });
 
@@ -502,7 +502,7 @@ servicesRouter.delete('/:id', authenticateJwt, async (req: Request, res: Respons
         content: {
           ...currentContent,
           services,
-        },
+        } as any,
       },
     });
 
@@ -531,7 +531,7 @@ servicesRouter.post('/reset', authenticateJwt, async (_req: Request, res: Respon
         content: {
           ...currentContent,
           services: DEFAULT_SERVICES,
-        },
+        } as any,
       },
     });
 
