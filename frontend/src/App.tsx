@@ -32,58 +32,14 @@ export const App: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    // Caricamento sezioni dal backend o fallback predefinito
+    // Caricamento sezioni dal backend (allineate 1:1 con il Page Builder del CMS)
     fetch('/api/pages/home')
       .then((res) => (res.ok ? res.json() : null))
       .then((data) => {
-        const defaultSections = getBmgDefaultSections();
-        if (data && data.sections && data.sections.length > 0) {
-          // Verifica se la sezione SERVICES_GRID è presente nel DB
-          const hasServices = data.sections.some((s: PageSectionData) => s.type === 'SERVICES_GRID');
-          const hasProjects = data.sections.some((s: PageSectionData) => s.type === 'PROJECTS_SHOWCASE');
-
-          let mergedSections = [...data.sections];
-
-          if (!hasServices) {
-            const defServices = defaultSections.find((s) => s.type === 'SERVICES_GRID');
-            if (defServices) {
-              mergedSections.splice(2, 0, defServices);
-            }
-          } else {
-            // Preserva i servizi salvati nel DB/CMS; garantisce la presenza di tutti i 13 servizi originali BMG + eventuali nuovi
-            const srvIdx = mergedSections.findIndex((s) => s.type === 'SERVICES_GRID');
-            if (srvIdx !== -1) {
-              const currentServices = mergedSections[srvIdx].content?.services;
-              if (!Array.isArray(currentServices) || currentServices.length < BMG_ALL_SERVICES.length) {
-                const list = Array.isArray(currentServices) ? currentServices : [];
-                const defaultIds = new Set(BMG_ALL_SERVICES.map((s) => s.id));
-                const existingMap = new Map(list.map((s: any) => [s.id, s]));
-                const baseServices = BMG_ALL_SERVICES.map((def) => existingMap.get(def.id) || def);
-                const customServices = list.filter((s: any) => !defaultIds.has(s.id));
-                const fullList = [...baseServices, ...customServices];
-                mergedSections[srvIdx].content = {
-                  ...mergedSections[srvIdx].content,
-                  services: fullList,
-                };
-              }
-            }
-          }
-
-          if (!hasProjects) {
-            const defProjects = defaultSections.find((s) => s.type === 'PROJECTS_SHOWCASE');
-            if (defProjects) {
-              const insertIdx = mergedSections.findIndex((s) => s.type === 'CTA_FORM');
-              if (insertIdx !== -1) {
-                mergedSections.splice(insertIdx, 0, defProjects);
-              } else {
-                mergedSections.push(defProjects);
-              }
-            }
-          }
-
-          setSections(mergedSections);
+        if (data && Array.isArray(data.sections) && data.sections.length > 0) {
+          setSections(data.sections);
         } else {
-          setSections(defaultSections);
+          setSections(getBmgDefaultSections());
         }
       })
       .catch(() => {

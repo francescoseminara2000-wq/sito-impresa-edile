@@ -178,6 +178,37 @@ export const PageBuilderCMS: React.FC<{ token: string }> = ({ token }) => {
     }
   };
 
+  // Sincronizza e allinea forzatamente tutti i blocchi con lo standard ufficiale della Home Page BMG
+  const handleSyncDefaultsWithHome = async () => {
+    if (!selectedPageId) return;
+    if (!window.confirm('Vuoi allineare e sincronizzare tutti i blocchi con lo standard ufficiale della Home Page BMG? Tutti i 6 blocchi saranno riordinati e allineati 1:1 con testi, immagini e ordine esatto.')) {
+      return;
+    }
+
+    setSaving(true);
+    try {
+      const res = await fetch(`/api/pages/admin/${selectedPageId}/sync-defaults`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (!res.ok) {
+        throw new Error('Errore durante la sincronizzazione');
+      }
+
+      const data = await res.json();
+      if (data.page && data.page.sections) {
+        setSections(data.page.sections);
+        setEditingSection(null);
+        showFeedback('Tutti i blocchi sono stati allineati perfettamente con la Home Page!');
+      }
+    } catch (err: any) {
+      showFeedback(err.message || 'Errore sincronizzazione blocchi.', 'error');
+    } finally {
+      setSaving(false);
+    }
+  };
+
   // Elimina sezione
   const deleteSection = async (id: string, type: string) => {
     if (!window.confirm(`Sei sicuro di voler eliminare il blocco "${type}"?`)) return;
@@ -336,13 +367,24 @@ export const PageBuilderCMS: React.FC<{ token: string }> = ({ token }) => {
               </h3>
               <p className="text-[11px] text-gray-400">Riordina, nascondi o modifica i blocchi</p>
             </div>
-            <button
-              onClick={() => setIsAddBlockOpen(true)}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-brand-terracotta hover:bg-[#a85e2b] text-white font-bold text-xs uppercase tracking-wider shadow-glow-terracotta transition-colors"
-            >
-              <Plus className="w-3.5 h-3.5" />
-              <span>Aggiungi Blocco</span>
-            </button>
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={handleSyncDefaultsWithHome}
+                title="Allinea forzatamente tutti i blocchi con lo standard ufficiale della Home Page BMG"
+                className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-gray-200 font-semibold text-xs transition-colors"
+              >
+                <RefreshCw className="w-3.5 h-3.5 text-amber-300" />
+                <span className="hidden sm:inline">Allinea con Home</span>
+              </button>
+              <button
+                onClick={() => setIsAddBlockOpen(true)}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-brand-terracotta hover:bg-[#a85e2b] text-white font-bold text-xs uppercase tracking-wider shadow-glow-terracotta transition-colors"
+              >
+                <Plus className="w-3.5 h-3.5" />
+                <span>Aggiungi Blocco</span>
+              </button>
+            </div>
           </div>
 
           {sections.length === 0 ? (
@@ -1216,6 +1258,171 @@ function renderBlockForm(section: PageSectionData, setSection: (s: PageSectionDa
       );
     }
 
+    case 'STATS': {
+      const statsList: any[] = content.stats || [];
+
+      const updateStat = (index: number, field: string, val: string) => {
+        const updated = [...statsList];
+        updated[index] = { ...updated[index], [field]: val };
+        updateContent('stats', updated);
+      };
+
+      const addStat = () => {
+        const newStat = { value: '100', suffix: '%', label: 'Nuova Metrica', sublabel: 'Garanzia certificata' };
+        updateContent('stats', [...statsList, newStat]);
+      };
+
+      const removeStat = (index: number) => {
+        updateContent('stats', statsList.filter((_: any, i: number) => i !== index));
+      };
+
+      return (
+        <div className="space-y-4 text-xs">
+          <div className="flex items-center justify-between pb-2 border-b border-white/10">
+            <h4 className="font-bold text-sm text-brand-terracotta uppercase tracking-wide">
+              Metriche e Numeri Chiave ({statsList.length})
+            </h4>
+            <button
+              type="button"
+              onClick={addStat}
+              className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-brand-terracotta hover:bg-[#a85e2b] text-white font-bold text-xs uppercase"
+            >
+              <Plus className="w-3.5 h-3.5" />
+              <span>Aggiungi Metrica</span>
+            </button>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {statsList.map((st, sIdx) => (
+              <div key={sIdx} className="p-3.5 rounded-xl bg-white/5 border border-white/10 space-y-2 relative">
+                <div className="flex items-center justify-between">
+                  <span className="font-bold text-amber-300">Metrica #{sIdx + 1}</span>
+                  <button
+                    type="button"
+                    onClick={() => removeStat(sIdx)}
+                    className="p-1 text-gray-400 hover:text-red-400"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+                <div className="grid grid-cols-2 gap-2">
+                  <div>
+                    <label className="text-[10px] uppercase text-gray-400 block mb-0.5">Valore Numerico</label>
+                    <input
+                      type="text"
+                      value={st.value || ''}
+                      onChange={(e) => updateStat(sIdx, 'value', e.target.value)}
+                      className="w-full px-2.5 py-1.5 rounded-lg bg-white/10 border border-white/15 text-white font-bold"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-[10px] uppercase text-gray-400 block mb-0.5">Suffisso (es. %, mq, +)</label>
+                    <input
+                      type="text"
+                      value={st.suffix || ''}
+                      onChange={(e) => updateStat(sIdx, 'suffix', e.target.value)}
+                      className="w-full px-2.5 py-1.5 rounded-lg bg-white/10 border border-white/15 text-white"
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label className="text-[10px] uppercase text-gray-400 block mb-0.5">Etichetta Principale</label>
+                  <input
+                    type="text"
+                    value={st.label || ''}
+                    onChange={(e) => updateStat(sIdx, 'label', e.target.value)}
+                    className="w-full px-2.5 py-1.5 rounded-lg bg-white/10 border border-white/15 text-white"
+                  />
+                </div>
+                <div>
+                  <label className="text-[10px] uppercase text-gray-400 block mb-0.5">Sottotitolo Descrittivo</label>
+                  <input
+                    type="text"
+                    value={st.sublabel || ''}
+                    onChange={(e) => updateStat(sIdx, 'sublabel', e.target.value)}
+                    className="w-full px-2.5 py-1.5 rounded-lg bg-white/10 border border-white/15 text-white text-[11px]"
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      );
+    }
+
+    case 'PROJECTS_SHOWCASE':
+      return (
+        <div className="space-y-4 text-xs">
+          <div className="p-4 rounded-xl bg-white/5 border border-white/10 space-y-3">
+            <h4 className="font-bold text-sm text-brand-terracotta uppercase tracking-wide">
+              Galleria Portfolio Cantieri
+            </h4>
+            <div>
+              <label className="block font-semibold uppercase text-gray-300 mb-1">Tagline Superiore</label>
+              <input
+                type="text"
+                value={content.tagline || ''}
+                onChange={(e) => updateContent('tagline', e.target.value)}
+                placeholder="I Nostri Cantieri"
+                className="w-full px-3 py-2 rounded-lg bg-white/10 border border-white/15 text-white"
+              />
+            </div>
+            <div>
+              <label className="block font-semibold uppercase text-gray-300 mb-1">Titolo Principale Sezione</label>
+              <input
+                type="text"
+                value={content.title || ''}
+                onChange={(e) => updateContent('title', e.target.value)}
+                placeholder="Realizzazioni e Opere Eseguite da BMG Srl"
+                className="w-full px-3 py-2 rounded-lg bg-white/10 border border-white/15 text-white font-bold"
+              />
+            </div>
+            <div>
+              <label className="block font-semibold uppercase text-gray-300 mb-1">Descrizione di Sintesi</label>
+              <textarea
+                rows={2}
+                value={content.description || ''}
+                onChange={(e) => updateContent('description', e.target.value)}
+                className="w-full px-3 py-2 rounded-lg bg-white/10 border border-white/15 text-white resize-none"
+              />
+            </div>
+            <p className="text-[11px] text-gray-400 pt-2 border-t border-white/10">
+              ℹ️ I singoli cantieri e le relative foto Before/After si gestiscono dalla scheda <strong>"Gestione Cantieri & Lavori"</strong>.
+            </p>
+          </div>
+        </div>
+      );
+
+    case 'CTA_FORM':
+      return (
+        <div className="space-y-4 text-xs">
+          <div className="p-4 rounded-xl bg-white/5 border border-white/10 space-y-3">
+            <h4 className="font-bold text-sm text-brand-terracotta uppercase tracking-wide">
+              Modulo Richiesta Preventivo & Lead
+            </h4>
+            <div>
+              <label className="block font-semibold uppercase text-gray-300 mb-1">Titolo Modulo</label>
+              <input
+                type="text"
+                value={content.title || ''}
+                onChange={(e) => updateContent('title', e.target.value)}
+                placeholder="Richiedi un Preventivo Gratuito a BMG Srl"
+                className="w-full px-3 py-2 rounded-lg bg-white/10 border border-white/15 text-white font-bold"
+              />
+            </div>
+            <div>
+              <label className="block font-semibold uppercase text-gray-300 mb-1">Sottotitolo con Contatti e Recapiti</label>
+              <textarea
+                rows={3}
+                value={content.subtitle || ''}
+                onChange={(e) => updateContent('subtitle', e.target.value)}
+                className="w-full px-3 py-2 rounded-lg bg-white/10 border border-white/15 text-white resize-none"
+              />
+            </div>
+          </div>
+        </div>
+      );
+
     default:
       return (
         <div className="space-y-4 text-xs">
@@ -1319,6 +1526,35 @@ function getDefaultContentForType(type: SectionType) {
           { value: '100%', label: 'Consegna nei Tempi' },
           { value: '13+', label: 'Ambiti di Specializzazione' },
           { value: 'Zero Pensieri', label: 'Gestione Chiavi in Mano' },
+        ],
+      };
+    case 'PROJECTS_SHOWCASE':
+      return {
+        tagline: 'I Nostri Cantieri',
+        title: 'Realizzazioni e Opere Eseguite da BMG Srl',
+        description: 'Opere residenziali, commerciali ed industriali realizzate con maestranze dirette e massima precisione costruttiva.',
+      };
+    case 'CTA_FORM':
+      return {
+        title: 'Richiedi un Preventivo Gratuito a BMG Srl',
+        subtitle: 'Compila il modulo o contattaci direttamente al +39 348 569 6125. Effettuiamo sopralluoghi tecnici gratuiti e senza impegno a Caponago, Monza Brianza e Milano.',
+        servicesOptions: [
+          'Costruzione Civile / Industriale',
+          'Ristrutturazione Completa',
+          'Manutenzione Condominio',
+          'Cappotto Termico / Facciate',
+          'Impianti Elettrici / Idraulici',
+          'Cartongesso / Imbiancature',
+          'Fornitura e Posa Serramenti',
+          'Posa e Levigatura Parquet',
+          'Demolizioni / Interventi Strutturali',
+          'Recinzioni',
+        ],
+        budgetOptions: [
+          'Meno di 25.000€',
+          '25.000€ - 50.000€',
+          '50.000€ - 100.000€',
+          'Oltre 100.000€',
         ],
       };
     default:
