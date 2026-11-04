@@ -18,7 +18,7 @@ export const TextImageBlock: React.FC<{ content: TextImageContent }> = ({ conten
   const isImageLeft = content.imagePosition === 'left';
 
   return (
-    <section className="py-24 bg-white text-brand-dark overflow-hidden">
+    <section id="chi-siamo" className="py-24 bg-white text-brand-dark overflow-hidden scroll-mt-20">
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
         <div className={`grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center ${isImageLeft ? 'lg:flex-row-reverse' : ''}`}>
           

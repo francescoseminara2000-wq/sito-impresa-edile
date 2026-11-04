@@ -32,7 +32,7 @@ export const FaqBlock: React.FC<{ content: FaqContent }> = ({ content }) => {
   const items = content.items && content.items.length > 0 ? content.items : defaultItems;
 
   return (
-    <section className="py-24 bg-brand-surface text-brand-dark border-t border-brand-stone/60">
+    <section id="faq" className="py-24 bg-brand-surface text-brand-dark border-t border-brand-stone/60 scroll-mt-20">
       <div className="max-w-4xl mx-auto px-6 lg:px-8">
         {/* Intestazione */}
         <div className="text-center mb-16">

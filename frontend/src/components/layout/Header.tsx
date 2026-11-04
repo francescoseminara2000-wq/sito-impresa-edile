@@ -12,6 +12,7 @@ const NAV_ITEMS: NavItem[] = [
   { name: 'Servizi', href: '#servizi', id: 'servizi' },
   { name: 'Realizzazioni', href: '#cantieri', id: 'cantieri' },
   { name: 'Azienda', href: '#chi-siamo', id: 'chi-siamo' },
+  { name: 'FAQ', href: '#faq', id: 'faq' },
   { name: 'Contatti', href: '#preventivo', id: 'preventivo' },
 ];
 

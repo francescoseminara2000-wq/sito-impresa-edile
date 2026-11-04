@@ -220,13 +220,66 @@ function getBmgDefaultSections(): PageSectionData[] {
       content: {
         tagline: 'I Nostri Cantieri',
         title: 'Realizzazioni e Opere Eseguite da BMG Srl',
+        description: 'Opere residenziali, commerciali ed industriali realizzate con maestranze dirette e massima precisione costruttiva.',
+      },
+    },
+    {
+      id: 'sec-chi-siamo',
+      pageId: 'home',
+      type: 'TEXT_IMAGE',
+      order: 5,
+      isVisible: true,
+      content: {
+        tagline: 'Chi Siamo & Metodo Operativo',
+        title: 'Precisione, Materiali di Pregio e Gestione Chiavi in Mano',
+        subtitle: 'Impresa edile d\'eccellenza con maestranze dirette specializzate per Monza Brianza e Milano.',
+        description: 'La nostra azienda si avvale di personale altamente qualificato per ogni settore: dalle opere murarie strutturali agli impianti idraulici ed elettrici certificati, fino alla posa di resine, parquet e finiture sartoriali.\n\nUn unico interlocutore responsabile che coordina l\'intero cantiere, garantendo tempi certi e costi fissati a preventivo.',
+        bullets: [
+          'Preventivi trasparenti e dettagliati a computo metrico estimativo',
+          'Polizza assicurativa postuma decennale su tutte le opere',
+          'Direzione tecnica di cantiere costante e maestranze interne',
+          'Certificazioni di conformità a regola d\'arte (DM 37/08 e DURC)',
+        ],
+        imageUrl: '/images/cantieri/cantiere-06.jpg',
+        imagePosition: 'right',
+        ctaText: 'Richiedi Sopralluogo Gratuito',
+        ctaLink: '#preventivo',
+      },
+    },
+    {
+      id: 'sec-faq',
+      pageId: 'home',
+      type: 'FAQ',
+      order: 6,
+      isVisible: true,
+      content: {
+        tagline: 'Chiarezza & Garanzie di Cantiere',
+        title: 'Domande Frequenti su Preventivi e Lavori',
+        items: [
+          {
+            question: 'Come si richiede un sopralluogo e quanto costa?',
+            answer: 'Il sopralluogo tecnico effettuato da BMG S.r.l. è completamente gratuito e senza impegno su tutto il territorio di Caponago, Monza Brianza, Milano e comuni limitrofi. Durante la visita rileviamo le misure e ti forniamo un computo metrico dettagliato entro 48 ore.',
+          },
+          {
+            question: 'I prezzi indicati nel preventivo sono bloccati a contratto?',
+            answer: 'I prezzi concordati a computo metrico sono rigorosamente fissi e bloccati. Qualora il committente desideri lavorazioni extra durante il cantiere, ogni variazione viene preventivamente concordata e approvata per iscritto.',
+          },
+          {
+            question: 'Gestite anche le pratiche edilizie (CILA, SCIA, sicurezza)?',
+            answer: 'Sì, offriamo un servizio chiavi in mano completo: il nostro ufficio tecnico si occupa di tutte le comunicazioni agli enti comunali (CILA, SCIA), redazione del POS e verifica del DURC in regola.',
+          },
+          {
+            question: 'Quali certificazioni vengono rilasciate a fine lavori?',
+            answer: 'A consegna avvenuta rilasciamo le dichiarazioni di conformità degli impianti a norma di legge (DM 37/08), le schede tecniche dei materiali certificati CAM e la garanzia sulle opere eseguite.',
+          },
+        ],
       },
     },
     {
       id: 'sec-cta',
       pageId: 'home',
       type: 'CTA_FORM',
-      order: 5,
+      order: 7,
       isVisible: true,
       content: {
         title: 'Richiedi un Preventivo Gratuito a BMG Srl',

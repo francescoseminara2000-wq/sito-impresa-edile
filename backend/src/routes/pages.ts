@@ -98,8 +98,56 @@ export const BMG_CANONICAL_SECTIONS = [
     },
   },
   {
-    type: 'CTA_FORM',
+    type: 'TEXT_IMAGE',
     order: 5,
+    isVisible: true,
+    content: {
+      tagline: 'Chi Siamo & Metodo Operativo',
+      title: 'Precisione, Materiali di Pregio e Gestione Chiavi in Mano',
+      subtitle: 'Impresa edile d\'eccellenza con maestranze dirette specializzate per Monza Brianza e Milano.',
+      description: 'La nostra azienda si avvale di personale altamente qualificato per ogni settore: dalle opere murarie strutturali agli impianti idraulici ed elettrici certificati, fino alla posa di resine, parquet e finiture sartoriali.\n\nUn unico interlocutore responsabile che coordina l\'intero cantiere, garantendo tempi certi e costi fissati a preventivo.',
+      bullets: [
+        'Preventivi trasparenti e dettagliati a computo metrico estimativo',
+        'Polizza assicurativa postuma decennale su tutte le opere',
+        'Direzione tecnica di cantiere costante e maestranze interne',
+        'Certificazioni di conformità a regola d\'arte (DM 37/08 e DURC)'
+      ],
+      imageUrl: '/images/cantieri/cantiere-06.jpg',
+      imagePosition: 'right',
+      ctaText: 'Richiedi Sopralluogo Gratuito',
+      ctaLink: '#preventivo',
+    },
+  },
+  {
+    type: 'FAQ',
+    order: 6,
+    isVisible: true,
+    content: {
+      tagline: 'Chiarezza & Garanzie di Cantiere',
+      title: 'Domande Frequenti su Preventivi e Lavori',
+      items: [
+        {
+          question: 'Come si richiede un sopralluogo e quanto costa?',
+          answer: 'Il sopralluogo tecnico effettuato da BMG S.r.l. è completamente gratuito e senza impegno su tutto il territorio di Caponago, Monza Brianza, Milano e comuni limitrofi. Durante la visita rileviamo le misure e ti forniamo un computo metrico dettagliato entro 48 ore.',
+        },
+        {
+          question: 'I prezzi indicati nel preventivo sono bloccati a contratto?',
+          answer: 'I prezzi concordati a computo metrico sono rigorosamente fissi e bloccati. Qualora il committente desideri lavorazioni extra durante il cantiere, ogni variazione viene preventivamente concordata e approvata per iscritto.',
+        },
+        {
+          question: 'Gestite anche le pratiche edilizie (CILA, SCIA, sicurezza)?',
+          answer: 'Sì, offriamo un servizio chiavi in mano completo: il nostro ufficio tecnico si occupa di tutte le comunicazioni agli enti comunali (CILA, SCIA), redazione del POS e verifica del DURC in regola.',
+        },
+        {
+          question: 'Quali certificazioni vengono rilasciate a fine lavori?',
+          answer: 'A consegna avvenuta rilasciamo le dichiarazioni di conformità degli impianti a norma di legge (DM 37/08), le schede tecniche dei materiali certificati CAM e la garanzia sulle opere eseguite.',
+        },
+      ],
+    },
+  },
+  {
+    type: 'CTA_FORM',
+    order: 7,
     isVisible: true,
     content: {
       title: 'Richiedi un Preventivo Gratuito a BMG Srl',
@@ -157,7 +205,7 @@ async function getOrCreateHomePageWithSections() {
     });
   }
 
-  // Se la pagina home non ha sezioni nel DB, inserisce le 6 sezioni canoniche
+  // Se la pagina home non ha sezioni nel DB, inserisce le sezioni canoniche
   if (homePage.sections.length === 0) {
     for (let i = 0; i < BMG_CANONICAL_SECTIONS.length; i++) {
       const sec = BMG_CANONICAL_SECTIONS[i];
@@ -180,6 +228,61 @@ async function getOrCreateHomePageWithSections() {
         },
       },
     }) as any;
+  } else {
+    // Sincronizzazione automatica sezioni mancanti (es. TEXT_IMAGE, FAQ)
+    const existingTypes = new Set(homePage.sections.map((s: any) => s.type));
+    let hasAdded = false;
+
+    for (const canonicalSec of BMG_CANONICAL_SECTIONS) {
+      if (!existingTypes.has(canonicalSec.type)) {
+        await prisma.pageSection.create({
+          data: {
+            pageId: homePage.id,
+            type: canonicalSec.type as SectionType,
+            order: canonicalSec.order,
+            isVisible: true,
+            content: canonicalSec.content as any,
+          },
+        });
+        hasAdded = true;
+      }
+    }
+
+    // Assicura che la sezione SERVICES_GRID contenga tutti i 13 servizi originali
+    const srvSection = homePage.sections.find((s: any) => s.type === 'SERVICES_GRID');
+    if (srvSection) {
+      const content = srvSection.content as any;
+      const currentServices: any[] = Array.isArray(content?.services) ? content.services : [];
+      if (currentServices.length < DEFAULT_SERVICES.length) {
+        const defaultIds = new Set(DEFAULT_SERVICES.map((s) => s.id));
+        const existingMap = new Map(currentServices.map((s) => [s.id, s]));
+        const baseServices = DEFAULT_SERVICES.map((def) => existingMap.get(def.id) || def);
+        const customServices = currentServices.filter((s) => !defaultIds.has(s.id));
+        const mergedServices = [...baseServices, ...customServices];
+
+        await prisma.pageSection.update({
+          where: { id: srvSection.id },
+          data: {
+            content: {
+              ...content,
+              services: mergedServices,
+            } as any,
+          },
+        });
+        hasAdded = true;
+      }
+    }
+
+    if (hasAdded) {
+      homePage = await prisma.page.findUnique({
+        where: { slug: 'home' },
+        include: {
+          sections: {
+            orderBy: { order: 'asc' },
+          },
+        },
+      }) as any;
+    }
   }
 
   return homePage;
@@ -263,17 +366,9 @@ pagesRouter.get('/admin/:id', authenticateJwt, async (req: Request, res: Respons
       return res.status(404).json({ error: 'Pagina non trovata.' });
     }
 
-    // Se è la pagina home ed è vuota nel DB, la popoliamo
-    if (page.slug === 'home' && page.sections.length === 0) {
-      await getOrCreateHomePageWithSections();
-      page = await prisma.page.findUnique({
-        where: { id },
-        include: {
-          sections: {
-            orderBy: { order: 'asc' },
-          },
-        },
-      });
+    // Se è la pagina home, assicuriamo che tutte le sezioni canoniche siano sincronizzate
+    if (page.slug === 'home') {
+      page = await getOrCreateHomePageWithSections();
     }
 
     return res.json(page);
