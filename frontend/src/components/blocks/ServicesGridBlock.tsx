@@ -28,27 +28,35 @@ export const ServicesGridBlock: React.FC<{ content?: ServicesGridContent }> = ({
   const [selectedService, setSelectedService] = useState<ServiceItem | null>(null);
   const [activeCategory, setActiveCategory] = useState<string>('all');
 
-  // Recupera i servizi: priorità a content.services dal DB, altrimenti cache localStorage, altrimenti default
+  // Recupera i servizi garantendo la presenza di tutti i 13 servizi originali BMG
   const [localServices, setLocalServices] = useState<ServiceItem[]>(() => {
-    if (content?.services && content.services.length > 0) {
-      return content.services;
-    }
-    try {
-      const stored = localStorage.getItem('bmg_services_data');
-      if (stored) {
-        const parsed = JSON.parse(stored);
-        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+    let list = BMG_ALL_SERVICES;
+    if (content?.services && content.services.length >= BMG_ALL_SERVICES.length) {
+      list = content.services;
+    } else if (content?.services && content.services.length > 0) {
+      const map = new Map(content.services.map((s) => [s.id, s]));
+      list = BMG_ALL_SERVICES.map((def) => map.get(def.id) || def);
+    } else {
+      try {
+        const stored = localStorage.getItem('bmg_services_data');
+        if (stored) {
+          const parsed = JSON.parse(stored);
+          if (Array.isArray(parsed) && parsed.length >= BMG_ALL_SERVICES.length) list = parsed;
+        }
+      } catch (e) {
+        // ignore
       }
-    } catch (e) {
-      // ignore
     }
-    return BMG_ALL_SERVICES;
+    return list;
   });
 
   // Sincronizza se le props cambiano dal server
   useEffect(() => {
-    if (content?.services && content.services.length > 0) {
+    if (content?.services && content.services.length >= BMG_ALL_SERVICES.length) {
       setLocalServices(content.services);
+    } else if (content?.services && content.services.length > 0) {
+      const map = new Map(content.services.map((s) => [s.id, s]));
+      setLocalServices(BMG_ALL_SERVICES.map((def) => map.get(def.id) || def));
     }
   }, [content?.services]);
 

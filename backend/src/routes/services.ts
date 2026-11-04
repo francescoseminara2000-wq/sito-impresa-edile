@@ -341,19 +341,42 @@ async function getOrCreateServicesSection() {
 
 /**
  * GET /api/services
- * Restituisce la lista di tutti i servizi attivi
+ * Restituisce la lista di tutti i servizi attivi (garantendo sempre la presenza di tutti i 13 servizi originali BMG)
  */
 servicesRouter.get('/', async (_req: Request, res: Response) => {
   try {
     const section = await getOrCreateServicesSection();
     const content = section.content as any;
-    const services = Array.isArray(content?.services) && content.services.length > 0 
+    let services: ServiceItemData[] = Array.isArray(content?.services) && content.services.length > 0 
       ? content.services 
-      : DEFAULT_SERVICES;
+      : [];
+
+    // Se nel database ci sono meno dei 13 servizi originali BMG (es. residuo di vecchi test),
+    // reintegra automaticamente tutti i 13 servizi completi preservando le modifiche
+    if (services.length < DEFAULT_SERVICES.length) {
+      const existingMap = new Map(services.map((s) => [s.id, s]));
+      const fullList = DEFAULT_SERVICES.map((def) => existingMap.get(def.id) || def);
+      services = fullList;
+
+      // Aggiorna anche la sezione nel database
+      try {
+        await prisma.pageSection.update({
+          where: { id: section.id },
+          data: {
+            content: {
+              ...content,
+              services: fullList,
+            } as any,
+          },
+        });
+      } catch (dbErr) {
+        console.warn('Auto-sync database services:', dbErr);
+      }
+    }
+
     return res.json(services);
   } catch (error) {
     console.error('Errore get /api/services:', error);
-    // In caso di errore DB (es. server locale non connesso a MySQL), restituisce i default
     return res.json(DEFAULT_SERVICES);
   }
 });

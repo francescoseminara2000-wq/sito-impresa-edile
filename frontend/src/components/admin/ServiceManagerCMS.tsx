@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  Plus, Edit3, Trash2, ArrowUp, ArrowDown, Eye, CheckCircle2, 
-  Sparkles, X, Save, RefreshCw, Copy, Layers, Building2, Home, 
-  Paintbrush, Hammer, Zap, Wrench, Maximize2, Flame, ShieldCheck, 
+import {
+  Plus, Edit3, Trash2, ArrowUp, ArrowDown, Eye, CheckCircle2,
+  Sparkles, X, Save, RefreshCw, Copy, Layers, Building2, Home,
+  Paintbrush, Hammer, Zap, Wrench, Maximize2, Flame, ShieldCheck,
   HardHat, Image as ImageIcon, UploadCloud, Search, Check, AlertTriangle
 } from 'lucide-react';
 import { ServiceItem } from '../../types/blocks';
@@ -84,7 +84,15 @@ export const ServiceManagerCMS: React.FC<{ token: string }> = ({ token }) => {
       if (res.ok) {
         const data = await res.json();
         if (Array.isArray(data) && data.length > 0) {
-          const normalized: BmgFullService[] = data.map((item: any, idx: number) => ({
+          let list = data;
+          // Se nel database ci sono meno dei 13 servizi originali, reintegra tutti i 13
+          if (list.length < BMG_ALL_SERVICES.length) {
+            const map = new Map(list.map((s: any) => [s.id, s]));
+            list = BMG_ALL_SERVICES.map((def) => map.get(def.id) || def);
+            saveAllServicesToBackend(list);
+          }
+
+          const normalized: BmgFullService[] = list.map((item: any, idx: number) => ({
             ...item,
             id: item.id || `srv-${idx}`,
             category: item.category || 'strutture',
@@ -363,11 +371,10 @@ export const ServiceManagerCMS: React.FC<{ token: string }> = ({ token }) => {
             initial={{ opacity: 0, y: -16, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -16, scale: 0.95 }}
-            className={`fixed top-20 right-6 z-50 px-4 py-3 rounded-2xl shadow-2xl flex items-center gap-3 border ${
-              feedback.type === 'error'
+            className={`fixed top-20 right-6 z-50 px-4 py-3 rounded-2xl shadow-2xl flex items-center gap-3 border ${feedback.type === 'error'
                 ? 'bg-red-500/90 text-white border-red-400'
                 : 'bg-emerald-600/95 text-white border-emerald-400'
-            }`}
+              }`}
           >
             {feedback.type === 'error' ? (
               <AlertTriangle className="w-5 h-5 shrink-0" />
@@ -443,11 +450,10 @@ export const ServiceManagerCMS: React.FC<{ token: string }> = ({ token }) => {
         <div className="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0 scrollbar-none">
           <button
             onClick={() => setActiveCategoryFilter('all')}
-            className={`px-3 py-1.5 rounded-xl text-xs font-bold uppercase tracking-wider whitespace-nowrap transition-all flex items-center gap-1.5 ${
-              activeCategoryFilter === 'all'
+            className={`px-3 py-1.5 rounded-xl text-xs font-bold uppercase tracking-wider whitespace-nowrap transition-all flex items-center gap-1.5 ${activeCategoryFilter === 'all'
                 ? 'bg-brand-terracotta text-white shadow-glow-terracotta'
                 : 'text-gray-400 hover:text-white hover:bg-white/5'
-            }`}
+              }`}
           >
             <span>Tutti</span>
             <span className="text-[10px] px-1.5 py-0.2 rounded-md bg-black/20">{counts.all}</span>
@@ -460,11 +466,10 @@ export const ServiceManagerCMS: React.FC<{ token: string }> = ({ token }) => {
               <button
                 key={cat.id}
                 onClick={() => setActiveCategoryFilter(cat.id)}
-                className={`px-3 py-1.5 rounded-xl text-xs font-bold uppercase tracking-wider whitespace-nowrap transition-all flex items-center gap-1.5 ${
-                  isActive
+                className={`px-3 py-1.5 rounded-xl text-xs font-bold uppercase tracking-wider whitespace-nowrap transition-all flex items-center gap-1.5 ${isActive
                     ? 'bg-brand-terracotta text-white shadow-glow-terracotta'
                     : 'text-gray-400 hover:text-white hover:bg-white/5'
-                }`}
+                  }`}
               >
                 <span>{cat.label}</span>
                 <span className="text-[10px] px-1.5 py-0.2 rounded-md bg-black/20">{count}</span>
@@ -797,11 +802,10 @@ export const ServiceManagerCMS: React.FC<{ token: string }> = ({ token }) => {
                           key={ico.name}
                           type="button"
                           onClick={() => setFormIconName(ico.name)}
-                          className={`p-2.5 rounded-xl border text-left transition-all flex items-center gap-2.5 ${
-                            isSelected
+                          className={`p-2.5 rounded-xl border text-left transition-all flex items-center gap-2.5 ${isSelected
                               ? 'bg-brand-terracotta/30 border-brand-terracotta text-amber-300 shadow-glow-terracotta'
                               : 'bg-white/5 border-white/10 text-gray-400 hover:text-white hover:bg-white/10'
-                          }`}
+                            }`}
                         >
                           <div className={isSelected ? 'text-brand-terracotta' : 'text-gray-400'}>
                             {ico.icon}
@@ -891,11 +895,10 @@ export const ServiceManagerCMS: React.FC<{ token: string }> = ({ token }) => {
                               setFormImageUrl(photo.url);
                               setShowPhotoPicker(false);
                             }}
-                            className={`h-14 rounded-lg overflow-hidden border-2 cursor-pointer transition-all relative ${
-                              formImageUrl === photo.url
+                            className={`h-14 rounded-lg overflow-hidden border-2 cursor-pointer transition-all relative ${formImageUrl === photo.url
                                 ? 'border-brand-terracotta scale-105 shadow-glow-terracotta'
                                 : 'border-white/10 hover:border-white/30 opacity-70 hover:opacity-100'
-                            }`}
+                              }`}
                           >
                             <img
                               src={photo.url}
