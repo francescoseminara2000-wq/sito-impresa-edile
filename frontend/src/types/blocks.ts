@@ -46,11 +46,16 @@ export interface ServiceItem {
   id?: string;
   iconName?: string;
   title: string;
+  shortTitle?: string;
+  category?: 'strutture' | 'involucro' | 'impianti' | 'finiture' | string;
+  categoryLabel?: string;
   description: string;
   features: string[];
   badge?: string;
   imageUrl?: string;
   fullDetails?: string;
+  order?: number;
+  isVisible?: boolean;
 }
 
 export interface ServicesGridContent {

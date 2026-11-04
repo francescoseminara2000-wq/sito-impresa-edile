@@ -50,11 +50,26 @@ export const App: React.FC = () => {
               mergedSections.splice(2, 0, defServices);
             }
           } else {
-            // Aggiorna sempre la sezione con i 13 servizi completi di BMG
+            // Preserva i servizi salvati nel DB/CMS; se vuoti usa cache locale o default
             const srvIdx = mergedSections.findIndex((s) => s.type === 'SERVICES_GRID');
-            const defServices = defaultSections.find((s) => s.type === 'SERVICES_GRID');
-            if (srvIdx !== -1 && defServices) {
-              mergedSections[srvIdx] = defServices;
+            if (srvIdx !== -1) {
+              const currentServices = mergedSections[srvIdx].content?.services;
+              if (!Array.isArray(currentServices) || currentServices.length === 0) {
+                try {
+                  const cached = localStorage.getItem('bmg_services_data');
+                  if (cached) {
+                    const parsed = JSON.parse(cached);
+                    if (Array.isArray(parsed) && parsed.length > 0) {
+                      mergedSections[srvIdx].content = {
+                        ...mergedSections[srvIdx].content,
+                        services: parsed,
+                      };
+                    }
+                  }
+                } catch (e) {
+                  // ignore
+                }
+              }
             }
           }
 

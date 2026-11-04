@@ -3,10 +3,11 @@ import { motion } from 'framer-motion';
 import { 
   Lock, Mail, Phone, Calendar, CheckCircle2, Clock, 
   Archive, LogOut, ArrowLeft, RefreshCw, HardHat, ExternalLink,
-  Layers, Images, Settings, Copy, Download
+  Layers, Images, Settings, Copy, Download, Wrench
 } from 'lucide-react';
 import { PageBuilderCMS } from './PageBuilderCMS';
 import { ProjectManagerCMS } from './ProjectManagerCMS';
+import { ServiceManagerCMS } from './ServiceManagerCMS';
 import { allBmgPhotos } from '../ui/FullPhotoGalleryModal';
 
 interface QuoteLead {
@@ -32,7 +33,7 @@ export const AdminDashboard: React.FC<{ onBackToSite: () => void }> = ({ onBackT
   const [loggingIn, setLoggingIn] = useState(false);
 
   // Stati Dashboard
-  const [activeTab, setActiveTab] = useState<'pagebuilder' | 'projects' | 'quotes' | 'media' | 'info'>('projects');
+  const [activeTab, setActiveTab] = useState<'projects' | 'services' | 'pagebuilder' | 'quotes' | 'media' | 'info'>('projects');
   const [quotes, setQuotes] = useState<QuoteLead[]>([]);
   const [loadingQuotes, setLoadingQuotes] = useState(false);
   const [copiedUrl, setCopiedUrl] = useState<string | null>(null);
@@ -297,6 +298,18 @@ export const AdminDashboard: React.FC<{ onBackToSite: () => void }> = ({ onBackT
         </button>
 
         <button
+          onClick={() => setActiveTab('services')}
+          className={`px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition-all flex items-center gap-2 shrink-0 ${
+            activeTab === 'services'
+              ? 'bg-brand-terracotta text-white shadow-glow-terracotta'
+              : 'text-gray-400 hover:text-white hover:bg-white/5'
+          }`}
+        >
+          <Wrench className="w-4 h-4" />
+          <span>Gestione Servizi</span>
+        </button>
+
+        <button
           onClick={() => setActiveTab('pagebuilder')}
           className={`px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition-all flex items-center gap-2 shrink-0 ${
             activeTab === 'pagebuilder'
@@ -351,6 +364,11 @@ export const AdminDashboard: React.FC<{ onBackToSite: () => void }> = ({ onBackT
         {/* TAB 0: GESTIONE CANTIERI & PORTFOLIO */}
         {activeTab === 'projects' && (
           <ProjectManagerCMS token={token} />
+        )}
+
+        {/* TAB SERVIZI: GESTIONE ELENCO DEI SERVIZI */}
+        {activeTab === 'services' && (
+          <ServiceManagerCMS token={token} />
         )}
 
         {/* TAB 1: PAGE BUILDER CMS */}

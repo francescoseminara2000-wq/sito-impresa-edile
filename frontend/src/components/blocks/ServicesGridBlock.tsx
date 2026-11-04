@@ -1,13 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   ArrowRight, Home, Building2, Paintbrush, Hammer, 
-  Zap, Wrench, Layers, Maximize2, Flame, Sparkles, ShieldCheck, Sparkle 
+  Zap, Wrench, Layers, Maximize2, Flame, Sparkles, ShieldCheck, Sparkle, HardHat, ImageIcon 
 } from 'lucide-react';
 import { ServicesGridContent, ServiceItem } from '../../types/blocks';
 import { SpotlightCard } from '../ui/SpotlightCard';
 import { ServiceDetailModal } from '../ui/ServiceDetailModal';
-import { BMG_ALL_SERVICES, SERVICE_CATEGORIES, BmgFullService } from '../../data/bmgServices';
+import { BMG_ALL_SERVICES } from '../../data/bmgServices';
 
 const iconMap: Record<string, React.ReactNode> = {
   Home: <Home className="w-4 h-4 text-brand-terracotta" />,
@@ -21,16 +21,50 @@ const iconMap: Record<string, React.ReactNode> = {
   ShieldCheck: <ShieldCheck className="w-4 h-4 text-brand-terracotta" />,
   Flame: <Flame className="w-4 h-4 text-brand-terracotta" />,
   Sparkles: <Sparkles className="w-4 h-4 text-brand-terracotta" />,
+  HardHat: <HardHat className="w-4 h-4 text-brand-terracotta" />,
 };
 
 export const ServicesGridBlock: React.FC<{ content?: ServicesGridContent }> = ({ content }) => {
   const [selectedService, setSelectedService] = useState<ServiceItem | null>(null);
   const [activeCategory, setActiveCategory] = useState<string>('all');
 
+  // Recupera i servizi: priorità a content.services dal DB, altrimenti cache localStorage, altrimenti default
+  const [localServices, setLocalServices] = useState<ServiceItem[]>(() => {
+    if (content?.services && content.services.length > 0) {
+      return content.services;
+    }
+    try {
+      const stored = localStorage.getItem('bmg_services_data');
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      }
+    } catch (e) {
+      // ignore
+    }
+    return BMG_ALL_SERVICES;
+  });
+
+  // Sincronizza se le props cambiano dal server
+  useEffect(() => {
+    if (content?.services && content.services.length > 0) {
+      setLocalServices(content.services);
+    }
+  }, [content?.services]);
+
+  // Conteggio dinamico delle categorie calcolato sulla lista effettiva dei servizi
+  const categories = [
+    { id: 'all', label: 'Tutti i Lavori', count: localServices.length },
+    { id: 'strutture', label: 'Costruzioni & Strutture', count: localServices.filter(s => s.category === 'strutture').length },
+    { id: 'involucro', label: 'Condomini & Involucro', count: localServices.filter(s => s.category === 'involucro').length },
+    { id: 'impianti', label: 'Impianti & Serramenti', count: localServices.filter(s => s.category === 'impianti').length },
+    { id: 'finiture', label: 'Finiture & Interni', count: localServices.filter(s => s.category === 'finiture').length },
+  ];
+
   // Filtra i servizi in base alla categoria selezionata
   const filteredServices = activeCategory === 'all'
-    ? BMG_ALL_SERVICES
-    : BMG_ALL_SERVICES.filter((s) => s.category === activeCategory);
+    ? localServices
+    : localServices.filter((s) => s.category === activeCategory);
 
   return (
     <section id="servizi" className="py-20 sm:py-28 bg-[#0b0f19] text-white scroll-mt-20 relative overflow-hidden">
@@ -45,7 +79,7 @@ export const ServicesGridBlock: React.FC<{ content?: ServicesGridContent }> = ({
         <div className="text-center max-w-2xl mx-auto mb-10 sm:mb-12">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-terracotta/15 border border-brand-terracotta/30 text-amber-300 text-xs font-bold uppercase tracking-wider mb-4">
             <Sparkle className="w-3.5 h-3.5 text-brand-terracotta" />
-            <span>13 Ambiti di Specializzazione</span>
+            <span>{localServices.length} Ambiti di Specializzazione</span>
           </div>
           
           <h2 className="text-3xl sm:text-5xl font-black tracking-tight text-white mb-3 font-display">
@@ -53,13 +87,13 @@ export const ServicesGridBlock: React.FC<{ content?: ServicesGridContent }> = ({
           </h2>
           
           <p className="text-sm sm:text-base text-slate-400 font-normal">
-            Tocca o clicca su una lavorazione per visualizzarne i dettagli completi, specifiche e capitolato.
+            {content?.description || 'Tocca o clicca su una lavorazione per visualizzarne i dettagli completi, specifiche e capitolato.'}
           </p>
         </div>
 
         {/* Barra Filtri Categorie Swipeable e Minimale */}
         <div className="flex items-center justify-start sm:justify-center gap-2 overflow-x-auto pb-3 mb-10 scrollbar-none px-1">
-          {SERVICE_CATEGORIES.map((cat) => {
+          {categories.map((cat) => {
             const isActive = activeCategory === cat.id;
             return (
               <button
@@ -83,7 +117,7 @@ export const ServicesGridBlock: React.FC<{ content?: ServicesGridContent }> = ({
           })}
         </div>
 
-        {/* Griglia Schede Servizi Snellite: SOLO Foto + Titolo + Clicca per Dettagli */}
+        {/* Griglia Schede Servizi */}
         <motion.div 
           layout
           className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6"
@@ -91,7 +125,7 @@ export const ServicesGridBlock: React.FC<{ content?: ServicesGridContent }> = ({
           <AnimatePresence>
             {filteredServices.map((service, index) => (
               <motion.div
-                key={service.id}
+                key={service.id || `srv-${index}`}
                 layout
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
@@ -104,12 +138,18 @@ export const ServicesGridBlock: React.FC<{ content?: ServicesGridContent }> = ({
                   <div>
                     {/* Immagine Simbolo Rappresentativa */}
                     <div className="aspect-[16/10] w-full overflow-hidden rounded-xl relative bg-slate-950 mb-3.5">
-                      <img
-                        src={service.imageUrl}
-                        alt={service.title}
-                        loading="lazy"
-                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-108"
-                      />
+                      {service.imageUrl ? (
+                        <img
+                          src={service.imageUrl}
+                          alt={service.title}
+                          loading="lazy"
+                          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-108"
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center bg-slate-800 text-slate-500">
+                          <Building2 className="w-8 h-8 opacity-40" />
+                        </div>
+                      )}
                       
                       {/* Gradient overlay morbido */}
                       <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-black/30" />
@@ -123,7 +163,7 @@ export const ServicesGridBlock: React.FC<{ content?: ServicesGridContent }> = ({
 
                       {/* Icona in pillola semitrasparente */}
                       <div className="absolute bottom-2.5 left-2.5 w-8 h-8 rounded-lg bg-slate-950/85 backdrop-blur-md border border-white/15 flex items-center justify-center shadow-md">
-                        {iconMap[service.iconName] || <Building2 className="w-4 h-4 text-brand-terracotta" />}
+                        {iconMap[service.iconName || 'Building2'] || <Building2 className="w-4 h-4 text-brand-terracotta" />}
                       </div>
                     </div>
 
@@ -135,11 +175,11 @@ export const ServicesGridBlock: React.FC<{ content?: ServicesGridContent }> = ({
 
                   {/* Azione Pulita: Mostra Dettagli */}
                   <div className="pt-3 mt-2 border-t border-white/10 flex items-center justify-between text-xs">
-                    <span className="text-[11px] text-slate-400 group-hover:text-slate-300 transition-colors">
-                      {service.categoryLabel}
+                    <span className="text-[11px] text-slate-400 group-hover:text-slate-300 transition-colors truncate max-w-[130px]">
+                      {service.categoryLabel || service.category}
                     </span>
                     
-                    <span className="inline-flex items-center gap-1 font-semibold text-brand-terracotta group-hover:text-amber-300 transition-all text-xs">
+                    <span className="inline-flex items-center gap-1 font-semibold text-brand-terracotta group-hover:text-amber-300 transition-all text-xs shrink-0">
                       <span>Mostra dettagli</span>
                       <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
                     </span>

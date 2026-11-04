@@ -164,14 +164,22 @@ Sito impresa edile/
 
 ---
 
-### 4.5 Gestione Completa Servizi nell'Admin CMS ([PageBuilderCMS.tsx](file:///c:/Users/franc/Documents/Antigravity/Sito%20impresa%20edile/frontend/src/components/admin/PageBuilderCMS.tsx))
-All'interno dell'Area Riservata (sezione Page Builder):
-- **Intestazione Sezione:** Modifica in tempo reale di tagline, titolo e descrizione introduttiva.
-- **Gestore Servizi Dinamico:**
-  - Pulsante **`+ Aggiungi Servizio`** per creare nuove lavorazioni.
-  - Pulsanti **Sposta Su / Sposta Giù** per definire l'ordine delle card a schermo.
-  - Pulsante **Elimina** con conferma di sicurezza.
-  - **Campi configurabili:** Nome servizio, badge, selezione icona da catalogo (Edilizia, Ristrutturazioni, Cappotti, Impianti, Serramenti, Finiture, ecc.), descrizione breve, dettagli estesi per il modal, URL foto con selettore visuale rapido dalla galleria BMG, ed elenco punti di forza con aggiunta e rimozione dinamica.
+### 4.5 Modulo Dedicato Gestione Servizi nel CMS ([ServiceManagerCMS.tsx](file:///c:/Users/franc/Documents/Antigravity/Sito%20impresa%20edile/frontend/src/components/admin/ServiceManagerCMS.tsx) & [services.ts](file:///c:/Users/franc/Documents/Antigravity/Sito%20impresa%20edile/backend/src/routes/services.ts))
+All'interno del pannello di amministrazione è stato integrato un tab di primo livello dedicato **"Gestione Servizi"** accanto a Cantieri, Page Builder, Preventivi e Media:
+- **Panoramica Catalogo & Statistiche:** Visualizzazione dell'elenco completo con contatori dinamici per categoria (*Costruzioni & Strutture*, *Condomini & Involucro*, *Impianti & Serramenti*, *Finiture & Interni*).
+- **Filtri Rapidi & Ricerca Live:** Filtro per categoria e barra di ricerca istantanea su titolo, badge e descrizione.
+- **Creazione e Modifica Scheda Servizio:**
+  - *Titolo completo* e *Titolo breve* per card compatta.
+  - *Categoria* con etichettatura automatica.
+  - *Badge promozionale* (es. *"Chiavi in Mano"*, *"Certificato DM 37/08"*, *"Sismabonus"*).
+  - *Selettore Icone Grafico:* Scelta visiva tra 12 icone tematiche (Building2, Home, Layers, Hammer, Paintbrush, Zap, Wrench, Maximize2, Flame, Sparkles, ShieldCheck, HardHat).
+  - *Foto di Copertina:* Upload diretto dal proprio dispositivo (con conversione automatica WebP), selettore visuale rapido dalla galleria dei cantieri reali BMG, o inserimento URL.
+  - *Descrizione Breve & Capitolato Tecnico Completo:* Testi differenziati per anteprima in card e finestra modale di approfondimento.
+  - *Punti di Forza & Checklist:* Gestione dinamica dei punti elenco con aggiunta, modifica inline ed eliminazione.
+- **Ordinamento & Duplicazione:** Pulsanti per alzare/abbassare l'ordine delle lavorazioni in griglia e pulsante di clonazione rapida.
+- **Anteprima Live Istantanea:** Pulsante *"Anteprima"* che apre la finestra modale esattamente come viene vista dai clienti sul sito pubblico.
+- **Ripristino Sicuro:** Pulsante di ripristino per ritornare ai 13 servizi certificati originari BMG.
+- **Sincronizzazione Bidirezionale:** API REST backend (`/api/services` con GET, POST, PUT, DELETE, RESET) combinata con persistenza locale per aggiornamento in tempo reale sia in produzione che in locale.
 
 ---
 

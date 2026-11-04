@@ -8,6 +8,7 @@ import { projectsRouter } from './routes/projects';
 import { quotesRouter } from './routes/quotes';
 import { uploadsRouter } from './routes/uploads';
 import { authRouter } from './routes/auth';
+import { servicesRouter } from './routes/services';
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -63,6 +64,7 @@ app.use('/api/auth', authRouter);
 app.use('/api/pages', pagesRouter);
 app.use('/api/sections', sectionsRouter);
 app.use('/api/projects', projectsRouter);
+app.use('/api/services', servicesRouter);
 app.use('/api/quotes', quotesRouter);
 app.use('/api/uploads', uploadsRouter);
 
