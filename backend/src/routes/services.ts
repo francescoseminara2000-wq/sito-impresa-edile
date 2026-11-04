@@ -352,10 +352,13 @@ servicesRouter.get('/', async (_req: Request, res: Response) => {
       : [];
 
     // Se nel database ci sono meno dei 13 servizi originali BMG (es. residuo di vecchi test),
-    // reintegra automaticamente tutti i 13 servizi completi preservando le modifiche
+    // reintegra automaticamente tutti i 13 servizi originali + eventuali servizi personalizzati
     if (services.length < DEFAULT_SERVICES.length) {
+      const defaultIds = new Set(DEFAULT_SERVICES.map((s) => s.id));
       const existingMap = new Map(services.map((s) => [s.id, s]));
-      const fullList = DEFAULT_SERVICES.map((def) => existingMap.get(def.id) || def);
+      const baseServices = DEFAULT_SERVICES.map((def) => existingMap.get(def.id) || def);
+      const customServices = services.filter((s) => !defaultIds.has(s.id));
+      const fullList = [...baseServices, ...customServices];
       services = fullList;
 
       // Aggiorna anche la sezione nel database

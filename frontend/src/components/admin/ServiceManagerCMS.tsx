@@ -85,10 +85,13 @@ export const ServiceManagerCMS: React.FC<{ token: string }> = ({ token }) => {
         const data = await res.json();
         if (Array.isArray(data) && data.length > 0) {
           let list = data;
-          // Se nel database ci sono meno dei 13 servizi originali, reintegra tutti i 13
+          // Se nel database ci sono meno dei 13 servizi originali, reintegra tutti i 13 mantenendo anche servizi personalizzati
           if (list.length < BMG_ALL_SERVICES.length) {
-            const map = new Map(list.map((s: any) => [s.id, s]));
-            list = BMG_ALL_SERVICES.map((def) => map.get(def.id) || def);
+            const defaultIds = new Set(BMG_ALL_SERVICES.map((s) => s.id));
+            const existingMap = new Map(list.map((s: any) => [s.id, s]));
+            const base = BMG_ALL_SERVICES.map((def) => existingMap.get(def.id) || def);
+            const custom = list.filter((s: any) => !defaultIds.has(s.id));
+            list = [...base, ...custom];
             saveAllServicesToBackend(list);
           }
 

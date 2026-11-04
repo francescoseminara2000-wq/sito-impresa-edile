@@ -50,13 +50,17 @@ export const App: React.FC = () => {
               mergedSections.splice(2, 0, defServices);
             }
           } else {
-            // Preserva i servizi salvati nel DB/CMS; garantisce la presenza di tutti i 13 servizi originali BMG
+            // Preserva i servizi salvati nel DB/CMS; garantisce la presenza di tutti i 13 servizi originali BMG + eventuali nuovi
             const srvIdx = mergedSections.findIndex((s) => s.type === 'SERVICES_GRID');
             if (srvIdx !== -1) {
               const currentServices = mergedSections[srvIdx].content?.services;
               if (!Array.isArray(currentServices) || currentServices.length < BMG_ALL_SERVICES.length) {
-                const map = new Map((Array.isArray(currentServices) ? currentServices : []).map((s: any) => [s.id, s]));
-                const fullList = BMG_ALL_SERVICES.map((def) => map.get(def.id) || def);
+                const list = Array.isArray(currentServices) ? currentServices : [];
+                const defaultIds = new Set(BMG_ALL_SERVICES.map((s) => s.id));
+                const existingMap = new Map(list.map((s: any) => [s.id, s]));
+                const baseServices = BMG_ALL_SERVICES.map((def) => existingMap.get(def.id) || def);
+                const customServices = list.filter((s: any) => !defaultIds.has(s.id));
+                const fullList = [...baseServices, ...customServices];
                 mergedSections[srvIdx].content = {
                   ...mergedSections[srvIdx].content,
                   services: fullList,

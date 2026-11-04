@@ -28,14 +28,18 @@ export const ServicesGridBlock: React.FC<{ content?: ServicesGridContent }> = ({
   const [selectedService, setSelectedService] = useState<ServiceItem | null>(null);
   const [activeCategory, setActiveCategory] = useState<string>('all');
 
-  // Recupera i servizi garantendo la presenza di tutti i 13 servizi originali BMG
+  // Recupera i servizi garantendo la presenza di tutti i 13 servizi originali BMG + eventuali nuovi
   const [localServices, setLocalServices] = useState<ServiceItem[]>(() => {
-    let list = BMG_ALL_SERVICES;
-    if (content?.services && content.services.length >= BMG_ALL_SERVICES.length) {
-      list = content.services;
-    } else if (content?.services && content.services.length > 0) {
-      const map = new Map(content.services.map((s) => [s.id, s]));
-      list = BMG_ALL_SERVICES.map((def) => map.get(def.id) || def);
+    let list: ServiceItem[] = BMG_ALL_SERVICES;
+    const input = content?.services;
+    if (Array.isArray(input) && input.length >= BMG_ALL_SERVICES.length) {
+      list = input;
+    } else if (Array.isArray(input) && input.length > 0) {
+      const defaultIds = new Set(BMG_ALL_SERVICES.map((s) => s.id));
+      const existingMap = new Map(input.map((s) => [s.id, s]));
+      const base = BMG_ALL_SERVICES.map((def) => existingMap.get(def.id) || def);
+      const custom = input.filter((s) => !defaultIds.has(s.id));
+      list = [...base, ...custom];
     } else {
       try {
         const stored = localStorage.getItem('bmg_services_data');
@@ -52,11 +56,15 @@ export const ServicesGridBlock: React.FC<{ content?: ServicesGridContent }> = ({
 
   // Sincronizza se le props cambiano dal server
   useEffect(() => {
-    if (content?.services && content.services.length >= BMG_ALL_SERVICES.length) {
-      setLocalServices(content.services);
-    } else if (content?.services && content.services.length > 0) {
-      const map = new Map(content.services.map((s) => [s.id, s]));
-      setLocalServices(BMG_ALL_SERVICES.map((def) => map.get(def.id) || def));
+    const input = content?.services;
+    if (Array.isArray(input) && input.length >= BMG_ALL_SERVICES.length) {
+      setLocalServices(input);
+    } else if (Array.isArray(input) && input.length > 0) {
+      const defaultIds = new Set(BMG_ALL_SERVICES.map((s) => s.id));
+      const existingMap = new Map(input.map((s) => [s.id, s]));
+      const base = BMG_ALL_SERVICES.map((def) => existingMap.get(def.id) || def);
+      const custom = input.filter((s) => !defaultIds.has(s.id));
+      setLocalServices([...base, ...custom]);
     }
   }, [content?.services]);
 
